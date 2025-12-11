@@ -1,0 +1,124 @@
+# --- AGENT DEFINITIONS ---
+# A list where each item represents one specialized agent in the system.
+
+agents:
+  # 0. ORCHESTRATOR Agent (The Supervisor/Router)
+  - name: Orchestrator
+    role: Central Task Planner and Agent Router
+    goal: "Decompose the user's complex request into a sequential plan of sub-tasks and delegate the current step to the most appropriate worker agent."
+    tools: []  # The Orchestrator should not use worker tools; it only delegates
+    llm_config_key: Orchestrator
+
+  # 1. PROFESSOR Agent: High-level reasoning and data extraction
+  - name: Professor
+    role: Summarize PDF, Word, PPT, Text, Webpage, Image
+    goal: "Provide concise, accurate, and insightful summaries, key takeaways, and structured data extraction from diverse source materials for knowledge assimilation."
+    tools:
+      - document_parser
+      - web_content_extractor
+      - image_to_text
+      - vector_store_manager
+    llm_config_key: Professor
+
+  # 2. RESEARCHER Agent: External data gathering
+  - name: Researcher
+    role: Web search expert
+    goal: "Execute targeted web searches, filter results for relevance, and retrieve high-quality, cited factual data to support analysis or report generation."
+    tools:
+      - web_search_api
+      - result_filter_ranker
+    llm_config_key: Researcher
+
+  # 3. NOTE TAKER Agent: Stylistic transformation
+  - name: Note Taker
+    role: Stylistic notetaker and knowledge formatter
+    goal: "Generate final, polished notes by transforming raw input from other agents (Professor, Researcher) into the user's defined stylistic template (e.g., Cornell, Mind Map format)."
+    tools:
+      - storage_connector
+      - style_template_manager
+    llm_config_key: NoteTaker
+
+  # 4. COMMUNICATOR Agent: Email handling
+  - name: Communicator
+    role: Email summarizer and drafting specialist
+    goal: "Efficiently summarize incoming emails, extract action items, and draft professional, context-aware replies."
+    tools:
+      - email_parser
+      - email_draft_tool
+    llm_config_key: Communicator
+
+  # 5. CONCIERGE Agent: Travel planning
+  - name: Concierge
+    role: Travel planning and itinerary drafting
+    goal: "Handle travel-related web searches (flights, hotels) and compile findings into a structured, day-by-day itinerary document."
+    tools:
+      - web_search_api
+      - itinerary_formatter
+    llm_config_key: Concierge
+
+  # 6. SECRETARY Agent: Calendar and coordination
+  - name: Secretary
+    role: Agenda management and calendar coordination
+    goal: "Summarize meeting agendas, manage the calendar, and create new calendar items or reminders based on inputs from the Communicator or Concierge."
+    tools:
+      - agenda_summarizer
+      - calendar_api_connector
+    llm_config_key: Secretary
+
+  # 7. ACCOUNTANT Agent: Data entry and validation
+  - name: Accountant
+    role: Expense tracking and financial data extraction
+    goal: "Accurately extract expense details (vendor, amount, date) from receipt images and log the structured data into the financial ledger."
+    tools:
+      - expense_ocr
+      - data_logging_tool
+    llm_config_key: Accountant
+
+  # 8. RESPONDER Agent
+  - name: Responder
+    role: General-purpose natural language assistant
+    goal: "Provide clear explanations, guidance, rewriting, or simple responses when no specialized agent is required."
+    tools: []
+    llm_config_key: Responder
+
+  # 9. SYNTHESIZER Agent (Final voice)
+  - name: Synthesizer
+    role: Final Content Aggregator and Editor
+    goal: "Review the Task State for all completed sub-tasks, aggregate inputs from all specialized agents, and compile them into a single, cohesive, conversational final response for the user."
+    tools:
+      - storage_connector
+    llm_config_key: Synthesizer
+
+# --- GLOBAL TOOL MAPPING ---
+# Maps tool names to actual Python module paths.
+
+tool_mapping:
+  # Professor/RAG Tools
+  document_parser: src.tools.document_parser.DocumentParser
+  image_to_text: src.tools.image_to_text.ImageToText
+  web_content_extractor: src.tools.web_content_extractor.WebContentExtractor
+  embedding_model: src.tools.embedding_model.EmbeddingModel
+  vector_store_manager: src.tools.vector_store_manager.VectorStoreManager
+
+  # Researcher/Web Tools
+  web_search_api: src.tools.web_search_api.WebSearchAPI
+  result_filter_ranker: src.tools.result_filter_ranker.ResultFilterRanker
+
+  # Note Taker Tools
+  storage_connector: src.tools.storage_connector.StorageConnector
+  style_template_manager: src.tools.style_template_manager.StyleTemplateManager
+
+  # Communicator Tools
+  email_parser: src.tools.email_parser.EmailParser
+  email_draft_tool: src.tools.email_draft_tool.EmailDraftTool
+
+  # Concierge Tools
+  itinerary_formatter: src.tools.itinerary_formatter.ItineraryFormatter
+  
+  # Secretary Tools
+  agenda_summarizer: src.tools.agenda_summarizer.AgendaSummarizer
+  calendar_api_connector: src.tools.calendar_api_connector.CalendarAPIConnector
+
+  # Accountant Tools
+  expense_ocr: src.tools.expense_ocr.ExpenseOCR
+  data_logging_tool: src.tools.data_logging_tool.DataLoggingTool
