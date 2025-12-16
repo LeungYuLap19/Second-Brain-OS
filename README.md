@@ -25,9 +25,6 @@ second brain OS
 │  │  ├─ notes
 │  │  └─ reports
 │  └─ vectordb
-├─ playground
-│  ├─ cover_letter_gen.ipynb
-│  └─ Leung_Yu_Lap_Resume.pdf
 ├─ src
 │  ├─ agents
 │  │  ├─ accountant.py

@@ -1,70 +1,96 @@
-from enum import Enum
-from typing import Dict, Any, Optional, List
-from pydantic import BaseModel, Field
+from __future__ import annotations
+from typing import Dict, List, Optional
+from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime, timezone
+from enum import Enum
+from .data_models import OrchestratorPlan
 
-# -----------------------------
-# Agent execution status
-# -----------------------------
-class AgentStatus(Enum):
-  IDLE = "idle"
+class TaskStatus(str, Enum):
+  """Allowed lifecycle states for a task."""
+
+  PENDING = "pending"
   RUNNING = "running"
   COMPLETED = "completed"
   FAILED = "failed"
 
-# -----------------------------
-# Per-agent state
-# -----------------------------
-class AgentState(BaseModel):
-  agent_name: str
-  status: AgentStatus = AgentStatus.IDLE
-  input: Optional[Dict[str, Any]] = None
-  output: Optional[Any] = None
+class TaskRuntimeState(BaseModel):
+  """
+  Runtime state for a single task.
+
+  NOTE:
+  - output is always a STRING
+  - errors are simple strings
+  - status enum enables monitoring & retries
+  """
+
+  model_config = ConfigDict(extra="forbid")
+
+  step: int
+  agent: str
+  instruction: str
+  inputs: List[str] = Field(default_factory=list)
+
+  status: TaskStatus = TaskStatus.PENDING
+  output: Optional[str] = None
   error: Optional[str] = None
-  started_at: Optional[datetime] = None
-  finished_at: Optional[datetime] = None
 
-# -----------------------------
-# Global LangGraph State
-# -----------------------------
-class taskState(BaseModel):
+class TaskState(BaseModel):
   """
-  Canonical LangGraph State.
-  This object is passed between all nodes.
+  Global workflow state shared across execution.
+
+
+  DESIGN GOALS:
+  - Extremely simple
+  - Easy to reason about
+  - Safe for beginners
   """
-  
-  task_id: str
-  user_request: str
-  intent: Optional[str] = None
-  routing_decision: Optional[str] = None
-  agent_states: Dict[str, AgentState] = Field(default_factory=dict)
-  # 
-  final_output: Optional[str] = None
-  is_complete: bool = False
-  created_at: datetime = Field(default_factory=datetime.now(timezone.utc))
-  updated_at: datetime = Field(default_factory=datetime.now(timezone.utc))
+
+  model_config = ConfigDict(extra="forbid")
+
+  user_request: str = ""
+
+  # Orchestrator output (validated once)
+  plan: Optional[OrchestratorPlan] = None
+
+  # Runtime task tracking
+  tasks: Dict[int, TaskRuntimeState] = Field(default_factory=dict)
+
+  # Collected agent outputs (ALL STRINGS)
+  results: Dict[str, str] = Field(default_factory=dict)
+
+  created_at: datetime = Field(default_factory=lambda:datetime.now(timezone.utc))
+  updated_at: datetime = Field(default_factory=lambda:datetime.now(timezone.utc))
 
   # -------------------------
-  # Convenience helpers
+  # State mutation helpers
   # -------------------------
-  def mark_agent_running(self, agent_name: str, input_payload: Dict[str, Any]):
-    self.agent_states[agent_name] = AgentState(
-      agent_name=agent_name,
-      status=AgentStatus.RUNNING,
-      input=input_payload,
-      started_at=datetime.now(timezone.utc)
-    )
 
-  def mark_agent_completed(self, agent_name: str, output: Any):
-    agent_state = self.agent_states.get(agent_name)
-    if agent_state:
-      agent_state.status = AgentStatus.COMPLETED
-      agent_state.output = output
-      agent_state.finished_at = datetime.now(timezone.utc)
+  def init_from_plan(self, plan: OrchestratorPlan, user_request):
+    """Initialize runtime tasks from an Orchestrator plan."""
+    self.plan = plan
+    for task in plan.tasks:
+      self.tasks[task.step] = TaskRuntimeState(
+        step=task.step,
+        agent=task.agent,
+        instruction=task.instruction,
+        inputs=task.inputs,
+      )
+    self.user_request = user_request
+    self.updated_at = datetime.now(timezone.utc)
 
-  def mark_agent_failed(self, agent_name: str, error: str):
-    agent_state = self.agent_states.get(agent_name)
-    if agent_state:
-      agent_state.status = AgentStatus.FAILED
-      agent_state.error = error
-      agent_state.finished_at = datetime.now(timezone.utc)
+  def mark_running(self, step: int):
+    self.tasks[step].status = TaskStatus.RUNNING
+    self.updated_at = datetime.now(timezone.utc)
+
+  def mark_completed(self, step: int, output_key: str, output: str):
+    task = self.tasks[step]
+    task.status = TaskStatus.COMPLETED
+    task.output = output
+    self.results[output_key] = output
+    self.updated_at = datetime.now(timezone.utc)
+
+  def mark_failed(self, step: int, error: str):
+    task = self.tasks[step]
+    task.status = TaskStatus.FAILED
+    task.error = error
+    self.updated_at = datetime.now(timezone.utc)
