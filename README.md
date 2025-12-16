@@ -25,6 +25,9 @@ second brain OS
 │  │  ├─ notes
 │  │  └─ reports
 │  └─ vectordb
+├─ playground
+│  ├─ cover_letter_gen.ipynb
+│  └─ Leung_Yu_Lap_Resume.pdf
 ├─ src
 │  ├─ agents
 │  │  ├─ accountant.py
@@ -45,6 +48,7 @@ second brain OS
 │  │     └─ __init__.cpython-313.pyc
 │  ├─ main.py
 │  ├─ orchestration
+│  │  ├─ memory_manager.py
 │  │  ├─ workflow_manager.py
 │  │  └─ __init.py
 │  ├─ schemas

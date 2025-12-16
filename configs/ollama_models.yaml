@@ -21,57 +21,57 @@ AGENT_MODELS:
 
   # Synthesizer Agent (The Final Voice)
   Synthesizer:
-    model: "llama3"
+    model: "gemma2:9b"
     temperature: 0.5
     system_prompt_file: "configs/system_prompts/synthesizer_prompt.txt"
     num_ctx: 4096
     format: ""
 
   Professor:
-    model: "llama3"
+    model: "gemma2:9b"
     temperature: 0.1
     system_prompt_file: "configs/system_prompts/professor_prompt.txt"
     num_ctx: 4096
     format: ""
 
   Researcher:
-    model: "llama3"
+    model: "gemma2:9b"
     temperature: 0.3
     system_prompt_file: "configs/system_prompts/researcher_prompt.txt"
     num_predict: 512
 
   NoteTaker:
-    model: "llama3"
+    model: "gemma2:9b"
     temperature: 0.7
     system_prompt_file: "configs/system_prompts/note_taker_prompt.txt"
     format: ""
 
   Communicator:
-    model: "llama3"
+    model: "gemma2:9b"
     temperature: 0.2
     system_prompt_file: "configs/system_prompts/communicator_prompt.txt"
     format: ""
 
   Concierge:
-    model: "llama3"
+    model: "gemma2:9b"
     temperature: 0.4
     system_prompt_file: "configs/system_prompts/concierge_prompt.txt"
     format: ""
 
   Secretary:
-    model: "llama3"
+    model: "gemma2:9b"
     temperature: 0.1
     system_prompt_file: "configs/system_prompts/secretary_prompt.txt"
     format: ""
 
   Accountant:
-    model: "llama3"
+    model: "gemma2:9b"
     temperature: 0.05
     system_prompt_file: "configs/system_prompts/accountant_prompt.txt"
     format: ""
 
   Responder:
-    model: "llama3"
+    model: "gemma2:9b"
     temperature: 0.6
     system_prompt_file: "configs/system_prompts/responder_prompt.txt"
     num_ctx: 4096

@@ -23,8 +23,6 @@ class BaseAgent:
     ])
 
   def run(self, input_text: str):
-
-    
     chain = self.prompt | self.model
     return chain.invoke({"input": input_text}).content
 

@@ -1,53 +1,71 @@
 import json
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from .base_agent import BaseAgent
+
 
 class OrchestratorAgent(BaseAgent):
   """
-  The central routing brain.
-  Produces strict JSON:
+  The central planning brain.
+
+  Produces STRICT JSON ONLY:
+
   {
-    "next_agent": "<agent_name_or_synthesizer>",
-    "task_plan": [...],
-    "current_step": "<string>",
-    "notes_for_agent": "<string>",
-    "is_final": false
+    "tasks": [
+      {
+        "step": 1,
+        "agent": "<Exact Agent Name>",
+        "instruction": "<string>",
+        "inputs": [],
+        "output": "step1.<Exact Agent Name>",
+        "can_run_in_parallel": false
+      }
+    ]
   }
   """
 
   def __init__(self):
     super().__init__("Orchestrator")
 
-  def run(self, user_input: str, task_state: Dict[str, Any] = None) -> Dict[str, Any]:
+  def run(
+    self,
+    user_input: str,
+    task_state: Optional[Dict[str, Any]] = None
+  ) -> Dict[str, Any]:
     """
-    Calls the underlying LLM and returns a parsed JSON dict.
+    Calls the underlying LLM and returns a parsed task plan.
     Automatically retries once if JSON is malformed.
     """
 
-    """
-    Feed user inputs and task state in LLM
-    Parse LLM JSON output
-    """
     combined_input = self._prepare_input(user_input, task_state)
     raw_output = super().run(combined_input)
-    parsed = self._safe_parse_json(raw_output)
 
-    """Check if LLM returns JSON"""
+    parsed = self._safe_parse_json(raw_output)
     if parsed is not None:
-      return parsed 
-    
-    """Auto-retry (ask model to fix JSON)"""
+      return parsed
+
+    # -----------------------------
+    # Auto-repair attempt
+    # -----------------------------
     repair_prompt = (
-      "The previous output was not valid JSON. "
-      "Please return ONLY valid JSON with the required fields:\n\n"
+      "The previous output was NOT valid JSON.\n\n"
+      "Return ONLY valid JSON that strictly matches this schema:\n\n"
       "{\n"
-      '  "next_agent": "",\n'
-      '  "task_plan": [],\n'
-      '  "current_step": "",\n'
-      '  "notes_for_agent": "",\n'
-      '  "is_final": false\n'
+      '  "tasks": [\n'
+      "    {\n"
+      '      "step": 1,\n'
+      '      "agent": "",\n'
+      '      "instruction": "",\n'
+      '      "inputs": [],\n'
+      '      "output": "",\n'
+      '      "can_run_in_parallel": false\n'
+      "    }\n"
+      "  ]\n"
       "}\n\n"
-      f"Here is the invalid output:\n{raw_output}\n"
+      "Rules:\n"
+      "- Output JSON only\n"
+      "- No comments\n"
+      "- No markdown\n\n"
+      f"Invalid output:\n{raw_output}\n"
     )
 
     repaired_raw = super().run(repair_prompt)
@@ -60,34 +78,47 @@ class OrchestratorAgent(BaseAgent):
       )
 
     return repaired
-  
+
   # -------------------------------------
   # Helper: Build LLM input
   # -------------------------------------
-  def _prepare_input(self, user_input: str, task_state: Dict[str, Any]) -> str:
+  def _prepare_input(
+    self,
+    user_input: str,
+    task_state: Optional[Dict[str, Any]]
+  ) -> str:
     """
-    Constructs a combined prompt including task state.
-    """
-    if task_state is None:
-      return user_input
+    Constructs the prompt for the Orchestrator LLM.
 
-    # Convert task_state to readable text for the LLM
+    Note:
+    - task_state is provided ONLY for awareness/debugging
+    - The Orchestrator must NOT mutate or rely on implicit state
+    """
+
+    if not task_state:
+      return (
+        "User request:\n"
+        f"{user_input}\n\n"
+        "Produce a deterministic task plan in STRICT JSON only."
+      )
+
     ts_pretty = json.dumps(task_state, indent=2)
 
     return (
       "User request:\n"
       f"{user_input}\n\n"
-      "Current Task State:\n"
+      "Existing execution state (read-only, for awareness only):\n"
       f"{ts_pretty}\n\n"
-      "Provide the next JSON routing decision."
+      "Produce a deterministic task plan in STRICT JSON only."
     )
-  
+
   # -------------------------------------
   # Helper: Safe JSON parse
   # -------------------------------------
-  def _safe_parse_json(self, text: str) -> Dict[str, Any]:
+  def _safe_parse_json(self, text: str) -> Optional[Dict[str, Any]]:
     """
-    Returns dict or None if invalid.
+    Attempts to parse JSON.
+    Returns dict if valid, otherwise None.
     """
     try:
       return json.loads(text)

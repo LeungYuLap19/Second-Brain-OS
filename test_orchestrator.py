@@ -1,106 +1,99 @@
 from src.agents.orchestrator import OrchestratorAgent
 
 def test_orchestrator():
-    orch = OrchestratorAgent()
+  orch = OrchestratorAgent()
 
-    test_cases = [
-        # =============================================
-        # Professor — ONLY when content is PROVIDED
-        # =============================================
-        ("Summarize the PDF I just uploaded about deep learning.", "Professor"),
-        ("Here is a screenshot of my textbook page — explain it.", "Professor"),
-        ("Read this text: 'Attention is all you need' paper...", "Professor"),
-        ("Attached research paper (PDF) on Grok-4.", "Responder"),
-        ("What is a transformer?", "Responder"),  # No text provided
-        ("Explain how transformers work.", "Responder"),
-        ("Convert this lecture video into notes.", "Responder"),  # Video not supported
+  # Example test cases: (user_input, list of expected agents in plan)
+  test_cases = [
+    # Professor
+    ("Summarize the PDF I just uploaded about transformers.", ["Professor"]),
+    ("Here is a paper on AI: please summarize.", ["Professor"]),
+    ("Analyze this Word document about quantum computing.", ["Professor"]),
+    
+    # Responder - concept explanation / vague
+    ("What is a transformer?", ["Responder"]),
+    ("Explain blockchain in simple terms.", ["Responder"]),
+    ("Write a short poem about AI.", ["Responder"]),
+    
+    # Note Taker
+    ("Turn these bullet points into Cornell notes.", ["Note Taker"]),
+    ("Make a mind map from the previous summary.", ["Note Taker"]),
+    ("Convert these notes into a structured outline.", ["Note Taker"]),
+    
+    # Communicator
+    ("Draft a reply to this email: Subject: Meeting tomorrow...", ["Communicator"]),
+    ("Summarize this email thread from HR.", ["Communicator"]),
+    ("Reply to John: see the attached message.", ["Communicator"]),
+    
+    # Concierge - concrete travel
+    ("Plan a trip to Bali for 2 people in December, budget $3000.", ["Concierge"]),
+    ("Find best hotels in Paris under $200 for June.", ["Concierge"]),
+    ("Book flights to New York from July 10 to 15.", ["Concierge"]),
+    
+    # Responder - vague travel
+    ("I want to travel somewhere nice.", ["Responder"]),
+    ("Suggest a place to go on vacation.", ["Responder"]),
+    ("I need a warm holiday destination.", ["Responder"]),
+    
+    # Secretary
+    ("Schedule a call with Sarah next Wednesday 3pm.", ["Secretary"]),
+    ("Create reminder: Dentist Friday 10am.", ["Secretary"]),
+    ("Move my 2pm sync to tomorrow.", ["Secretary"]),
+    
+    # Accountant
+    ("Log expense: $58 lunch, $220 hotel.", ["Accountant"]),
+    ("Show total spending on Conference 2025.", ["Accountant"]),
+    ("Create new category: Daily Expenses.", ["Accountant"]),
+    
+    # Composite requests (multi-agent)
+    ("Summarize the PDF and then turn it into point form notes.", ["Professor", "Note Taker"]),
+    ("Read this paper, summarize it, and explain key points to me.", ["Professor", "Responder"]),
+    ("Plan a trip to Bali, then draft an itinerary email for me.", ["Concierge", "Communicator"]),
+    ("Summarize my emails and schedule meetings based on them.", ["Communicator", "Secretary"]),
+    
+    # Edge / tricky
+    ("Explain transformers and then write a poem about them.", ["Responder"]),
+    ("I have receipts and notes, summarize notes and log expenses.", ["Note Taker", "Accountant"]),
+    ("Turn this PDF into a mind map and schedule a meeting about it.", ["Professor", "Note Taker", "Secretary"]),
+  ]
 
-        # =============================================
-        # Researcher — Pure time-sensitive fact lookup
-        # =============================================
-        ("Who won the Nobel Prize in Physics 2025?", "Researcher"),
-        ("What is the current price of Bitcoin?", "Researcher"),
-        ("Compare Gemma2 vs Qwen2.5 performance in December 2025.", "Researcher"),
-        ("Latest breakthroughs in fusion energy 2025?", "Researcher"),
-        ("What is quantum computing?", "Responder"),  # Known concept, not time-sensitive
 
-        # =============================================
-        # Note Taker — ONLY when existing content is referenced
-        # =============================================
-        ("Here are bullet points from the lecture — turn them into Cornell notes.", "Note Taker"),
-        ("Convert this summary into a mind map.", "Note Taker"),
-        ("Make a beautiful outline from the previous output above.", "Note Taker"),
-        ("Format these raw notes nicely.", "Note Taker"),
-        ("Make nice outline notes.", "Responder"),  # No content referenced
-        ("Create structured notes from scratch.", "Responder"),
+  print("\nRunning Orchestrator Routing Test Cases\n" + "="*80)
+  passed = 0
+  total = len(test_cases)
 
-        # =============================================
-        # Communicator — ONLY with real email text
-        # =============================================
-        ("Draft a reply to this email:\nSubject: Re: Meeting tomorrow\nHi team...", "Communicator"),
-        ("Summarize this email thread: From: john@... Subject: Project update...", "Communicator"),
-        ("Write a professional follow-up email.", "Responder"),  # No email provided
-        ("Help me write an email to my boss.", "Responder"),
-
-        # =============================================
-        # Concierge — Specific travel only
-        # =============================================
-        ("Plan a 5-day trip to Tokyo for 2 people in June, budget $4000.", "Concierge"),
-        ("Find flights from NYC to London for Christmas week.", "Concierge"),
-        ("Best hotels in Bali under $200/night?", "Concierge"),
-        ("Recommend a vacation spot.", "Responder"),
-        ("I want to travel somewhere warm in December.", "Responder"),  # Too vague
-
-        # =============================================
-        # Secretary — Calendar & meeting actions
-        # =============================================
-        ("Schedule a 1-hour call with Alex next Tuesday at 3pm.", "Secretary"),
-        ("Create reminder: Dentist appointment Friday 10am.", "Secretary"),
-        ("Here are today's standup notes — extract action items.", "Secretary"),
-        ("Move my 2pm sync to tomorrow morning.", "Secretary"),
-        ("When is my next meeting?", "Secretary"),
-
-        # =============================================
-        # Accountant — Only with real expense data
-        # =============================================
-        ("Here are 3 receipt images from Tokyo — log expenses.", "Accountant"),
-        ("Log expense: $120 hotel, $45 taxi, $80 dinner.", "Accountant"),
-        ("I spent $58 on lunch today.", "Accountant"),
-        ("Show total for Tokyo trip category.", "Accountant"),
-        ("Help me track my expenses.", "Responder"),  # No data
-
-        # =============================================
-        # Responder — Catch-all (most common)
-        # =============================================
-        ("Explain the difference between Llama3 and Gemma2.", "Responder"),
-        ("Make this sound more confident: 'I think we could try this...'", "Responder"),
-        ("Write a poem about AI.", "Responder"),
-        ("Hello! How are you?", "Responder"),
-        ("Help me debug this Python code:", "Responder"),
-        ("Turn this voice note into text.", "Responder"),
-        ("What can you do?", "Responder"),
-    ]
-
-    print("\nRunning Orchestrator Routing Test Cases (FINAL STRICT RULES)\n" + "="*80)
-    passed = 0
-    total = len(test_cases)
-
-    for i, (user_input, expected_agent) in enumerate(test_cases, start=1):
+  for i, (user_input, expected_agents) in enumerate(test_cases, start=1):
+      try:
         output = orch.run(user_input)
-        next_agent = output.get("next_agent") if isinstance(output, dict) else None
-        status = "PASS" if next_agent == expected_agent else "FAIL"
-        if status == "PASS":
-            passed += 1
-        print(f"{i:2d}. {status} | Expected: {expected_agent.ljust(12)} | Got: {str(next_agent).ljust(12)} → {user_input[:75]}{'...' if len(user_input)>75 else ''}")
+        tasks = output.get("tasks", [])
+        agents_in_plan = [t.get("agent") for t in tasks if "agent" in t]
 
-    print("="*80)
-    print(f"FINAL RESULT: {passed}/{total} TESTS PASSED", end="")
-    if passed == total:
-        print(" — PERFECT ROUTING ACHIEVED!")
-    else:
-        print()
-    print("="*80)
+        status = "PASS" if agents_in_plan == expected_agents else "FAIL"
+        if status == "PASS":
+          passed += 1
+        else:
+          print(f"{i:2d}. {status} | Expected: {expected_agents} | Got: {agents_in_plan} → {user_input[:75]}{'...' if len(user_input) > 75 else ''}")
+
+          # Print instructions for each task
+          for t in tasks:
+            agent = t.get("agent")
+            instr = t.get("instruction")
+            inputs = t.get("inputs", [])
+            output_key = t.get("output")
+            print(f"    -> Agent: {agent}, Inputs: {inputs}, Output: {output_key}")
+            print(f"       Instruction: {instr}")
+
+      except Exception as e:
+        print(f"{i:2d}. ERROR | {user_input[:75]}... | Exception: {e}")
+
+  print("="*80)
+  print(f"FINAL RESULT: {passed}/{total} TESTS PASSED", end="")
+  if passed == total:
+    print(" — PERFECT ROUTING ACHIEVED!")
+  else:
+    print()
+  print("="*80)
 
 
 if __name__ == "__main__":
-    test_orchestrator()
+  test_orchestrator()
