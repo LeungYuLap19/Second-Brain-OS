@@ -6,9 +6,11 @@ class BaseAgent:
   def __init__(self, name: str):
     self.name = name
 
+    # load config and prompt by name
     agent_config = settings.get_agent_model_config(name)
     system_prompt = settings.get_system_prompt(name)
 
+    # load model from config
     self.model = ChatOllama(
       model=agent_config["model"],
       temperature=agent_config.get("temperature", 0.7),
@@ -17,12 +19,15 @@ class BaseAgent:
       format=agent_config.get("format", "")
     )
 
+    # Combine user input and system prompt loaded
     self.prompt = ChatPromptTemplate.from_messages([
       ("system", system_prompt),
       ("human", "{input}")
     ])
 
   def run(self, input_text: str):
+    # 1. Inject input text into self.prompt
+    # 2. Feed self.prompt into model
     chain = self.prompt | self.model
     return chain.invoke({"input": input_text}).content
 

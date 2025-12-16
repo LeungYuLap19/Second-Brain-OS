@@ -40,7 +40,7 @@ AGENT_MODELS:
     system_prompt_file: "configs/system_prompts/researcher_prompt.txt"
     num_predict: 512
 
-  NoteTaker:
+  Note Taker:
     model: "gemma2:9b"
     temperature: 0.7
     system_prompt_file: "configs/system_prompts/note_taker_prompt.txt"

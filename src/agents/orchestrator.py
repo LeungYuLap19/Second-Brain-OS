@@ -24,20 +24,16 @@ class OrchestratorAgent(BaseAgent):
   """
 
   def __init__(self):
+    # Init BaseAgent
+    # Load config and prompt for Orchestrator
     super().__init__("Orchestrator")
 
-  def run(
-    self,
-    user_input: str,
-    task_state: Optional[Dict[str, Any]] = None
-  ) -> Dict[str, Any]:
+  def run(self, user_input: str) -> Dict[str, Any]:
     """
     Calls the underlying LLM and returns a parsed task plan.
     Automatically retries once if JSON is malformed.
     """
-
-    combined_input = self._prepare_input(user_input, task_state)
-    raw_output = super().run(combined_input)
+    raw_output = super().run(self._prepare_input(user_input))
 
     parsed = self._safe_parse_json(raw_output)
     if parsed is not None:
@@ -82,33 +78,13 @@ class OrchestratorAgent(BaseAgent):
   # -------------------------------------
   # Helper: Build LLM input
   # -------------------------------------
-  def _prepare_input(
-    self,
-    user_input: str,
-    task_state: Optional[Dict[str, Any]]
-  ) -> str:
+  def _prepare_input(self, user_input: str) -> str:
     """
     Constructs the prompt for the Orchestrator LLM.
-
-    Note:
-    - task_state is provided ONLY for awareness/debugging
-    - The Orchestrator must NOT mutate or rely on implicit state
     """
-
-    if not task_state:
-      return (
-        "User request:\n"
-        f"{user_input}\n\n"
-        "Produce a deterministic task plan in STRICT JSON only."
-      )
-
-    ts_pretty = json.dumps(task_state, indent=2)
-
     return (
       "User request:\n"
       f"{user_input}\n\n"
-      "Existing execution state (read-only, for awareness only):\n"
-      f"{ts_pretty}\n\n"
       "Produce a deterministic task plan in STRICT JSON only."
     )
 

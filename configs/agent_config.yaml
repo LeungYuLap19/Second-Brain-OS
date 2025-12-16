@@ -36,7 +36,7 @@ agents:
     tools:
       - storage_connector
       - style_template_manager
-    llm_config_key: NoteTaker
+    llm_config_key: Note Taker
 
   # 4. COMMUNICATOR Agent: Email handling
   - name: Communicator

@@ -44,7 +44,7 @@ class Settings:
     return self.ollama_models["AGENT_MODELS"][agent_name]
   
   def get_system_prompt(self, agent_name: str):
-    key = agent_name.lower()
+    key = agent_name.lower().replace(" ", "_")
     return self.system_prompts.get(key)
   
 settings = Settings()

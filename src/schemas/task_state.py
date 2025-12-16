@@ -38,7 +38,6 @@ class TaskState(BaseModel):
   """
   Global workflow state shared across execution.
 
-
   DESIGN GOALS:
   - Extremely simple
   - Easy to reason about

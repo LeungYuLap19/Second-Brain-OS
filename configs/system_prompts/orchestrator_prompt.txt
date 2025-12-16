@@ -239,7 +239,7 @@ Each task MUST:
 
 ---
 
-## OUTPUT FORMAT — EXACT JSON ONLY
+## OUTPUT FORMAT — EXACT JSON ONLY (NON-NEGOTIABLE)
 
 ```
 {{
@@ -255,6 +255,10 @@ Each task MUST:
   ]
 }}
 ```
+
+* DO NOT include any other fields: no id, description, type, subtasks, or extra metadata
+* ONE task per agent
+* Output JSON only, no comments, no markdown
 
 Allowed agent names (exact spelling):
 "Professor", "Researcher", "Note Taker", "Communicator", "Concierge", "Secretary", "Accountant", "Responder"
