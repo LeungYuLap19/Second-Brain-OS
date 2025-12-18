@@ -31,7 +31,6 @@ class Settings:
   
   def __init__(self):
     self.ollama_models = load_yaml(os.path.join(BASE_CONFIG_DIR, "ollama_models.yaml"))
-    self.agent_config = load_yaml(os.path.join(BASE_CONFIG_DIR, "agent_config.yaml"))
     self.system_prompts = load_system_prompts()
 
   def get_base_url(self):

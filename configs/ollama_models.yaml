@@ -9,70 +9,72 @@ EMBEDDING_MODEL:
   base_url: "http://localhost:11434"
 
 # --- AGENT-SPECIFIC LLM SETTINGS ---
-
 AGENT_MODELS:
-  # Orchestrator Agent (The Supervisor)
   Orchestrator:
-    model: "gemma2:9b"
+    model: "gpt-oss:20b"
     temperature: 0.0
     system_prompt_file: "configs/system_prompts/orchestrator_prompt.txt"
-    num_ctx: 2048
+    num_ctx: 32768          # Small but safe — prevents rule truncation, keeps planning fast
+    num_predict: 512       # JSON plans are short; tight cap ensures speed & no bloat
     format: "json"
 
-  # Synthesizer Agent (The Final Voice)
   Synthesizer:
-    model: "gemma2:9b"
+    model: "gpt-oss:20b"
     temperature: 0.5
     system_prompt_file: "configs/system_prompts/synthesizer_prompt.txt"
-    num_ctx: 4096
+    num_ctx: 32768         # Often combines many prior outputs → needs large context
+    num_predict: 4096      # Final responses can be long/rich (recommended increase)
     format: ""
 
   Professor:
-    model: "gemma2:9b"
+    model: "gpt-oss:20b"
     temperature: 0.1
     system_prompt_file: "configs/system_prompts/professor_prompt.txt"
-    num_ctx: 4096
+    num_ctx: 32768         # Handles full documents/PDFs — maximize context
+    num_predict: 4096      # Detailed summaries or answers can be lengthy
     format: ""
+    tools: []
 
   Researcher:
-    model: "gemma2:9b"
+    model: "gpt-oss:20b"
     temperature: 0.3
     system_prompt_file: "configs/system_prompts/researcher_prompt.txt"
-    num_predict: 512
-
-  Note Taker:
-    model: "gemma2:9b"
-    temperature: 0.7
-    system_prompt_file: "configs/system_prompts/note_taker_prompt.txt"
+    num_ctx: 32768         # Long search results + snippets
+    num_predict: 2048      # Structured research summaries — generous but controlled
     format: ""
+    tools: [tavily_search_api, tavily_extract_content]
 
   Communicator:
-    model: "gemma2:9b"
+    model: "gpt-oss:20b"
     temperature: 0.2
     system_prompt_file: "configs/system_prompts/communicator_prompt.txt"
+    num_ctx: 32768         # Email threads can be very long
+    num_predict: 2048      # Summaries + drafted replies
     format: ""
-
-  Concierge:
-    model: "gemma2:9b"
-    temperature: 0.4
-    system_prompt_file: "configs/system_prompts/concierge_prompt.txt"
-    format: ""
+    tools: []
 
   Secretary:
-    model: "gemma2:9b"
+    model: "gpt-oss:20b"
     temperature: 0.1
     system_prompt_file: "configs/system_prompts/secretary_prompt.txt"
+    num_ctx: 16384         # Calendar data over months + some context — 16384 is plenty
+    num_predict: 512       # Confirmations and event lists are concise
     format: ""
+    tools: []
 
   Accountant:
-    model: "gemma2:9b"
+    model: "gpt-oss:20b"
     temperature: 0.05
     system_prompt_file: "configs/system_prompts/accountant_prompt.txt"
+    num_ctx: 8192          # Expense lists are usually short-medium length
+    num_predict: 512       # Reports/summaries are structured and concise
     format: ""
+    tools: []
 
   Responder:
-    model: "gemma2:9b"
+    model: "gpt-oss:20b"
     temperature: 0.6
     system_prompt_file: "configs/system_prompts/responder_prompt.txt"
-    num_ctx: 4096
+    num_ctx: 32768         # Heavy synthesis: combines Professor + Researcher + others
+    num_predict: 3072      # Creative output (notes, plans, code, explanations) — generous
     format: ""

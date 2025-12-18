@@ -30,20 +30,20 @@ class WorkflowManager:
 
     # Add nodes
     for task in plan.tasks:
-        graph.add_node(self._task_node_name(task.step, task.agent), self._make_task_node(task.step))
+      graph.add_node(self._task_node_name(task.step, task.agent), self._make_task_node(task.step))
 
     # Comment out synthesizer for now
     # graph.add_node("synthesizer", self._make_synthesizer_node())
 
     # Add edges
     for index, task in enumerate(plan.tasks):
-        current = self._task_node_name(task.step, task.agent)
+      current = self._task_node_name(task.step, task.agent)
 
-        if index < len(plan.tasks) - 1:
-            next_task = plan.tasks[index + 1]
-            graph.add_edge(current, self._task_node_name(next_task.step, next_task.agent))
-        # else:
-        #     graph.add_edge(current, "synthesizer")  # disabled
+      if index < len(plan.tasks) - 1:
+        next_task = plan.tasks[index + 1]
+        graph.add_edge(current, self._task_node_name(next_task.step, next_task.agent))
+      # else:
+      #     graph.add_edge(current, "synthesizer")  # disabled
 
     # Add START and END
     graph.add_edge(START, self._task_node_name(plan.tasks[0].step, plan.tasks[0].agent))

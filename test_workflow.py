@@ -3,13 +3,13 @@ from src.schemas.task_state import TaskState
 from src.schemas.data_models import OrchestratorPlan
 from src.orchestration.workflow_manager import WorkflowManager
 from src.agents.professor import ProfessorAgent
-from src.agents.note_taker import NoteTakerAgent
 from src.agents.responder import ResponderAgent
 from src.agents.synthesizer import SynthesizerAgent
+from src.agents.researcher import ResearcherAgent
 
 AGENT_REGISTRY = {
   "Professor": ProfessorAgent(),
-  "Note Taker": NoteTakerAgent(),
+  "Researcher": ResearcherAgent(),
   "Responder": ResponderAgent(),
   "Synthesizer": SynthesizerAgent(),
 }
@@ -29,7 +29,7 @@ def hybrid_agent_runner(agent_name: str, input_text: str) -> str:
   print("-------------------------")
 
   if agent:
-      return agent.run(input_text)
+    return agent.run(input_text)
 
   # Fallback mock
   return f"[MOCK OUTPUT from {agent_name}]"
@@ -40,8 +40,6 @@ def hybrid_agent_runner(agent_name: str, input_text: str) -> str:
 def run_workflow(user_request: str):
   orch = OrchestratorAgent()
   plan = orch.run(user_request)
-  print(plan)
-
   plan = OrchestratorPlan.model_validate(plan)
 
   print("\n=== ORCHESTRATOR PLAN ===")
@@ -57,7 +55,7 @@ def run_workflow(user_request: str):
   final_state = app.invoke(initial_state)
 
   for step, task in final_state["tasks"].items():
-      assert task.status.name == "COMPLETED"
+    assert task.status.name == "COMPLETED"
 
   # assert "final.Synthesizer" in final_state["results"]
 
@@ -78,4 +76,5 @@ if __name__ == "__main__":
       print("Exiting Second Brain OS. Goodbye!")
       break
     if user_request:
+  # user_request = ("")
       run_workflow(user_request)

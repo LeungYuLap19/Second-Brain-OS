@@ -8,8 +8,6 @@ second brain OS
 │  ├─ system_prompts
 │  │  ├─ accountant_prompt.txt
 │  │  ├─ communicator_prompt.txt
-│  │  ├─ concierge_prompt.txt
-│  │  ├─ note_taker_prompt.txt
 │  │  ├─ orchestrator_prompt.txt
 │  │  ├─ professor_prompt.txt
 │  │  ├─ researcher_prompt.txt
@@ -25,13 +23,14 @@ second brain OS
 │  │  ├─ notes
 │  │  └─ reports
 │  └─ vectordb
+├─ playground
+│  ├─ cover_letter_gen.ipynb
+│  └─ Leung_Yu_Lap_Resume.pdf
 ├─ src
 │  ├─ agents
 │  │  ├─ accountant.py
 │  │  ├─ base_agent.py
 │  │  ├─ communicator.py
-│  │  ├─ concierge.py
-│  │  ├─ note_taker.py
 │  │  ├─ orchestrator.py
 │  │  ├─ professor.py
 │  │  ├─ researcher.py
@@ -41,17 +40,28 @@ second brain OS
 │  │  ├─ __init__.py
 │  │  └─ __pycache__
 │  │     ├─ base_agent.cpython-313.pyc
+│  │     ├─ note_taker.cpython-313.pyc
 │  │     ├─ orchestrator.cpython-313.pyc
+│  │     ├─ professor.cpython-313.pyc
+│  │     ├─ researcher.cpython-313.pyc
+│  │     ├─ responder.cpython-313.pyc
+│  │     ├─ synthesizer.cpython-313.pyc
 │  │     └─ __init__.cpython-313.pyc
 │  ├─ main.py
 │  ├─ orchestration
 │  │  ├─ memory_manager.py
 │  │  ├─ workflow_manager.py
-│  │  └─ __init.py
+│  │  ├─ __init.py
+│  │  └─ __pycache__
+│  │     └─ workflow_manager.cpython-313.pyc
 │  ├─ schemas
 │  │  ├─ data_models.py
 │  │  ├─ task_state.py
-│  │  └─ __init__.py
+│  │  ├─ __init__.py
+│  │  └─ __pycache__
+│  │     ├─ data_models.cpython-313.pyc
+│  │     ├─ task_state.cpython-313.pyc
+│  │     └─ __init__.cpython-313.pyc
 │  └─ tools
 │     ├─ agenda_summarizer.py
 │     ├─ calendar_api_connector.py
@@ -63,14 +73,19 @@ second brain OS
 │     ├─ expense_ocr.py
 │     ├─ image_to_text.py
 │     ├─ itinerary_formatter.py
+│     ├─ registry.py
 │     ├─ result_filter_ranker.py
 │     ├─ storage_connector.py
 │     ├─ style_template_manager.py
+│     ├─ tavily.py
 │     ├─ vector_store_manager.py
-│     ├─ web_content_extractor.py
-│     ├─ web_search_api.py
-│     └─ __init__.py
+│     ├─ __init__.py
+│     └─ __pycache__
+│        ├─ registry.cpython-313.pyc
+│        ├─ tavily.cpython-313.pyc
+│        └─ __init__.cpython-313.pyc
 ├─ test_orchestrator.py
+├─ test_workflow.py
 └─ venv
    ├─ Include
    │  └─ site
@@ -4081,6 +4096,25 @@ second brain OS
    │     ├─ importlib_resources-6.5.2.dist-info
    │     │  ├─ INSTALLER
    │     │  ├─ LICENSE
+   │     │  ├─ METADATA
+   │     │  ├─ RECORD
+   │     │  ├─ top_level.txt
+   │     │  └─ WHEEL
+   │     ├─ iniconfig
+   │     │  ├─ exceptions.py
+   │     │  ├─ py.typed
+   │     │  ├─ _parse.py
+   │     │  ├─ _version.py
+   │     │  ├─ __init__.py
+   │     │  └─ __pycache__
+   │     │     ├─ exceptions.cpython-313.pyc
+   │     │     ├─ _parse.cpython-313.pyc
+   │     │     ├─ _version.cpython-313.pyc
+   │     │     └─ __init__.cpython-313.pyc
+   │     ├─ iniconfig-2.3.0.dist-info
+   │     │  ├─ INSTALLER
+   │     │  ├─ licenses
+   │     │  │  └─ LICENSE
    │     │  ├─ METADATA
    │     │  ├─ RECORD
    │     │  ├─ top_level.txt
@@ -24645,6 +24679,33 @@ second brain OS
    │     │  ├─ METADATA
    │     │  ├─ RECORD
    │     │  └─ WHEEL
+   │     ├─ pluggy
+   │     │  ├─ py.typed
+   │     │  ├─ _callers.py
+   │     │  ├─ _hooks.py
+   │     │  ├─ _manager.py
+   │     │  ├─ _result.py
+   │     │  ├─ _tracing.py
+   │     │  ├─ _version.py
+   │     │  ├─ _warnings.py
+   │     │  ├─ __init__.py
+   │     │  └─ __pycache__
+   │     │     ├─ _callers.cpython-313.pyc
+   │     │     ├─ _hooks.cpython-313.pyc
+   │     │     ├─ _manager.cpython-313.pyc
+   │     │     ├─ _result.cpython-313.pyc
+   │     │     ├─ _tracing.cpython-313.pyc
+   │     │     ├─ _version.cpython-313.pyc
+   │     │     ├─ _warnings.cpython-313.pyc
+   │     │     └─ __init__.cpython-313.pyc
+   │     ├─ pluggy-1.6.0.dist-info
+   │     │  ├─ INSTALLER
+   │     │  ├─ licenses
+   │     │  │  └─ LICENSE
+   │     │  ├─ METADATA
+   │     │  ├─ RECORD
+   │     │  ├─ top_level.txt
+   │     │  └─ WHEEL
    │     ├─ posthog
    │     │  ├─ ai
    │     │  │  ├─ anthropic
@@ -25458,6 +25519,7 @@ second brain OS
    │     │  ├─ RECORD
    │     │  ├─ top_level.txt
    │     │  └─ WHEEL
+   │     ├─ py.py
    │     ├─ pyasn1
    │     │  ├─ codec
    │     │  │  ├─ ber
@@ -27363,6 +27425,23 @@ second brain OS
    │     │  ├─ LICENSE.md
    │     │  ├─ METADATA
    │     │  ├─ RECORD
+   │     │  ├─ top_level.txt
+   │     │  └─ WHEEL
+   │     ├─ pytest
+   │     │  ├─ py.typed
+   │     │  ├─ __init__.py
+   │     │  ├─ __main__.py
+   │     │  └─ __pycache__
+   │     │     ├─ __init__.cpython-313.pyc
+   │     │     └─ __main__.cpython-313.pyc
+   │     ├─ pytest-9.0.2.dist-info
+   │     │  ├─ entry_points.txt
+   │     │  ├─ INSTALLER
+   │     │  ├─ licenses
+   │     │  │  └─ LICENSE
+   │     │  ├─ METADATA
+   │     │  ├─ RECORD
+   │     │  ├─ REQUESTED
    │     │  ├─ top_level.txt
    │     │  └─ WHEEL
    │     ├─ python_dateutil-2.9.0.post0.dist-info
@@ -59306,6 +59385,163 @@ second brain OS
    │     │  └─ __pycache__
    │     │     ├─ override.cpython-313.pyc
    │     │     └─ __init__.cpython-313.pyc
+   │     ├─ _pytest
+   │     │  ├─ assertion
+   │     │  │  ├─ rewrite.py
+   │     │  │  ├─ truncate.py
+   │     │  │  ├─ util.py
+   │     │  │  ├─ __init__.py
+   │     │  │  └─ __pycache__
+   │     │  │     ├─ rewrite.cpython-313.pyc
+   │     │  │     ├─ truncate.cpython-313.pyc
+   │     │  │     ├─ util.cpython-313.pyc
+   │     │  │     └─ __init__.cpython-313.pyc
+   │     │  ├─ cacheprovider.py
+   │     │  ├─ capture.py
+   │     │  ├─ compat.py
+   │     │  ├─ config
+   │     │  │  ├─ argparsing.py
+   │     │  │  ├─ compat.py
+   │     │  │  ├─ exceptions.py
+   │     │  │  ├─ findpaths.py
+   │     │  │  ├─ __init__.py
+   │     │  │  └─ __pycache__
+   │     │  │     ├─ argparsing.cpython-313.pyc
+   │     │  │     ├─ compat.cpython-313.pyc
+   │     │  │     ├─ exceptions.cpython-313.pyc
+   │     │  │     ├─ findpaths.cpython-313.pyc
+   │     │  │     └─ __init__.cpython-313.pyc
+   │     │  ├─ debugging.py
+   │     │  ├─ deprecated.py
+   │     │  ├─ doctest.py
+   │     │  ├─ faulthandler.py
+   │     │  ├─ fixtures.py
+   │     │  ├─ freeze_support.py
+   │     │  ├─ helpconfig.py
+   │     │  ├─ hookspec.py
+   │     │  ├─ junitxml.py
+   │     │  ├─ legacypath.py
+   │     │  ├─ logging.py
+   │     │  ├─ main.py
+   │     │  ├─ mark
+   │     │  │  ├─ expression.py
+   │     │  │  ├─ structures.py
+   │     │  │  ├─ __init__.py
+   │     │  │  └─ __pycache__
+   │     │  │     ├─ expression.cpython-313.pyc
+   │     │  │     ├─ structures.cpython-313.pyc
+   │     │  │     └─ __init__.cpython-313.pyc
+   │     │  ├─ monkeypatch.py
+   │     │  ├─ nodes.py
+   │     │  ├─ outcomes.py
+   │     │  ├─ pastebin.py
+   │     │  ├─ pathlib.py
+   │     │  ├─ py.typed
+   │     │  ├─ pytester.py
+   │     │  ├─ pytester_assertions.py
+   │     │  ├─ python.py
+   │     │  ├─ python_api.py
+   │     │  ├─ raises.py
+   │     │  ├─ recwarn.py
+   │     │  ├─ reports.py
+   │     │  ├─ runner.py
+   │     │  ├─ scope.py
+   │     │  ├─ setuponly.py
+   │     │  ├─ setupplan.py
+   │     │  ├─ skipping.py
+   │     │  ├─ stash.py
+   │     │  ├─ stepwise.py
+   │     │  ├─ subtests.py
+   │     │  ├─ terminal.py
+   │     │  ├─ terminalprogress.py
+   │     │  ├─ threadexception.py
+   │     │  ├─ timing.py
+   │     │  ├─ tmpdir.py
+   │     │  ├─ tracemalloc.py
+   │     │  ├─ unittest.py
+   │     │  ├─ unraisableexception.py
+   │     │  ├─ warnings.py
+   │     │  ├─ warning_types.py
+   │     │  ├─ _argcomplete.py
+   │     │  ├─ _code
+   │     │  │  ├─ code.py
+   │     │  │  ├─ source.py
+   │     │  │  ├─ __init__.py
+   │     │  │  └─ __pycache__
+   │     │  │     ├─ code.cpython-313.pyc
+   │     │  │     ├─ source.cpython-313.pyc
+   │     │  │     └─ __init__.cpython-313.pyc
+   │     │  ├─ _io
+   │     │  │  ├─ pprint.py
+   │     │  │  ├─ saferepr.py
+   │     │  │  ├─ terminalwriter.py
+   │     │  │  ├─ wcwidth.py
+   │     │  │  ├─ __init__.py
+   │     │  │  └─ __pycache__
+   │     │  │     ├─ pprint.cpython-313.pyc
+   │     │  │     ├─ saferepr.cpython-313.pyc
+   │     │  │     ├─ terminalwriter.cpython-313.pyc
+   │     │  │     ├─ wcwidth.cpython-313.pyc
+   │     │  │     └─ __init__.cpython-313.pyc
+   │     │  ├─ _py
+   │     │  │  ├─ error.py
+   │     │  │  ├─ path.py
+   │     │  │  ├─ __init__.py
+   │     │  │  └─ __pycache__
+   │     │  │     ├─ error.cpython-313.pyc
+   │     │  │     ├─ path.cpython-313.pyc
+   │     │  │     └─ __init__.cpython-313.pyc
+   │     │  ├─ _version.py
+   │     │  ├─ __init__.py
+   │     │  └─ __pycache__
+   │     │     ├─ cacheprovider.cpython-313.pyc
+   │     │     ├─ capture.cpython-313.pyc
+   │     │     ├─ compat.cpython-313.pyc
+   │     │     ├─ debugging.cpython-313.pyc
+   │     │     ├─ deprecated.cpython-313.pyc
+   │     │     ├─ doctest.cpython-313.pyc
+   │     │     ├─ faulthandler.cpython-313.pyc
+   │     │     ├─ fixtures.cpython-313.pyc
+   │     │     ├─ freeze_support.cpython-313.pyc
+   │     │     ├─ helpconfig.cpython-313.pyc
+   │     │     ├─ hookspec.cpython-313.pyc
+   │     │     ├─ junitxml.cpython-313.pyc
+   │     │     ├─ legacypath.cpython-313.pyc
+   │     │     ├─ logging.cpython-313.pyc
+   │     │     ├─ main.cpython-313.pyc
+   │     │     ├─ monkeypatch.cpython-313.pyc
+   │     │     ├─ nodes.cpython-313.pyc
+   │     │     ├─ outcomes.cpython-313.pyc
+   │     │     ├─ pastebin.cpython-313.pyc
+   │     │     ├─ pathlib.cpython-313.pyc
+   │     │     ├─ pytester.cpython-313.pyc
+   │     │     ├─ pytester_assertions.cpython-313.pyc
+   │     │     ├─ python.cpython-313.pyc
+   │     │     ├─ python_api.cpython-313.pyc
+   │     │     ├─ raises.cpython-313.pyc
+   │     │     ├─ recwarn.cpython-313.pyc
+   │     │     ├─ reports.cpython-313.pyc
+   │     │     ├─ runner.cpython-313.pyc
+   │     │     ├─ scope.cpython-313.pyc
+   │     │     ├─ setuponly.cpython-313.pyc
+   │     │     ├─ setupplan.cpython-313.pyc
+   │     │     ├─ skipping.cpython-313.pyc
+   │     │     ├─ stash.cpython-313.pyc
+   │     │     ├─ stepwise.cpython-313.pyc
+   │     │     ├─ subtests.cpython-313.pyc
+   │     │     ├─ terminal.cpython-313.pyc
+   │     │     ├─ terminalprogress.cpython-313.pyc
+   │     │     ├─ threadexception.cpython-313.pyc
+   │     │     ├─ timing.cpython-313.pyc
+   │     │     ├─ tmpdir.cpython-313.pyc
+   │     │     ├─ tracemalloc.cpython-313.pyc
+   │     │     ├─ unittest.cpython-313.pyc
+   │     │     ├─ unraisableexception.cpython-313.pyc
+   │     │     ├─ warnings.cpython-313.pyc
+   │     │     ├─ warning_types.cpython-313.pyc
+   │     │     ├─ _argcomplete.cpython-313.pyc
+   │     │     ├─ _version.cpython-313.pyc
+   │     │     └─ __init__.cpython-313.pyc
    │     ├─ _yaml
    │     │  ├─ __init__.py
    │     │  └─ __pycache__
@@ -59320,6 +59556,7 @@ second brain OS
    │        ├─ jupyter.cpython-313.pyc
    │        ├─ mypy_extensions.cpython-313.pyc
    │        ├─ nest_asyncio.cpython-313.pyc
+   │        ├─ py.cpython-313.pyc
    │        ├─ readline.cpython-313.pyc
    │        ├─ six.cpython-313.pyc
    │        ├─ threadpoolctl.cpython-313.pyc
@@ -59365,6 +59602,7 @@ second brain OS
    │  ├─ pip.exe
    │  ├─ pip3.13.exe
    │  ├─ pip3.exe
+   │  ├─ py.test.exe
    │  ├─ pybase64.exe
    │  ├─ pygmentize.exe
    │  ├─ pymupdf.exe
@@ -59375,6 +59613,7 @@ second brain OS
    │  ├─ pyrsa-priv2pub.exe
    │  ├─ pyrsa-sign.exe
    │  ├─ pyrsa-verify.exe
+   │  ├─ pytest.exe
    │  ├─ python.exe
    │  ├─ pythonw.exe
    │  ├─ tiny-agents.exe
