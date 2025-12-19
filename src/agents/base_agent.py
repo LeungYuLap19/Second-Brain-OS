@@ -4,6 +4,7 @@ from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
 from ..tools.registry import TOOL_REGISTRY
 from langchain.agents import create_agent
+from langgraph.checkpoint.memory import InMemorySaver
 
 class BaseAgent:
   def __init__(self, name: str):
@@ -28,28 +29,32 @@ class BaseAgent:
       if name in TOOL_REGISTRY
     ]
 
-    if self.tools:
-      self.agent = create_agent(
-        model=self.model,
-        tools=self.tools,
-        system_prompt=system_prompt
-      )
-    else:
-      self.prompt = ChatPromptTemplate.from_messages([
-        ("system", system_prompt),
-        ("human", "{input}"),
-      ])
-      self.chain = self.prompt | self.model
+    # Create a checkpointer for short-term memory
+    # In-memory for development
+    self.checkpointer = InMemorySaver()        
 
+    # ALWAYS use create_agent — works perfectly with zero tools
+    self.agent = create_agent(
+      model=self.model,
+      tools=self.tools,
+      system_prompt=system_prompt,
+      checkpointer=self.checkpointer,
+    )
 
-  def run(self, input_text: str):
-    if hasattr(self, "agent"):
-      result = self.agent.invoke(
-        {"messages": [{"role": "user", "content": input_text}]}
-      ) 
-      messages = result["messages"]
-      final_message = messages[-1]
+  def run(self, input_text: str, thread_id: str = "default"):
+    """
+    Run the agent with the given input.
+    
+    :param input_text: User message
+    :param thread_id: Unique identifier for the conversation/session (e.g., user ID)
+    :return: Agent's response string
+    """
+    config = {"configurable": {"thread_id": thread_id}}
 
-      return final_message.content
-    else:
-      return self.chain.invoke({"input": input_text}).content
+    result = self.agent.invoke(
+      {"messages": [{"role": "user", "content": input_text}]},
+      config=config,
+    )
+
+    final_message = result["messages"][-1]
+    return final_message.content

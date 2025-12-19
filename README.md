@@ -2,7 +2,6 @@
 ```
 second brain OS
 ├─ configs
-│  ├─ agent_config.yaml
 │  ├─ ollama_models.yaml
 │  ├─ settings_loader.py
 │  ├─ system_prompts
@@ -15480,6 +15479,29 @@ second brain OS
    │     │  ├─ METADATA
    │     │  ├─ RECORD
    │     │  └─ WHEEL
+   │     ├─ langchain_ollama
+   │     │  ├─ chat_models.py
+   │     │  ├─ embeddings.py
+   │     │  ├─ llms.py
+   │     │  ├─ py.typed
+   │     │  ├─ _compat.py
+   │     │  ├─ _utils.py
+   │     │  ├─ __init__.py
+   │     │  └─ __pycache__
+   │     │     ├─ chat_models.cpython-313.pyc
+   │     │     ├─ embeddings.cpython-313.pyc
+   │     │     ├─ llms.cpython-313.pyc
+   │     │     ├─ _compat.cpython-313.pyc
+   │     │     ├─ _utils.cpython-313.pyc
+   │     │     └─ __init__.cpython-313.pyc
+   │     ├─ langchain_ollama-1.0.1.dist-info
+   │     │  ├─ INSTALLER
+   │     │  ├─ licenses
+   │     │  │  └─ LICENSE
+   │     │  ├─ METADATA
+   │     │  ├─ RECORD
+   │     │  ├─ REQUESTED
+   │     │  └─ WHEEL
    │     ├─ langchain_openai
    │     │  ├─ chat_models
    │     │  │  ├─ azure.py
@@ -19668,6 +19690,24 @@ second brain OS
    │     │  ├─ METADATA
    │     │  ├─ RECORD
    │     │  ├─ top_level.txt
+   │     │  └─ WHEEL
+   │     ├─ ollama
+   │     │  ├─ py.typed
+   │     │  ├─ _client.py
+   │     │  ├─ _types.py
+   │     │  ├─ _utils.py
+   │     │  ├─ __init__.py
+   │     │  └─ __pycache__
+   │     │     ├─ _client.cpython-313.pyc
+   │     │     ├─ _types.cpython-313.pyc
+   │     │     ├─ _utils.cpython-313.pyc
+   │     │     └─ __init__.cpython-313.pyc
+   │     ├─ ollama-0.6.1.dist-info
+   │     │  ├─ INSTALLER
+   │     │  ├─ licenses
+   │     │  │  └─ LICENSE
+   │     │  ├─ METADATA
+   │     │  ├─ RECORD
    │     │  └─ WHEEL
    │     ├─ onnxruntime
    │     │  ├─ backend

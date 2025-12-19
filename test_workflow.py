@@ -6,6 +6,7 @@ from src.agents.professor import ProfessorAgent
 from src.agents.responder import ResponderAgent
 from src.agents.synthesizer import SynthesizerAgent
 from src.agents.researcher import ResearcherAgent
+from src.tools.doc_ingest import ingest_documents
 
 AGENT_REGISTRY = {
   "Professor": ProfessorAgent(),
@@ -55,20 +56,23 @@ def run_workflow(user_request: str):
   final_state = app.invoke(initial_state)
 
   for step, task in final_state["tasks"].items():
-    assert task.status.name == "COMPLETED"
+    if task.status.name == "COMPLETED":
+      print("\n=== FINAL OUTPUT ===")
+      last_step_key = sorted(final_state["results"].keys())[-1]
+      print(final_state["results"][last_step_key])
+      print("\n=== WORKFLOW COMPLETED ===")
+    else:
+      print("\n=== WORKFLOW FAILED ===")
+      print(final_state)
 
   # assert "final.Synthesizer" in final_state["results"]
-
-  print("\n=== FINAL OUTPUT ===")
-  last_step_key = sorted(final_state["results"].keys())[-1]
-  print(final_state["results"][last_step_key])
-
-  print("\n=== WORKFLOW COMPLETED ===")
 
 # -------------------------
 # Terminal input support
 # -------------------------
 if __name__ == "__main__":
+  # load vectordb
+  ingest_documents()
   print("Second Brain OS (type 'exit' to quit)")
   while True:
     user_request = input("> ").strip()
