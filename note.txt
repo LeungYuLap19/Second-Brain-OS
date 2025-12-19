@@ -1,0 +1,2 @@
+do not implement in memory to _resolve_inputs first. 
+i need to restructure run_workflow into workflow_manager

@@ -27,21 +27,16 @@ class BaseAgent:
       TOOL_REGISTRY[name]
       for name in tool_names
       if name in TOOL_REGISTRY
-    ]
-
-    # Create a checkpointer for short-term memory
-    # In-memory for development
-    self.checkpointer = InMemorySaver()        
+    ]       
 
     # ALWAYS use create_agent — works perfectly with zero tools
     self.agent = create_agent(
       model=self.model,
       tools=self.tools,
       system_prompt=system_prompt,
-      checkpointer=self.checkpointer,
     )
 
-  def run(self, input_text: str, thread_id: str = "default"):
+  def run(self, input_text: str):
     """
     Run the agent with the given input.
     
@@ -49,11 +44,9 @@ class BaseAgent:
     :param thread_id: Unique identifier for the conversation/session (e.g., user ID)
     :return: Agent's response string
     """
-    config = {"configurable": {"thread_id": thread_id}}
 
     result = self.agent.invoke(
       {"messages": [{"role": "user", "content": input_text}]},
-      config=config,
     )
 
     final_message = result["messages"][-1]

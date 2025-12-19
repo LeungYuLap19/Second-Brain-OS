@@ -1,9 +1,11 @@
 from __future__ import annotations
 from typing import Callable
-from datetime import datetime, timezone
 from langgraph.graph import StateGraph, START, END
+from langgraph.checkpoint.memory import InMemorySaver
 from src.schemas.task_state import TaskState, TaskStatus
 from src.schemas.data_models import OrchestratorPlan
+from src.agents.orchestrator import OrchestratorAgent
+import traceback
 
 class WorkflowManager:
   """
@@ -20,17 +22,52 @@ class WorkflowManager:
     agent_runner(agent_name: str, input_text: str) -> output_text: str
     """
     self.agent_runner = agent_runner
+    self.checkpointer = InMemorySaver()
+    self.thread_id = "default"
 
   # -------------------------
-  # Graph construction with OrchestratorPlan
+  # Public API
   # ------------------------- 
-  def build_graph(self, plan: OrchestratorPlan) -> StateGraph:
+  def run(self, user_request: str) -> TaskState:
+    """
+    High-level workflow execution entrypoint.
+    """
+    orchestrator = OrchestratorAgent()
+
+    memory_context = self._get_state_memory(limit=5)
+    orchestrator_input = (
+        f"User request:\n{user_request}\n\n"
+        f"Memory (last 5 states):\n{memory_context}"
+    )
+
+    raw_plan = orchestrator.run(orchestrator_input)
+    plan = OrchestratorPlan.model_validate(raw_plan)
+
+    state = TaskState()
+    state.init_from_plan(plan=plan, user_request=user_request)
+
+    app = self._compile_with_memory(plan)
+
+    final_state = app.invoke(
+        state,
+        {"configurable": {"thread_id": self.thread_id}}
+    )
+
+    return final_state
+
+  # -------------------------
+  # Graph construction
+  # ------------------------- 
+  def _build_graph(self, plan: OrchestratorPlan) -> StateGraph:
     # Define global workflow state for the graph
     graph = StateGraph(TaskState)
 
     # Add nodes
     for task in plan.tasks:
-      graph.add_node(self._task_node_name(task.step, task.agent), self._make_task_node(task.step))
+      graph.add_node(
+        self._task_node_name(task.step, task.agent), 
+        self._make_task_node(task.step)
+      )
 
     # Comment out synthesizer for now
     # graph.add_node("synthesizer", self._make_synthesizer_node())
@@ -54,14 +91,15 @@ class WorkflowManager:
     graph.add_edge(self._task_node_name(last_task.step, last_task.agent), END)
 
     return graph
+  
+  def _compile_with_memory(self, plan: OrchestratorPlan) -> StateGraph:
+    graph = self._build_graph(plan)
+    return graph.compile(checkpointer=self.checkpointer)
 
   # -------------------------
   # Node factories
   # -------------------------
   def _make_task_node(self, step: int):
-    """
-    node update TaskState
-    """
     def node(state: TaskState) -> TaskState:
       # current task 
       task = state.tasks[step]
@@ -81,41 +119,14 @@ class WorkflowManager:
         state.mark_completed(step, output_key, output)
 
       except Exception as e:
+        tb = traceback.format_exc()
+
+        print("\n🔥 TASK FAILED TRACEBACK 🔥")
+        print(tb)
+        print("🔥 END TRACEBACK 🔥\n")
         # mark current task failed
         state.mark_failed(step, str(e))
 
-      return state
-    
-    return node
-  
-  def _make_synthesizer_node(self):
-    """
-    node have to update TaskState
-    """
-    def node(state: TaskState) -> TaskState:
-      # Extract all task outputs
-      ordered_outputs = []
-      for step in sorted(state.tasks.keys()):
-        task = state.tasks[step]
-        if task.status == TaskStatus.COMPLETED and task.output:
-          ordered_outputs.append(task.output)
-          
-      # Combine all task outputs
-      combined_context = "\n\n".join(ordered_outputs)
-      input_text = (
-        f"Instruction: \nSynthesize all task outputs into a final user-facing response.\n\n"
-        f"Context: \n{combined_context}"
-      )
-
-      try:
-        # Run synthesizer
-        final_output = self.agent_runner("Synthesizer", input_text)
-      except Exception as e:
-        final_output = str(e)
-
-      # Manually add synthesizer result
-      state.results["final.Synthesizer"] = final_output
-      state.updated_at = datetime.now(timezone.utc)
       return state
     
     return node
@@ -139,12 +150,105 @@ class WorkflowManager:
         raise ValueError(f"Missing input: {key}")
 
     context = "\n\n".join(resolved)
+    memory_context = self._get_state_memory()
 
     return (
       f"Instruction: \n{instruction}\n\n"
+      f"Memory (last 5 states):\n{memory_context}\n\n"
       f"Context:\n{context}"
     )
+  
+  def _get_state_memory(self, limit: int = 5) -> str:
+    """
+    Fetch the last N meaningful checkpointed TaskStates for this thread.
+    """
+    checkpoints = list(
+        self.checkpointer.list(
+            config={"configurable": {"thread_id": self.thread_id}}
+        )
+    )
+
+    seen_requests = set()
+    seen_outputs = set()
+    blocks = []
+    count = 0
+
+    for cp in reversed(checkpoints):
+        state = cp.checkpoint.get("channel_values", {})
+        block = []
+
+        # ---- user request (deduped) ----
+        user_request = state.get("user_request")
+        if user_request and user_request not in seen_requests:
+            seen_requests.add(user_request)
+            block.append(f"User request:\n{user_request}")
+
+        # ---- task outputs (deduped) ----
+        tasks = state.get("tasks", {})
+        for step, task in tasks.items():
+            if task.status == TaskStatus.COMPLETED and task.output:
+                key = (step, task.agent, task.output)
+                if key not in seen_outputs:
+                    seen_outputs.add(key)
+                    block.append(
+                        f"Step {step} ({task.agent}) output:\n{task.output}"
+                    )
+
+        if not block:
+            continue
+
+        count += 1
+        blocks.append(f"[Previous state #{count}]")
+        blocks.extend(block)
+
+        if count >= limit:
+            break
+
+    if not blocks:
+        return "[No prior meaningful memory]"
+
+    return "\n\n".join(reversed(blocks))
 
   @staticmethod
   def _task_node_name(step: int, agent_name: str) -> str:
     return f"step{step}.{agent_name}"
+  
+
+
+
+
+  # -------------------------
+  # archived
+  # -------------------------
+
+  # def _make_synthesizer_node(self):
+  #   """
+  #   Optional synthesizer node (currently unused).
+  #   """
+  #   def node(state: TaskState) -> TaskState:
+  #     # Extract all task outputs
+  #     ordered_outputs = []
+  #     for step in sorted(state.tasks.keys()):
+  #       task = state.tasks[step]
+  #       if task.status == TaskStatus.COMPLETED and task.output:
+  #         ordered_outputs.append(task.output)
+          
+  #     # Combine all task outputs
+  #     combined_context = "\n\n".join(ordered_outputs)
+  #     input_text = (
+  #       f"Instruction: \nSynthesize all task outputs into a final user-facing response.\n\n"
+  #       f"Context: \n{combined_context}"
+  #     )
+
+  #     try:
+  #       # Run synthesizer
+  #       final_output = self.agent_runner("Synthesizer", input_text)
+  #     except Exception as e:
+  #       final_output = str(e)
+
+  #     # Manually add synthesizer result
+  #     state.results["final.Synthesizer"] = final_output
+  #     state.updated_at = datetime.now(timezone.utc)
+  #     return state
+    
+  #   return node
