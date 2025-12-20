@@ -6,6 +6,7 @@ from src.schemas.task_state import TaskState, TaskStatus
 from src.schemas.data_models import OrchestratorPlan
 from src.agents.orchestrator import OrchestratorAgent
 import traceback
+import json
 
 class WorkflowManager:
   """
@@ -24,6 +25,7 @@ class WorkflowManager:
     self.agent_runner = agent_runner
     self.checkpointer = InMemorySaver()
     self.thread_id = "default"
+    self.app = None
 
   # -------------------------
   # Public API
@@ -36,21 +38,33 @@ class WorkflowManager:
 
     memory_context = self._get_state_memory(limit=5)
     orchestrator_input = (
-        f"User request:\n{user_request}\n\n"
-        f"Memory (last 5 states):\n{memory_context}"
+      f"User request:\n{user_request}\n\n"
+      f"Memory (JSON, read-only, do NOT use as execution inputs):\n{memory_context}"
+      f"""
+CRITICAL RULES (READ THIS LAST):
+- Each plan is executed in a FRESH state. Step numbers restart from 1 every turn.
+- NEVER reference output keys like "step1.Researcher" from previous memory
+      """
     )
 
     raw_plan = orchestrator.run(orchestrator_input)
     plan = OrchestratorPlan.model_validate(raw_plan)
 
+    print(
+      f"--- ORCHESTRATOR PLAN ---\n"
+      f"{orchestrator_input}\n"
+      f"{plan}\n"
+      f"-------------------------"
+    )
+
     state = TaskState()
     state.init_from_plan(plan=plan, user_request=user_request)
 
-    app = self._compile_with_memory(plan)
+    self.app = self._compile_with_memory(plan)
 
-    final_state = app.invoke(
-        state,
-        {"configurable": {"thread_id": self.thread_id}}
+    final_state = self.app.invoke(
+      state,
+      {"configurable": {"thread_id": self.thread_id}}
     )
 
     return final_state
@@ -120,7 +134,6 @@ class WorkflowManager:
 
       except Exception as e:
         tb = traceback.format_exc()
-
         print("\n🔥 TASK FAILED TRACEBACK 🔥")
         print(tb)
         print("🔥 END TRACEBACK 🔥\n")
@@ -154,60 +167,64 @@ class WorkflowManager:
 
     return (
       f"Instruction: \n{instruction}\n\n"
-      f"Memory (last 5 states):\n{memory_context}\n\n"
+      f"Memory (JSON, read-only):\n{memory_context}\n\n"
       f"Context:\n{context}"
     )
   
+  import json
+
   def _get_state_memory(self, limit: int = 5) -> str:
-    """
-    Fetch the last N meaningful checkpointed TaskStates for this thread.
-    """
-    checkpoints = list(
-        self.checkpointer.list(
-            config={"configurable": {"thread_id": self.thread_id}}
-        )
-    )
+    if not self.app: return 
+    config = {"configurable": {"thread_id": self.thread_id}}
+    history = list(self.app.get_state_history(config)) 
 
-    seen_requests = set()
-    seen_outputs = set()
-    blocks = []
-    count = 0
+    memory_entries = []
+    seen_requests = set()  # Deduplicate by user_request + output presence
 
-    for cp in reversed(checkpoints):
-        state = cp.checkpoint.get("channel_values", {})
-        block = []
-
-        # ---- user request (deduped) ----
-        user_request = state.get("user_request")
-        if user_request and user_request not in seen_requests:
-            seen_requests.add(user_request)
-            block.append(f"User request:\n{user_request}")
-
-        # ---- task outputs (deduped) ----
-        tasks = state.get("tasks", {})
-        for step, task in tasks.items():
-            if task.status == TaskStatus.COMPLETED and task.output:
-                key = (step, task.agent, task.output)
-                if key not in seen_outputs:
-                    seen_outputs.add(key)
-                    block.append(
-                        f"Step {step} ({task.agent}) output:\n{task.output}"
-                    )
-
-        if not block:
+    for snapshot in history:
+        if not snapshot.values:
             continue
 
-        count += 1
-        blocks.append(f"[Previous state #{count}]")
-        blocks.extend(block)
+        entry = {}
+        user_request = snapshot.values.get("user_request")
+        if not user_request:
+            continue
 
-        if count >= limit:
+        # Only add if this request hasn't been seen yet
+        key = user_request
+        if key in seen_requests:
+            continue
+
+        entry["user_request"] = user_request
+
+        # Add task outputs if completed
+        tasks_summary = []
+        tasks = snapshot.values.get("tasks", {})
+        for step, task in tasks.items():
+            if task.status == TaskStatus.COMPLETED and task.output:
+                summary = task.output[:200] + "..." if len(task.output) > 200 else task.output
+                tasks_summary.append({"agent": task.agent, "summary": summary})
+
+        if tasks_summary:
+            entry["task_outputs"] = tasks_summary
+
+        # Add results for completeness
+        results = snapshot.values.get("results", {})
+        if results:
+            entry["results"] = results
+
+        if entry:
+            memory_entries.append(entry)
+            seen_requests.add(key)
+
+        if len(memory_entries) >= limit:
             break
 
-    if not blocks:
-        return "[No prior meaningful memory]"
+    if not memory_entries:
+        return "{}"
 
-    return "\n\n".join(reversed(blocks))
+    # Reverse to oldest first
+    return json.dumps({"memory": list(reversed(memory_entries))}, indent=2)
 
   @staticmethod
   def _task_node_name(step: int, agent_name: str) -> str:

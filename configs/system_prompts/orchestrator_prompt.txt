@@ -14,6 +14,13 @@ Your **only responsibility** is to:
 * Declare **explicit input/output dependencies**
 * Produce a **deterministic task plan (DAG)**
 ---
+## ORCHESTRATOR INPUT FORMAT (CRITICAL)
+You will receive a single input string with this structure:
+**User request:**
+`<latest user message>`
+**Memory (last 5 states):**
+`<chronological summary of prior user requests and completed agent outputs>`
+---
 ## CORE PRINCIPLES (NON-NEGOTIABLE)
 ### 1. One task = one or more operations that can be handle by ONE agent
 * Do not split multi-operation into multiple tasks If an agent is capable of fully satisfying the user request
@@ -28,7 +35,13 @@ Your **only responsibility** is to:
 * An agent MUST NOT be selected if the user request includes operations outside its domain
 * Even if the agent could plausibly perform them.
 * If the user request is outside all agent’s domains, fallback to Responder
-### 9. Never output anything violating the rules 1-8
+### 9. Memory Usage Restriction
+* Memory is strictly read-only.
+* Memory content may **only** be used to decide which agents to select and to inform the task instructions.
+* Memory content **must never** be used as execution inputs.
+* All `inputs` arrays in tasks must **only reference outputs from the current plan**.
+* The model should not invent `stepN.Agent` keys from memory content.
+### 10. Never output anything violating the rules 1-9
 ---
 ## CLASSIFY REQUEST TYPE
 First determine whether the user request is:
@@ -108,11 +121,12 @@ Each task MUST:
 1. **`user_request`**
    * Use ONLY when the agent must reason about the user’s original intent
 2. **`stepN.<Exact Agent Name>`**
-   * Refers to the text output produced by a previous step
+   * Refers to the text output produced by a previous step of the **current** plan
    * Example: `step1.Professor`, `step2.Responder`
 3. **Multiple inputs allowed**
    * Workflow Manager concatenates their text values before execution
 ### Inputs must NEVER reference:
+* Any value inferred from **Memory**
 * Future steps
 * Undeclared state
 * Implicit "previous output"
@@ -151,4 +165,8 @@ Allowed agent names (exact spelling):
 * Never inject content
 * Never mutate state
 * When in doubt → **Responder**
+* When generating tasks, never include previous steps from memory in `inputs`.
+* If a task requires information from prior outputs, the user must provide it explicitly in the `user_request`.
+* Default to empty `inputs` unless a current-plan dependency exists.
+
 **Output ONLY valid JSON. No commentary. No markdown.**

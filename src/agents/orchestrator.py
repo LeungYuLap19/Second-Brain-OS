@@ -33,7 +33,7 @@ class OrchestratorAgent(BaseAgent):
     Calls the underlying LLM and returns a parsed task plan.
     Automatically retries once if JSON is malformed.
     """
-    raw_output = super().run(self._prepare_input(user_input))
+    raw_output = super().run(user_input)
 
     parsed = self._safe_parse_json(raw_output)
     if parsed is not None:
@@ -78,15 +78,15 @@ class OrchestratorAgent(BaseAgent):
   # -------------------------------------
   # Helper: Build LLM input
   # -------------------------------------
-  def _prepare_input(self, user_input: str) -> str:
-    """
-    Constructs the prompt for the Orchestrator LLM.
-    """
-    return (
-      "User request:\n"
-      f"{user_input}\n\n"
-      "Produce a deterministic task plan in STRICT JSON only."
-    )
+  # def _prepare_input(self, user_input: str) -> str:
+  #   """
+  #   Constructs the prompt for the Orchestrator LLM.
+  #   """
+  #   return (
+  #     "User request:\n"
+  #     f"{user_input}\n\n"
+  #     "Produce a deterministic task plan in STRICT JSON only."
+  #   )
 
   # -------------------------------------
   # Helper: Safe JSON parse

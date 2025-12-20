@@ -1,6 +1,7 @@
 from langchain.tools import tool
 from langchain_community.vectorstores import FAISS
 from langchain_ollama import OllamaEmbeddings
+import traceback
 
 VECTORSTORE_PATH = "data/vectordb"
 embeddings = OllamaEmbeddings(model="nomic-embed-text")
@@ -25,6 +26,10 @@ def search_documents(query: str, k: int = 5) -> str:
         allow_dangerous_deserialization=True
       )
     except Exception as e:
+      tb = traceback.format_exc()
+      print("\n🔥 TASK FAILED TRACEBACK 🔥")
+      print(tb)
+      print("🔥 END TRACEBACK 🔥\n")
       return f"Error loading document database: {str(e)}. Make sure documents have been ingested."
 
     retriever = vectorstore.as_retriever(search_kwargs={"k": k})

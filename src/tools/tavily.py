@@ -2,12 +2,13 @@ from tavily import TavilyClient
 from langchain_core.tools import tool
 import os
 from dotenv import load_dotenv
+import traceback
 
 load_dotenv()
 tavily_client = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
 
 @tool
-def tavily_search_api(query: str, max_results: int = 5, search_depth: str = "advanced") -> str:
+def tavily_search_api(query: str, max_results: int = 3) -> str:
   """
   Perform a web search using Tavily and return structured results.
   Returns a string or JSON-serializable dict with title + snippet.
@@ -16,13 +17,17 @@ def tavily_search_api(query: str, max_results: int = 5, search_depth: str = "adv
     response = tavily_client.search(
       query=query,
       max_results=max_results,
-      search_depth=search_depth
+      search_depth="basic"
     )
     # "results" usually contains an array of search results with title, url, and snippet/content
     if "results" in response:
       return response["results"]
     return response
   except Exception as e:
+    tb = traceback.format_exc()
+    print("\n🔥 TASK FAILED TRACEBACK 🔥")
+    print(tb)
+    print("🔥 END TRACEBACK 🔥\n")
     return {"error": str(e)}
   
 @tool
@@ -41,4 +46,8 @@ def tavily_extract_content(urls: list[str], include_images: bool = False) -> str
       return response["results"]
     return response
   except Exception as e:
+    tb = traceback.format_exc()
+    print("\n🔥 TASK FAILED TRACEBACK 🔥")
+    print(tb)
+    print("🔥 END TRACEBACK 🔥\n")
     return {"error": str(e)}
