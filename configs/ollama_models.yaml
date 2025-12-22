@@ -51,7 +51,7 @@ AGENT_MODELS:
     num_ctx: 32768         # Email threads can be very long
     num_predict: 2048      # Summaries + drafted replies
     format: ""
-    tools: []
+    tools: [get_emails]
 
   Secretary:
     model: "qwen2.5:7b"

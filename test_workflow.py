@@ -1,13 +1,15 @@
-from src.orchestration.workflow_manager import WorkflowManager
+from src.managers.workflow_manager import WorkflowManager
 from src.agents.professor import ProfessorAgent
 from src.agents.responder import ResponderAgent
 from src.agents.researcher import ResearcherAgent
-from src.tools.doc_ingest import ingest_documents
+from src.agents.communicator import CommunicatorAgent
+from src.utils.helper import ingest_documents
 
 AGENT_REGISTRY = {
   "Professor": ProfessorAgent(),
   "Researcher": ResearcherAgent(),
   "Responder": ResponderAgent(),
+  "Communicator": CommunicatorAgent()
 }
 
 def hybrid_agent_runner(agent_name: str, input_text: str) -> str:

@@ -15,13 +15,7 @@ second brain OS
 │  │  └─ synthesizer_prompt.txt
 │  └─ __pycache__
 │     └─ settings_loader.cpython-313.pyc
-├─ data
-│  ├─ input
-│  ├─ output
-│  │  ├─ itineraries
-│  │  ├─ notes
-│  │  └─ reports
-│  └─ vectordb
+├─ gmail.py
 ├─ playground
 │  ├─ cover_letter_gen.ipynb
 │  └─ Leung_Yu_Lap_Resume.pdf
@@ -41,49 +35,39 @@ second brain OS
 │  │     ├─ base_agent.cpython-313.pyc
 │  │     ├─ note_taker.cpython-313.pyc
 │  │     ├─ orchestrator.cpython-313.pyc
+│  │     ├─ plan_reviewer.cpython-313.pyc
 │  │     ├─ professor.cpython-313.pyc
 │  │     ├─ researcher.cpython-313.pyc
 │  │     ├─ responder.cpython-313.pyc
 │  │     ├─ synthesizer.cpython-313.pyc
 │  │     └─ __init__.cpython-313.pyc
 │  ├─ main.py
-│  ├─ orchestration
-│  │  ├─ memory_manager.py
+│  ├─ managers
 │  │  ├─ workflow_manager.py
 │  │  ├─ __init.py
 │  │  └─ __pycache__
 │  │     └─ workflow_manager.cpython-313.pyc
 │  ├─ schemas
-│  │  ├─ data_models.py
 │  │  ├─ task_state.py
 │  │  ├─ __init__.py
 │  │  └─ __pycache__
-│  │     ├─ data_models.cpython-313.pyc
 │  │     ├─ task_state.cpython-313.pyc
 │  │     └─ __init__.cpython-313.pyc
-│  └─ tools
-│     ├─ agenda_summarizer.py
-│     ├─ calendar_api_connector.py
-│     ├─ data_logging_tool.py
-│     ├─ document_parser.py
-│     ├─ email_draft_tool.py
-│     ├─ email_parser.py
-│     ├─ embedding_model.py
-│     ├─ expense_ocr.py
-│     ├─ image_to_text.py
-│     ├─ itinerary_formatter.py
-│     ├─ registry.py
-│     ├─ result_filter_ranker.py
-│     ├─ storage_connector.py
-│     ├─ style_template_manager.py
-│     ├─ tavily.py
-│     ├─ vector_store_manager.py
-│     ├─ __init__.py
-│     └─ __pycache__
-│        ├─ registry.cpython-313.pyc
-│        ├─ tavily.cpython-313.pyc
-│        └─ __init__.cpython-313.pyc
-├─ test_orchestrator.py
+│  ├─ tools
+│  │  ├─ doc_tools.py
+│  │  ├─ gmail.py
+│  │  ├─ registry.py
+│  │  ├─ tavily.py
+│  │  ├─ __init__.py
+│  │  └─ __pycache__
+│  │     ├─ doc_ingest.cpython-313.pyc
+│  │     ├─ doc_tools.cpython-313.pyc
+│  │     ├─ registry.cpython-313.pyc
+│  │     ├─ tavily.cpython-313.pyc
+│  │     └─ __init__.cpython-313.pyc
+│  └─ utils
+│     ├─ helper.py
+│     └─ __init__.py
 ├─ test_workflow.py
 └─ venv
    ├─ Include
@@ -407,6 +391,10 @@ second brain OS
    │     │  ├─ RECORD
    │     │  ├─ top_level.txt
    │     │  └─ WHEEL
+   │     ├─ apiclient
+   │     │  ├─ __init__.py
+   │     │  └─ __pycache__
+   │     │     └─ __init__.cpython-313.pyc
    │     ├─ asttokens
    │     │  ├─ astroid_compat.py
    │     │  ├─ asttokens.py
@@ -964,10 +952,6 @@ second brain OS
    │     │  │  │     ├─ test_collection_configuration.cpython-313.pyc
    │     │  │  │     └─ test_configurations.cpython-313.pyc
    │     │  │  ├─ conftest.py
-   │     │  │  ├─ data_loader
-   │     │  │  │  ├─ test_data_loader.py
-   │     │  │  │  └─ __pycache__
-   │     │  │  │     └─ test_data_loader.cpython-313.pyc
    │     │  │  ├─ db
    │     │  │  │  ├─ test_log_purge.py
    │     │  │  │  └─ __pycache__
@@ -1081,7 +1065,6 @@ second brain OS
    │     │  ├─ utils
    │     │  │  ├─ async_to_sync.py
    │     │  │  ├─ batch_utils.py
-   │     │  │  ├─ data_loaders.py
    │     │  │  ├─ delete_file.py
    │     │  │  ├─ directory.py
    │     │  │  ├─ distance_functions.py
@@ -1165,7 +1148,6 @@ second brain OS
    │     │  │  └─ __pycache__
    │     │  │     ├─ async_to_sync.cpython-313.pyc
    │     │  │     ├─ batch_utils.cpython-313.pyc
-   │     │  │     ├─ data_loaders.cpython-313.pyc
    │     │  │     ├─ delete_file.cpython-313.pyc
    │     │  │     ├─ directory.cpython-313.pyc
    │     │  │     ├─ distance_functions.cpython-313.pyc
@@ -1319,33 +1301,6 @@ second brain OS
    │     │  ├─ INSTALLER
    │     │  ├─ licenses
    │     │  │  └─ LICENSE
-   │     │  ├─ METADATA
-   │     │  ├─ RECORD
-   │     │  └─ WHEEL
-   │     ├─ dataclasses_json
-   │     │  ├─ api.py
-   │     │  ├─ cfg.py
-   │     │  ├─ core.py
-   │     │  ├─ mm.py
-   │     │  ├─ py.typed
-   │     │  ├─ stringcase.py
-   │     │  ├─ undefined.py
-   │     │  ├─ utils.py
-   │     │  ├─ __init__.py
-   │     │  ├─ __pycache__
-   │     │  │  ├─ api.cpython-313.pyc
-   │     │  │  ├─ cfg.cpython-313.pyc
-   │     │  │  ├─ core.cpython-313.pyc
-   │     │  │  ├─ mm.cpython-313.pyc
-   │     │  │  ├─ stringcase.cpython-313.pyc
-   │     │  │  ├─ undefined.cpython-313.pyc
-   │     │  │  ├─ utils.cpython-313.pyc
-   │     │  │  ├─ __init__.cpython-313.pyc
-   │     │  │  └─ __version__.cpython-313.pyc
-   │     │  └─ __version__.py
-   │     ├─ dataclasses_json-0.6.7.dist-info
-   │     │  ├─ INSTALLER
-   │     │  ├─ LICENSE
    │     │  ├─ METADATA
    │     │  ├─ RECORD
    │     │  └─ WHEEL
@@ -2073,12 +2028,83 @@ second brain OS
    │     │  ├─ RECORD
    │     │  ├─ top_level.txt
    │     │  └─ WHEEL
+   │     ├─ faiss
+   │     │  ├─ array_conversions.py
+   │     │  ├─ class_wrappers.py
+   │     │  ├─ contrib
+   │     │  │  ├─ big_batch_search.py
+   │     │  │  ├─ client_server.py
+   │     │  │  ├─ clustering.py
+   │     │  │  ├─ evaluation.py
+   │     │  │  ├─ exhaustive_search.py
+   │     │  │  ├─ factory_tools.py
+   │     │  │  ├─ inspect_tools.py
+   │     │  │  ├─ ivf_tools.py
+   │     │  │  ├─ ondisk.py
+   │     │  │  ├─ rpc.py
+   │     │  │  ├─ torch
+   │     │  │  │  ├─ clustering.py
+   │     │  │  │  ├─ quantization.py
+   │     │  │  │  ├─ __init__.py
+   │     │  │  │  └─ __pycache__
+   │     │  │  │     ├─ clustering.cpython-313.pyc
+   │     │  │  │     ├─ quantization.cpython-313.pyc
+   │     │  │  │     └─ __init__.cpython-313.pyc
+   │     │  │  ├─ torch_utils.py
+   │     │  │  ├─ vecs_io.py
+   │     │  │  ├─ __init__.py
+   │     │  │  └─ __pycache__
+   │     │  │     ├─ big_batch_search.cpython-313.pyc
+   │     │  │     ├─ client_server.cpython-313.pyc
+   │     │  │     ├─ clustering.cpython-313.pyc
+   │     │  │     ├─ evaluation.cpython-313.pyc
+   │     │  │     ├─ exhaustive_search.cpython-313.pyc
+   │     │  │     ├─ factory_tools.cpython-313.pyc
+   │     │  │     ├─ inspect_tools.cpython-313.pyc
+   │     │  │     ├─ ivf_tools.cpython-313.pyc
+   │     │  │     ├─ ondisk.cpython-313.pyc
+   │     │  │     ├─ rpc.cpython-313.pyc
+   │     │  │     ├─ torch_utils.cpython-313.pyc
+   │     │  │     ├─ vecs_io.cpython-313.pyc
+   │     │  │     └─ __init__.cpython-313.pyc
+   │     │  ├─ extra_wrappers.py
+   │     │  ├─ gpu_wrappers.py
+   │     │  ├─ loader.py
+   │     │  ├─ swigfaiss.lib
+   │     │  ├─ swigfaiss.py
+   │     │  ├─ swigfaiss_avx2.lib
+   │     │  ├─ swigfaiss_avx2.py
+   │     │  ├─ _swigfaiss.pyd
+   │     │  ├─ _swigfaiss_avx2.pyd
+   │     │  ├─ __init__.py
+   │     │  └─ __pycache__
+   │     │     ├─ array_conversions.cpython-313.pyc
+   │     │     ├─ class_wrappers.cpython-313.pyc
+   │     │     ├─ extra_wrappers.cpython-313.pyc
+   │     │     ├─ gpu_wrappers.cpython-313.pyc
+   │     │     ├─ loader.cpython-313.pyc
+   │     │     ├─ swigfaiss.cpython-313.pyc
+   │     │     ├─ swigfaiss_avx2.cpython-313.pyc
+   │     │     └─ __init__.cpython-313.pyc
+   │     ├─ faiss_cpu-1.13.1.dist-info
+   │     │  ├─ DELVEWHEEL
+   │     │  ├─ INSTALLER
+   │     │  ├─ licenses
+   │     │  │  ├─ LICENSE
+   │     │  │  └─ NOTICE
+   │     │  ├─ METADATA
+   │     │  ├─ RECORD
+   │     │  ├─ REQUESTED
+   │     │  └─ WHEEL
+   │     ├─ faiss_cpu.libs
+   │     │  ├─ libopenblas-e824cf9fc22e5949807ce995a32e413a.dll
+   │     │  ├─ msvcp140-975ec633d307f20c7b156c1f18deb92c.dll
+   │     │  └─ vcomp140-55aba23cdcd6484fbb06f4155b8ca75a.dll
    │     ├─ fastapi
    │     │  ├─ applications.py
    │     │  ├─ background.py
    │     │  ├─ cli.py
    │     │  ├─ concurrency.py
-   │     │  ├─ datastructures.py
    │     │  ├─ dependencies
    │     │  │  ├─ models.py
    │     │  │  ├─ utils.py
@@ -2171,7 +2197,6 @@ second brain OS
    │     │     ├─ background.cpython-313.pyc
    │     │     ├─ cli.cpython-313.pyc
    │     │     ├─ concurrency.cpython-313.pyc
-   │     │     ├─ datastructures.cpython-313.pyc
    │     │     ├─ encoders.cpython-313.pyc
    │     │     ├─ exceptions.cpython-313.pyc
    │     │     ├─ exception_handlers.cpython-313.pyc
@@ -2302,7 +2327,6 @@ second brain OS
    │     │  │  ├─ cache_metadata.py
    │     │  │  ├─ chained.py
    │     │  │  ├─ dask.py
-   │     │  │  ├─ data.py
    │     │  │  ├─ dbfs.py
    │     │  │  ├─ dirfs.py
    │     │  │  ├─ ftp.py
@@ -2330,7 +2354,6 @@ second brain OS
    │     │  │     ├─ cache_metadata.cpython-313.pyc
    │     │  │     ├─ chained.cpython-313.pyc
    │     │  │     ├─ dask.cpython-313.pyc
-   │     │  │     ├─ data.cpython-313.pyc
    │     │  │     ├─ dbfs.cpython-313.pyc
    │     │  │     ├─ dirfs.cpython-313.pyc
    │     │  │     ├─ ftp.cpython-313.pyc
@@ -2600,6 +2623,145 @@ second brain OS
    │     │  │     ├─ system_parameter_pb2.cpython-313.pyc
    │     │  │     ├─ usage_pb2.cpython-313.pyc
    │     │  │     └─ visibility_pb2.cpython-313.pyc
+   │     │  ├─ api_core
+   │     │  │  ├─ bidi.py
+   │     │  │  ├─ bidi_async.py
+   │     │  │  ├─ bidi_base.py
+   │     │  │  ├─ client_info.py
+   │     │  │  ├─ client_logging.py
+   │     │  │  ├─ client_options.py
+   │     │  │  ├─ datetime_helpers.py
+   │     │  │  ├─ exceptions.py
+   │     │  │  ├─ extended_operation.py
+   │     │  │  ├─ future
+   │     │  │  │  ├─ async_future.py
+   │     │  │  │  ├─ base.py
+   │     │  │  │  ├─ polling.py
+   │     │  │  │  ├─ _helpers.py
+   │     │  │  │  ├─ __init__.py
+   │     │  │  │  └─ __pycache__
+   │     │  │  │     ├─ async_future.cpython-313.pyc
+   │     │  │  │     ├─ base.cpython-313.pyc
+   │     │  │  │     ├─ polling.cpython-313.pyc
+   │     │  │  │     ├─ _helpers.cpython-313.pyc
+   │     │  │  │     └─ __init__.cpython-313.pyc
+   │     │  │  ├─ gapic_v1
+   │     │  │  │  ├─ client_info.py
+   │     │  │  │  ├─ config.py
+   │     │  │  │  ├─ config_async.py
+   │     │  │  │  ├─ method.py
+   │     │  │  │  ├─ method_async.py
+   │     │  │  │  ├─ routing_header.py
+   │     │  │  │  ├─ __init__.py
+   │     │  │  │  └─ __pycache__
+   │     │  │  │     ├─ client_info.cpython-313.pyc
+   │     │  │  │     ├─ config.cpython-313.pyc
+   │     │  │  │     ├─ config_async.cpython-313.pyc
+   │     │  │  │     ├─ method.cpython-313.pyc
+   │     │  │  │     ├─ method_async.cpython-313.pyc
+   │     │  │  │     ├─ routing_header.cpython-313.pyc
+   │     │  │  │     └─ __init__.cpython-313.pyc
+   │     │  │  ├─ general_helpers.py
+   │     │  │  ├─ grpc_helpers.py
+   │     │  │  ├─ grpc_helpers_async.py
+   │     │  │  ├─ iam.py
+   │     │  │  ├─ operation.py
+   │     │  │  ├─ operations_v1
+   │     │  │  │  ├─ abstract_operations_base_client.py
+   │     │  │  │  ├─ abstract_operations_client.py
+   │     │  │  │  ├─ operations_async_client.py
+   │     │  │  │  ├─ operations_client.py
+   │     │  │  │  ├─ operations_client_config.py
+   │     │  │  │  ├─ operations_rest_client_async.py
+   │     │  │  │  ├─ pagers.py
+   │     │  │  │  ├─ pagers_async.py
+   │     │  │  │  ├─ pagers_base.py
+   │     │  │  │  ├─ transports
+   │     │  │  │  │  ├─ base.py
+   │     │  │  │  │  ├─ rest.py
+   │     │  │  │  │  ├─ rest_asyncio.py
+   │     │  │  │  │  ├─ __init__.py
+   │     │  │  │  │  └─ __pycache__
+   │     │  │  │  │     ├─ base.cpython-313.pyc
+   │     │  │  │  │     ├─ rest.cpython-313.pyc
+   │     │  │  │  │     ├─ rest_asyncio.cpython-313.pyc
+   │     │  │  │  │     └─ __init__.cpython-313.pyc
+   │     │  │  │  ├─ __init__.py
+   │     │  │  │  └─ __pycache__
+   │     │  │  │     ├─ abstract_operations_base_client.cpython-313.pyc
+   │     │  │  │     ├─ abstract_operations_client.cpython-313.pyc
+   │     │  │  │     ├─ operations_async_client.cpython-313.pyc
+   │     │  │  │     ├─ operations_client.cpython-313.pyc
+   │     │  │  │     ├─ operations_client_config.cpython-313.pyc
+   │     │  │  │     ├─ operations_rest_client_async.cpython-313.pyc
+   │     │  │  │     ├─ pagers.cpython-313.pyc
+   │     │  │  │     ├─ pagers_async.cpython-313.pyc
+   │     │  │  │     ├─ pagers_base.cpython-313.pyc
+   │     │  │  │     └─ __init__.cpython-313.pyc
+   │     │  │  ├─ operation_async.py
+   │     │  │  ├─ page_iterator.py
+   │     │  │  ├─ page_iterator_async.py
+   │     │  │  ├─ path_template.py
+   │     │  │  ├─ protobuf_helpers.py
+   │     │  │  ├─ py.typed
+   │     │  │  ├─ rest_helpers.py
+   │     │  │  ├─ rest_streaming.py
+   │     │  │  ├─ rest_streaming_async.py
+   │     │  │  ├─ retry
+   │     │  │  │  ├─ retry_base.py
+   │     │  │  │  ├─ retry_streaming.py
+   │     │  │  │  ├─ retry_streaming_async.py
+   │     │  │  │  ├─ retry_unary.py
+   │     │  │  │  ├─ retry_unary_async.py
+   │     │  │  │  ├─ __init__.py
+   │     │  │  │  └─ __pycache__
+   │     │  │  │     ├─ retry_base.cpython-313.pyc
+   │     │  │  │     ├─ retry_streaming.cpython-313.pyc
+   │     │  │  │     ├─ retry_streaming_async.cpython-313.pyc
+   │     │  │  │     ├─ retry_unary.cpython-313.pyc
+   │     │  │  │     ├─ retry_unary_async.cpython-313.pyc
+   │     │  │  │     └─ __init__.cpython-313.pyc
+   │     │  │  ├─ retry_async.py
+   │     │  │  ├─ timeout.py
+   │     │  │  ├─ universe.py
+   │     │  │  ├─ version.py
+   │     │  │  ├─ version_header.py
+   │     │  │  ├─ _python_package_support.py
+   │     │  │  ├─ _python_version_support.py
+   │     │  │  ├─ _rest_streaming_base.py
+   │     │  │  ├─ __init__.py
+   │     │  │  └─ __pycache__
+   │     │  │     ├─ bidi.cpython-313.pyc
+   │     │  │     ├─ bidi_async.cpython-313.pyc
+   │     │  │     ├─ bidi_base.cpython-313.pyc
+   │     │  │     ├─ client_info.cpython-313.pyc
+   │     │  │     ├─ client_logging.cpython-313.pyc
+   │     │  │     ├─ client_options.cpython-313.pyc
+   │     │  │     ├─ datetime_helpers.cpython-313.pyc
+   │     │  │     ├─ exceptions.cpython-313.pyc
+   │     │  │     ├─ extended_operation.cpython-313.pyc
+   │     │  │     ├─ general_helpers.cpython-313.pyc
+   │     │  │     ├─ grpc_helpers.cpython-313.pyc
+   │     │  │     ├─ grpc_helpers_async.cpython-313.pyc
+   │     │  │     ├─ iam.cpython-313.pyc
+   │     │  │     ├─ operation.cpython-313.pyc
+   │     │  │     ├─ operation_async.cpython-313.pyc
+   │     │  │     ├─ page_iterator.cpython-313.pyc
+   │     │  │     ├─ page_iterator_async.cpython-313.pyc
+   │     │  │     ├─ path_template.cpython-313.pyc
+   │     │  │     ├─ protobuf_helpers.cpython-313.pyc
+   │     │  │     ├─ rest_helpers.cpython-313.pyc
+   │     │  │     ├─ rest_streaming.cpython-313.pyc
+   │     │  │     ├─ rest_streaming_async.cpython-313.pyc
+   │     │  │     ├─ retry_async.cpython-313.pyc
+   │     │  │     ├─ timeout.cpython-313.pyc
+   │     │  │     ├─ universe.cpython-313.pyc
+   │     │  │     ├─ version.cpython-313.pyc
+   │     │  │     ├─ version_header.cpython-313.pyc
+   │     │  │     ├─ _python_package_support.cpython-313.pyc
+   │     │  │     ├─ _python_version_support.cpython-313.pyc
+   │     │  │     ├─ _rest_streaming_base.cpython-313.pyc
+   │     │  │     └─ __init__.cpython-313.pyc
    │     │  ├─ auth
    │     │  │  ├─ aio
    │     │  │  │  ├─ credentials.py
@@ -2681,7 +2843,6 @@ second brain OS
    │     │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  ├─ version.py
    │     │  │  ├─ _cloud_sdk.py
-   │     │  │  ├─ _constants.py
    │     │  │  ├─ _credentials_async.py
    │     │  │  ├─ _credentials_base.py
    │     │  │  ├─ _default.py
@@ -2711,7 +2872,6 @@ second brain OS
    │     │  │     ├─ pluggable.cpython-313.pyc
    │     │  │     ├─ version.cpython-313.pyc
    │     │  │     ├─ _cloud_sdk.cpython-313.pyc
-   │     │  │     ├─ _constants.cpython-313.pyc
    │     │  │     ├─ _credentials_async.cpython-313.pyc
    │     │  │     ├─ _credentials_base.cpython-313.pyc
    │     │  │     ├─ _default.cpython-313.pyc
@@ -3032,6 +3192,588 @@ second brain OS
    │     │  │     └─ timeofday_pb2.cpython-313.pyc
    │     │  └─ _upb
    │     │     └─ _message.pyd
+   │     ├─ googleapiclient
+   │     │  ├─ channel.py
+   │     │  ├─ discovery.py
+   │     │  ├─ discovery_cache
+   │     │  │  ├─ appengine_memcache.py
+   │     │  │  ├─ base.py
+   │     │  │  ├─ documents
+   │     │  │  │  ├─ abusiveexperiencereport.v1.json
+   │     │  │  │  ├─ acceleratedmobilepageurl.v1.json
+   │     │  │  │  ├─ accessapproval.v1.json
+   │     │  │  │  ├─ accesscontextmanager.v1.json
+   │     │  │  │  ├─ accesscontextmanager.v1beta.json
+   │     │  │  │  ├─ acmedns.v1.json
+   │     │  │  │  ├─ addressvalidation.v1.json
+   │     │  │  │  ├─ adexchangebuyer.v1.2.json
+   │     │  │  │  ├─ adexchangebuyer.v1.3.json
+   │     │  │  │  ├─ adexchangebuyer.v1.4.json
+   │     │  │  │  ├─ adexchangebuyer2.v2beta1.json
+   │     │  │  │  ├─ adexperiencereport.v1.json
+   │     │  │  │  ├─ admin.datatransferv1.json
+   │     │  │  │  ├─ admin.datatransfer_v1.json
+   │     │  │  │  ├─ admin.directoryv1.json
+   │     │  │  │  ├─ admin.directory_v1.json
+   │     │  │  │  ├─ admin.reportsv1.json
+   │     │  │  │  ├─ admin.reports_v1.json
+   │     │  │  │  ├─ admob.v1.json
+   │     │  │  │  ├─ admob.v1beta.json
+   │     │  │  │  ├─ adsense.v2.json
+   │     │  │  │  ├─ adsensehost.v4.1.json
+   │     │  │  │  ├─ adsenseplatform.v1.json
+   │     │  │  │  ├─ adsenseplatform.v1alpha.json
+   │     │  │  │  ├─ advisorynotifications.v1.json
+   │     │  │  │  ├─ aiplatform.v1.json
+   │     │  │  │  ├─ aiplatform.v1beta1.json
+   │     │  │  │  ├─ airquality.v1.json
+   │     │  │  │  ├─ alertcenter.v1beta1.json
+   │     │  │  │  ├─ alloydb.v1.json
+   │     │  │  │  ├─ alloydb.v1alpha.json
+   │     │  │  │  ├─ alloydb.v1beta.json
+   │     │  │  │  ├─ analytics.v3.json
+   │     │  │  │  ├─ analyticsadmin.v1alpha.json
+   │     │  │  │  ├─ analyticsadmin.v1beta.json
+   │     │  │  │  ├─ analyticsdata.v1alpha.json
+   │     │  │  │  ├─ analyticsdata.v1beta.json
+   │     │  │  │  ├─ analyticshub.v1.json
+   │     │  │  │  ├─ analyticshub.v1beta1.json
+   │     │  │  │  ├─ analyticsreporting.v4.json
+   │     │  │  │  ├─ androiddeviceprovisioning.v1.json
+   │     │  │  │  ├─ androidenterprise.v1.json
+   │     │  │  │  ├─ androidmanagement.v1.json
+   │     │  │  │  ├─ androidpublisher.v3.json
+   │     │  │  │  ├─ apigateway.v1.json
+   │     │  │  │  ├─ apigateway.v1beta.json
+   │     │  │  │  ├─ apigee.v1.json
+   │     │  │  │  ├─ apigeeregistry.v1.json
+   │     │  │  │  ├─ apihub.v1.json
+   │     │  │  │  ├─ apikeys.v2.json
+   │     │  │  │  ├─ apim.v1alpha.json
+   │     │  │  │  ├─ appengine.v1.json
+   │     │  │  │  ├─ appengine.v1alpha.json
+   │     │  │  │  ├─ appengine.v1beta.json
+   │     │  │  │  ├─ appengine.v1beta4.json
+   │     │  │  │  ├─ appengine.v1beta5.json
+   │     │  │  │  ├─ apphub.v1.json
+   │     │  │  │  ├─ apphub.v1alpha.json
+   │     │  │  │  ├─ area120tables.v1alpha1.json
+   │     │  │  │  ├─ areainsights.v1.json
+   │     │  │  │  ├─ artifactregistry.v1.json
+   │     │  │  │  ├─ artifactregistry.v1beta1.json
+   │     │  │  │  ├─ artifactregistry.v1beta2.json
+   │     │  │  │  ├─ assuredworkloads.v1.json
+   │     │  │  │  ├─ assuredworkloads.v1beta1.json
+   │     │  │  │  ├─ authorizedbuyersmarketplace.v1.json
+   │     │  │  │  ├─ authorizedbuyersmarketplace.v1alpha.json
+   │     │  │  │  ├─ authorizedbuyersmarketplace.v1beta.json
+   │     │  │  │  ├─ backupdr.v1.json
+   │     │  │  │  ├─ baremetalsolution.v1.json
+   │     │  │  │  ├─ baremetalsolution.v1alpha1.json
+   │     │  │  │  ├─ baremetalsolution.v2.json
+   │     │  │  │  ├─ batch.v1.json
+   │     │  │  │  ├─ beyondcorp.v1.json
+   │     │  │  │  ├─ beyondcorp.v1alpha.json
+   │     │  │  │  ├─ biglake.v1.json
+   │     │  │  │  ├─ bigquery.v2.json
+   │     │  │  │  ├─ bigqueryconnection.v1.json
+   │     │  │  │  ├─ bigqueryconnection.v1beta1.json
+   │     │  │  │  ├─ bigquerydatapolicy.v1.json
+   │     │  │  │  ├─ bigquerydatapolicy.v2.json
+   │     │  │  │  ├─ bigquerydatatransfer.v1.json
+   │     │  │  │  ├─ bigqueryreservation.v1.json
+   │     │  │  │  ├─ bigqueryreservation.v1alpha2.json
+   │     │  │  │  ├─ bigqueryreservation.v1beta1.json
+   │     │  │  │  ├─ bigtableadmin.v1.json
+   │     │  │  │  ├─ bigtableadmin.v2.json
+   │     │  │  │  ├─ billingbudgets.v1.json
+   │     │  │  │  ├─ billingbudgets.v1beta1.json
+   │     │  │  │  ├─ binaryauthorization.v1.json
+   │     │  │  │  ├─ binaryauthorization.v1beta1.json
+   │     │  │  │  ├─ blockchainnodeengine.v1.json
+   │     │  │  │  ├─ blogger.v2.json
+   │     │  │  │  ├─ blogger.v3.json
+   │     │  │  │  ├─ books.v1.json
+   │     │  │  │  ├─ businessprofileperformance.v1.json
+   │     │  │  │  ├─ calendar.v3.json
+   │     │  │  │  ├─ certificatemanager.v1.json
+   │     │  │  │  ├─ chat.v1.json
+   │     │  │  │  ├─ checks.v1alpha.json
+   │     │  │  │  ├─ chromemanagement.v1.json
+   │     │  │  │  ├─ chromepolicy.v1.json
+   │     │  │  │  ├─ chromeuxreport.v1.json
+   │     │  │  │  ├─ chromewebstore.v1.1.json
+   │     │  │  │  ├─ chromewebstore.v2.json
+   │     │  │  │  ├─ civicinfo.v2.json
+   │     │  │  │  ├─ classroom.v1.json
+   │     │  │  │  ├─ cloudasset.v1.json
+   │     │  │  │  ├─ cloudasset.v1beta1.json
+   │     │  │  │  ├─ cloudasset.v1p1beta1.json
+   │     │  │  │  ├─ cloudasset.v1p4beta1.json
+   │     │  │  │  ├─ cloudasset.v1p5beta1.json
+   │     │  │  │  ├─ cloudasset.v1p7beta1.json
+   │     │  │  │  ├─ cloudbilling.v1.json
+   │     │  │  │  ├─ cloudbilling.v1beta.json
+   │     │  │  │  ├─ cloudbuild.v1.json
+   │     │  │  │  ├─ cloudbuild.v1alpha1.json
+   │     │  │  │  ├─ cloudbuild.v1alpha2.json
+   │     │  │  │  ├─ cloudbuild.v1beta1.json
+   │     │  │  │  ├─ cloudbuild.v2.json
+   │     │  │  │  ├─ cloudchannel.v1.json
+   │     │  │  │  ├─ cloudcommerceprocurement.v1.json
+   │     │  │  │  ├─ cloudcontrolspartner.v1.json
+   │     │  │  │  ├─ cloudcontrolspartner.v1beta.json
+   │     │  │  │  ├─ clouddebugger.v2.json
+   │     │  │  │  ├─ clouddeploy.v1.json
+   │     │  │  │  ├─ clouderrorreporting.v1beta1.json
+   │     │  │  │  ├─ cloudfunctions.v1.json
+   │     │  │  │  ├─ cloudfunctions.v2.json
+   │     │  │  │  ├─ cloudfunctions.v2alpha.json
+   │     │  │  │  ├─ cloudfunctions.v2beta.json
+   │     │  │  │  ├─ cloudidentity.v1.json
+   │     │  │  │  ├─ cloudidentity.v1beta1.json
+   │     │  │  │  ├─ cloudiot.v1.json
+   │     │  │  │  ├─ cloudkms.v1.json
+   │     │  │  │  ├─ cloudlocationfinder.v1.json
+   │     │  │  │  ├─ cloudlocationfinder.v1alpha.json
+   │     │  │  │  ├─ cloudprofiler.v2.json
+   │     │  │  │  ├─ cloudresourcemanager.v1.json
+   │     │  │  │  ├─ cloudresourcemanager.v1beta1.json
+   │     │  │  │  ├─ cloudresourcemanager.v2.json
+   │     │  │  │  ├─ cloudresourcemanager.v2beta1.json
+   │     │  │  │  ├─ cloudresourcemanager.v3.json
+   │     │  │  │  ├─ cloudscheduler.v1.json
+   │     │  │  │  ├─ cloudscheduler.v1beta1.json
+   │     │  │  │  ├─ cloudsearch.v1.json
+   │     │  │  │  ├─ cloudshell.v1.json
+   │     │  │  │  ├─ cloudshell.v1alpha1.json
+   │     │  │  │  ├─ cloudsupport.v2.json
+   │     │  │  │  ├─ cloudsupport.v2beta.json
+   │     │  │  │  ├─ cloudtasks.v2.json
+   │     │  │  │  ├─ cloudtasks.v2beta2.json
+   │     │  │  │  ├─ cloudtasks.v2beta3.json
+   │     │  │  │  ├─ cloudtrace.v1.json
+   │     │  │  │  ├─ cloudtrace.v2.json
+   │     │  │  │  ├─ cloudtrace.v2beta1.json
+   │     │  │  │  ├─ composer.v1.json
+   │     │  │  │  ├─ composer.v1beta1.json
+   │     │  │  │  ├─ compute.alpha.json
+   │     │  │  │  ├─ compute.beta.json
+   │     │  │  │  ├─ compute.v1.json
+   │     │  │  │  ├─ config.v1.json
+   │     │  │  │  ├─ connectors.v1.json
+   │     │  │  │  ├─ connectors.v2.json
+   │     │  │  │  ├─ contactcenteraiplatform.v1alpha1.json
+   │     │  │  │  ├─ contactcenterinsights.v1.json
+   │     │  │  │  ├─ container.v1.json
+   │     │  │  │  ├─ container.v1beta1.json
+   │     │  │  │  ├─ containeranalysis.v1.json
+   │     │  │  │  ├─ containeranalysis.v1alpha1.json
+   │     │  │  │  ├─ containeranalysis.v1beta1.json
+   │     │  │  │  ├─ content.v2.1.json
+   │     │  │  │  ├─ content.v2.json
+   │     │  │  │  ├─ contentwarehouse.v1.json
+   │     │  │  │  ├─ css.v1.json
+   │     │  │  │  ├─ customsearch.v1.json
+   │     │  │  │  ├─ deploymentmanager.alpha.json
+   │     │  │  │  ├─ deploymentmanager.v2.json
+   │     │  │  │  ├─ deploymentmanager.v2beta.json
+   │     │  │  │  ├─ developerconnect.v1.json
+   │     │  │  │  ├─ dfareporting.v3.3.json
+   │     │  │  │  ├─ dfareporting.v3.4.json
+   │     │  │  │  ├─ dfareporting.v3.5.json
+   │     │  │  │  ├─ dfareporting.v4.json
+   │     │  │  │  ├─ dfareporting.v5.json
+   │     │  │  │  ├─ dialogflow.v2.json
+   │     │  │  │  ├─ dialogflow.v2beta1.json
+   │     │  │  │  ├─ dialogflow.v3.json
+   │     │  │  │  ├─ dialogflow.v3beta1.json
+   │     │  │  │  ├─ digitalassetlinks.v1.json
+   │     │  │  │  ├─ discovery.v1.json
+   │     │  │  │  ├─ discoveryengine.v1.json
+   │     │  │  │  ├─ discoveryengine.v1alpha.json
+   │     │  │  │  ├─ discoveryengine.v1beta.json
+   │     │  │  │  ├─ displayvideo.v1.json
+   │     │  │  │  ├─ displayvideo.v2.json
+   │     │  │  │  ├─ displayvideo.v3.json
+   │     │  │  │  ├─ displayvideo.v4.json
+   │     │  │  │  ├─ dlp.v2.json
+   │     │  │  │  ├─ dns.v1.json
+   │     │  │  │  ├─ dns.v1beta2.json
+   │     │  │  │  ├─ dns.v2.json
+   │     │  │  │  ├─ docs.v1.json
+   │     │  │  │  ├─ documentai.v1.json
+   │     │  │  │  ├─ documentai.v1beta2.json
+   │     │  │  │  ├─ documentai.v1beta3.json
+   │     │  │  │  ├─ domains.v1.json
+   │     │  │  │  ├─ domains.v1alpha2.json
+   │     │  │  │  ├─ domains.v1beta1.json
+   │     │  │  │  ├─ domainsrdap.v1.json
+   │     │  │  │  ├─ doubleclickbidmanager.v1.1.json
+   │     │  │  │  ├─ doubleclickbidmanager.v1.json
+   │     │  │  │  ├─ doubleclickbidmanager.v2.json
+   │     │  │  │  ├─ doubleclicksearch.v2.json
+   │     │  │  │  ├─ drive.v2.json
+   │     │  │  │  ├─ drive.v3.json
+   │     │  │  │  ├─ driveactivity.v2.json
+   │     │  │  │  ├─ drivelabels.v2.json
+   │     │  │  │  ├─ drivelabels.v2beta.json
+   │     │  │  │  ├─ essentialcontacts.v1.json
+   │     │  │  │  ├─ eventarc.v1.json
+   │     │  │  │  ├─ eventarc.v1beta1.json
+   │     │  │  │  ├─ factchecktools.v1alpha1.json
+   │     │  │  │  ├─ fcm.v1.json
+   │     │  │  │  ├─ fcmdata.v1beta1.json
+   │     │  │  │  ├─ file.v1.json
+   │     │  │  │  ├─ file.v1beta1.json
+   │     │  │  │  ├─ firebase.v1beta1.json
+   │     │  │  │  ├─ firebaseappcheck.v1.json
+   │     │  │  │  ├─ firebaseappcheck.v1beta.json
+   │     │  │  │  ├─ firebaseappdistribution.v1.json
+   │     │  │  │  ├─ firebaseappdistribution.v1alpha.json
+   │     │  │  │  ├─ firebaseapphosting.v1.json
+   │     │  │  │  ├─ firebaseapphosting.v1beta.json
+   │     │  │  │  ├─ firebasedatabase.v1beta.json
+   │     │  │  │  ├─ firebasedataconnect.v1.json
+   │     │  │  │  ├─ firebasedataconnect.v1beta.json
+   │     │  │  │  ├─ firebasedynamiclinks.v1.json
+   │     │  │  │  ├─ firebasehosting.v1.json
+   │     │  │  │  ├─ firebasehosting.v1beta1.json
+   │     │  │  │  ├─ firebaseml.v1.json
+   │     │  │  │  ├─ firebaseml.v1beta2.json
+   │     │  │  │  ├─ firebaseml.v2beta.json
+   │     │  │  │  ├─ firebaserules.v1.json
+   │     │  │  │  ├─ firebasestorage.v1beta.json
+   │     │  │  │  ├─ firestore.v1.json
+   │     │  │  │  ├─ firestore.v1beta1.json
+   │     │  │  │  ├─ firestore.v1beta2.json
+   │     │  │  │  ├─ fitness.v1.json
+   │     │  │  │  ├─ forms.v1.json
+   │     │  │  │  ├─ games.v1.json
+   │     │  │  │  ├─ gamesConfiguration.v1configuration.json
+   │     │  │  │  ├─ gameservices.v1.json
+   │     │  │  │  ├─ gameservices.v1beta.json
+   │     │  │  │  ├─ gamesManagement.v1management.json
+   │     │  │  │  ├─ genomics.v1.json
+   │     │  │  │  ├─ genomics.v1alpha2.json
+   │     │  │  │  ├─ genomics.v2alpha1.json
+   │     │  │  │  ├─ gkebackup.v1.json
+   │     │  │  │  ├─ gkehub.v1.json
+   │     │  │  │  ├─ gkehub.v1alpha.json
+   │     │  │  │  ├─ gkehub.v1alpha2.json
+   │     │  │  │  ├─ gkehub.v1beta.json
+   │     │  │  │  ├─ gkehub.v1beta1.json
+   │     │  │  │  ├─ gkehub.v2.json
+   │     │  │  │  ├─ gkehub.v2alpha.json
+   │     │  │  │  ├─ gkehub.v2beta.json
+   │     │  │  │  ├─ gkeonprem.v1.json
+   │     │  │  │  ├─ gmail.v1.json
+   │     │  │  │  ├─ gmailpostmastertools.v1.json
+   │     │  │  │  ├─ gmailpostmastertools.v1beta1.json
+   │     │  │  │  ├─ groupsmigration.v1.json
+   │     │  │  │  ├─ groupssettings.v1.json
+   │     │  │  │  ├─ healthcare.v1.json
+   │     │  │  │  ├─ healthcare.v1beta1.json
+   │     │  │  │  ├─ homegraph.v1.json
+   │     │  │  │  ├─ iam.v1.json
+   │     │  │  │  ├─ iam.v2.json
+   │     │  │  │  ├─ iam.v2beta.json
+   │     │  │  │  ├─ iamcredentials.v1.json
+   │     │  │  │  ├─ iap.v1.json
+   │     │  │  │  ├─ iap.v1beta1.json
+   │     │  │  │  ├─ ideahub.v1alpha.json
+   │     │  │  │  ├─ ideahub.v1beta.json
+   │     │  │  │  ├─ identitytoolkit.v1.json
+   │     │  │  │  ├─ identitytoolkit.v2.json
+   │     │  │  │  ├─ identitytoolkit.v3.json
+   │     │  │  │  ├─ ids.v1.json
+   │     │  │  │  ├─ index.json
+   │     │  │  │  ├─ indexing.v3.json
+   │     │  │  │  ├─ integrations.v1.json
+   │     │  │  │  ├─ integrations.v1alpha.json
+   │     │  │  │  ├─ jobs.v2.json
+   │     │  │  │  ├─ jobs.v3.json
+   │     │  │  │  ├─ jobs.v3p1beta1.json
+   │     │  │  │  ├─ jobs.v4.json
+   │     │  │  │  ├─ keep.v1.json
+   │     │  │  │  ├─ kgsearch.v1.json
+   │     │  │  │  ├─ kmsinventory.v1.json
+   │     │  │  │  ├─ language.v1.json
+   │     │  │  │  ├─ language.v1beta1.json
+   │     │  │  │  ├─ language.v1beta2.json
+   │     │  │  │  ├─ language.v2.json
+   │     │  │  │  ├─ libraryagent.v1.json
+   │     │  │  │  ├─ licensing.v1.json
+   │     │  │  │  ├─ lifesciences.v2beta.json
+   │     │  │  │  ├─ localservices.v1.json
+   │     │  │  │  ├─ logging.v2.json
+   │     │  │  │  ├─ looker.v1.json
+   │     │  │  │  ├─ managedidentities.v1.json
+   │     │  │  │  ├─ managedidentities.v1alpha1.json
+   │     │  │  │  ├─ managedidentities.v1beta1.json
+   │     │  │  │  ├─ managedkafka.v1.json
+   │     │  │  │  ├─ manufacturers.v1.json
+   │     │  │  │  ├─ marketingplatformadmin.v1alpha.json
+   │     │  │  │  ├─ meet.v2.json
+   │     │  │  │  ├─ memcache.v1.json
+   │     │  │  │  ├─ memcache.v1beta2.json
+   │     │  │  │  ├─ merchantapi.accounts_v1.json
+   │     │  │  │  ├─ merchantapi.accounts_v1beta.json
+   │     │  │  │  ├─ merchantapi.conversions_v1.json
+   │     │  │  │  ├─ merchantapi.conversions_v1beta.json
+   │     │  │  │  ├─ merchantapi.datasources_v1.json
+   │     │  │  │  ├─ merchantapi.datasources_v1beta.json
+   │     │  │  │  ├─ merchantapi.inventories_v1.json
+   │     │  │  │  ├─ merchantapi.inventories_v1beta.json
+   │     │  │  │  ├─ merchantapi.issueresolution_v1.json
+   │     │  │  │  ├─ merchantapi.issueresolution_v1beta.json
+   │     │  │  │  ├─ merchantapi.lfp_v1.json
+   │     │  │  │  ├─ merchantapi.lfp_v1beta.json
+   │     │  │  │  ├─ merchantapi.notifications_v1.json
+   │     │  │  │  ├─ merchantapi.notifications_v1beta.json
+   │     │  │  │  ├─ merchantapi.ordertracking_v1.json
+   │     │  │  │  ├─ merchantapi.ordertracking_v1beta.json
+   │     │  │  │  ├─ merchantapi.products_v1.json
+   │     │  │  │  ├─ merchantapi.products_v1beta.json
+   │     │  │  │  ├─ merchantapi.promotions_v1.json
+   │     │  │  │  ├─ merchantapi.promotions_v1beta.json
+   │     │  │  │  ├─ merchantapi.quota_v1.json
+   │     │  │  │  ├─ merchantapi.quota_v1beta.json
+   │     │  │  │  ├─ merchantapi.reports_v1.json
+   │     │  │  │  ├─ merchantapi.reports_v1beta.json
+   │     │  │  │  ├─ merchantapi.reviews_v1beta.json
+   │     │  │  │  ├─ metastore.v1.json
+   │     │  │  │  ├─ metastore.v1alpha.json
+   │     │  │  │  ├─ metastore.v1beta.json
+   │     │  │  │  ├─ metastore.v2.json
+   │     │  │  │  ├─ metastore.v2alpha.json
+   │     │  │  │  ├─ metastore.v2beta.json
+   │     │  │  │  ├─ migrationcenter.v1.json
+   │     │  │  │  ├─ migrationcenter.v1alpha1.json
+   │     │  │  │  ├─ ml.v1.json
+   │     │  │  │  ├─ monitoring.v1.json
+   │     │  │  │  ├─ monitoring.v3.json
+   │     │  │  │  ├─ mybusinessaccountmanagement.v1.json
+   │     │  │  │  ├─ mybusinessbusinesscalls.v1.json
+   │     │  │  │  ├─ mybusinessbusinessinformation.v1.json
+   │     │  │  │  ├─ mybusinesslodging.v1.json
+   │     │  │  │  ├─ mybusinessnotifications.v1.json
+   │     │  │  │  ├─ mybusinessplaceactions.v1.json
+   │     │  │  │  ├─ mybusinessqanda.v1.json
+   │     │  │  │  ├─ mybusinessverifications.v1.json
+   │     │  │  │  ├─ netapp.v1.json
+   │     │  │  │  ├─ netapp.v1beta1.json
+   │     │  │  │  ├─ networkconnectivity.v1.json
+   │     │  │  │  ├─ networkconnectivity.v1alpha1.json
+   │     │  │  │  ├─ networkmanagement.v1.json
+   │     │  │  │  ├─ networkmanagement.v1beta1.json
+   │     │  │  │  ├─ networksecurity.v1.json
+   │     │  │  │  ├─ networksecurity.v1beta1.json
+   │     │  │  │  ├─ networkservices.v1.json
+   │     │  │  │  ├─ networkservices.v1beta1.json
+   │     │  │  │  ├─ notebooks.v1.json
+   │     │  │  │  ├─ notebooks.v2.json
+   │     │  │  │  ├─ oauth2.v2.json
+   │     │  │  │  ├─ observability.v1.json
+   │     │  │  │  ├─ ondemandscanning.v1.json
+   │     │  │  │  ├─ ondemandscanning.v1beta1.json
+   │     │  │  │  ├─ oracledatabase.v1.json
+   │     │  │  │  ├─ orgpolicy.v2.json
+   │     │  │  │  ├─ osconfig.v1.json
+   │     │  │  │  ├─ osconfig.v1alpha.json
+   │     │  │  │  ├─ osconfig.v1beta.json
+   │     │  │  │  ├─ osconfig.v2.json
+   │     │  │  │  ├─ osconfig.v2beta.json
+   │     │  │  │  ├─ oslogin.v1.json
+   │     │  │  │  ├─ oslogin.v1alpha.json
+   │     │  │  │  ├─ oslogin.v1beta.json
+   │     │  │  │  ├─ pagespeedonline.v5.json
+   │     │  │  │  ├─ parallelstore.v1.json
+   │     │  │  │  ├─ parallelstore.v1beta.json
+   │     │  │  │  ├─ parametermanager.v1.json
+   │     │  │  │  ├─ paymentsresellersubscription.v1.json
+   │     │  │  │  ├─ people.v1.json
+   │     │  │  │  ├─ places.v1.json
+   │     │  │  │  ├─ playablelocations.v3.json
+   │     │  │  │  ├─ playcustomapp.v1.json
+   │     │  │  │  ├─ playdeveloperreporting.v1alpha1.json
+   │     │  │  │  ├─ playdeveloperreporting.v1beta1.json
+   │     │  │  │  ├─ playgrouping.v1alpha1.json
+   │     │  │  │  ├─ playintegrity.v1.json
+   │     │  │  │  ├─ policyanalyzer.v1.json
+   │     │  │  │  ├─ policyanalyzer.v1beta1.json
+   │     │  │  │  ├─ policysimulator.v1.json
+   │     │  │  │  ├─ policysimulator.v1alpha.json
+   │     │  │  │  ├─ policysimulator.v1beta.json
+   │     │  │  │  ├─ policysimulator.v1beta1.json
+   │     │  │  │  ├─ policytroubleshooter.v1.json
+   │     │  │  │  ├─ policytroubleshooter.v1beta.json
+   │     │  │  │  ├─ pollen.v1.json
+   │     │  │  │  ├─ poly.v1.json
+   │     │  │  │  ├─ privateca.v1.json
+   │     │  │  │  ├─ privateca.v1beta1.json
+   │     │  │  │  ├─ prod_tt_sasportal.v1alpha1.json
+   │     │  │  │  ├─ publicca.v1.json
+   │     │  │  │  ├─ publicca.v1alpha1.json
+   │     │  │  │  ├─ publicca.v1beta1.json
+   │     │  │  │  ├─ pubsub.v1.json
+   │     │  │  │  ├─ pubsub.v1beta1a.json
+   │     │  │  │  ├─ pubsub.v1beta2.json
+   │     │  │  │  ├─ pubsublite.v1.json
+   │     │  │  │  ├─ rapidmigrationassessment.v1.json
+   │     │  │  │  ├─ readerrevenuesubscriptionlinking.v1.json
+   │     │  │  │  ├─ realtimebidding.v1.json
+   │     │  │  │  ├─ realtimebidding.v1alpha.json
+   │     │  │  │  ├─ recaptchaenterprise.v1.json
+   │     │  │  │  ├─ recommendationengine.v1beta1.json
+   │     │  │  │  ├─ recommender.v1.json
+   │     │  │  │  ├─ recommender.v1beta1.json
+   │     │  │  │  ├─ redis.v1.json
+   │     │  │  │  ├─ redis.v1beta1.json
+   │     │  │  │  ├─ remotebuildexecution.v1.json
+   │     │  │  │  ├─ remotebuildexecution.v1alpha.json
+   │     │  │  │  ├─ remotebuildexecution.v2.json
+   │     │  │  │  ├─ reseller.v1.json
+   │     │  │  │  ├─ resourcesettings.v1.json
+   │     │  │  │  ├─ retail.v2.json
+   │     │  │  │  ├─ retail.v2alpha.json
+   │     │  │  │  ├─ retail.v2beta.json
+   │     │  │  │  ├─ run.v1.json
+   │     │  │  │  ├─ run.v1alpha1.json
+   │     │  │  │  ├─ run.v1beta1.json
+   │     │  │  │  ├─ run.v2.json
+   │     │  │  │  ├─ runtimeconfig.v1.json
+   │     │  │  │  ├─ runtimeconfig.v1beta1.json
+   │     │  │  │  ├─ saasservicemgmt.v1beta1.json
+   │     │  │  │  ├─ safebrowsing.v4.json
+   │     │  │  │  ├─ safebrowsing.v5.json
+   │     │  │  │  ├─ sasportal.v1alpha1.json
+   │     │  │  │  ├─ script.v1.json
+   │     │  │  │  ├─ searchads360.v0.json
+   │     │  │  │  ├─ searchconsole.v1.json
+   │     │  │  │  ├─ secretmanager.v1.json
+   │     │  │  │  ├─ secretmanager.v1beta1.json
+   │     │  │  │  ├─ secretmanager.v1beta2.json
+   │     │  │  │  ├─ securesourcemanager.v1.json
+   │     │  │  │  ├─ securitycenter.v1.json
+   │     │  │  │  ├─ securitycenter.v1beta1.json
+   │     │  │  │  ├─ securitycenter.v1beta2.json
+   │     │  │  │  ├─ securityposture.v1.json
+   │     │  │  │  ├─ serviceconsumermanagement.v1.json
+   │     │  │  │  ├─ serviceconsumermanagement.v1beta1.json
+   │     │  │  │  ├─ servicecontrol.v1.json
+   │     │  │  │  ├─ servicecontrol.v2.json
+   │     │  │  │  ├─ servicedirectory.v1.json
+   │     │  │  │  ├─ servicedirectory.v1beta1.json
+   │     │  │  │  ├─ servicemanagement.v1.json
+   │     │  │  │  ├─ servicenetworking.v1.json
+   │     │  │  │  ├─ servicenetworking.v1beta.json
+   │     │  │  │  ├─ serviceusage.v1.json
+   │     │  │  │  ├─ serviceusage.v1beta1.json
+   │     │  │  │  ├─ sheets.v4.json
+   │     │  │  │  ├─ siteVerification.v1.json
+   │     │  │  │  ├─ slides.v1.json
+   │     │  │  │  ├─ smartdevicemanagement.v1.json
+   │     │  │  │  ├─ solar.v1.json
+   │     │  │  │  ├─ sourcerepo.v1.json
+   │     │  │  │  ├─ spanner.v1.json
+   │     │  │  │  ├─ speech.v1.json
+   │     │  │  │  ├─ speech.v1p1beta1.json
+   │     │  │  │  ├─ speech.v2beta1.json
+   │     │  │  │  ├─ sqladmin.v1.json
+   │     │  │  │  ├─ sqladmin.v1beta4.json
+   │     │  │  │  ├─ storage.v1.json
+   │     │  │  │  ├─ storagebatchoperations.v1.json
+   │     │  │  │  ├─ storagetransfer.v1.json
+   │     │  │  │  ├─ streetviewpublish.v1.json
+   │     │  │  │  ├─ sts.v1.json
+   │     │  │  │  ├─ sts.v1beta.json
+   │     │  │  │  ├─ tagmanager.v1.json
+   │     │  │  │  ├─ tagmanager.v2.json
+   │     │  │  │  ├─ tasks.v1.json
+   │     │  │  │  ├─ testing.v1.json
+   │     │  │  │  ├─ texttospeech.v1.json
+   │     │  │  │  ├─ texttospeech.v1beta1.json
+   │     │  │  │  ├─ toolresults.v1beta3.json
+   │     │  │  │  ├─ tpu.v1.json
+   │     │  │  │  ├─ tpu.v1alpha1.json
+   │     │  │  │  ├─ tpu.v2.json
+   │     │  │  │  ├─ tpu.v2alpha1.json
+   │     │  │  │  ├─ trafficdirector.v2.json
+   │     │  │  │  ├─ trafficdirector.v3.json
+   │     │  │  │  ├─ transcoder.v1.json
+   │     │  │  │  ├─ transcoder.v1beta1.json
+   │     │  │  │  ├─ translate.v2.json
+   │     │  │  │  ├─ translate.v3.json
+   │     │  │  │  ├─ translate.v3beta1.json
+   │     │  │  │  ├─ travelimpactmodel.v1.json
+   │     │  │  │  ├─ vault.v1.json
+   │     │  │  │  ├─ vectortile.v1.json
+   │     │  │  │  ├─ verifiedaccess.v1.json
+   │     │  │  │  ├─ verifiedaccess.v2.json
+   │     │  │  │  ├─ versionhistory.v1.json
+   │     │  │  │  ├─ videointelligence.v1.json
+   │     │  │  │  ├─ videointelligence.v1beta2.json
+   │     │  │  │  ├─ videointelligence.v1p1beta1.json
+   │     │  │  │  ├─ videointelligence.v1p2beta1.json
+   │     │  │  │  ├─ videointelligence.v1p3beta1.json
+   │     │  │  │  ├─ vision.v1.json
+   │     │  │  │  ├─ vision.v1p1beta1.json
+   │     │  │  │  ├─ vision.v1p2beta1.json
+   │     │  │  │  ├─ vmmigration.v1.json
+   │     │  │  │  ├─ vmmigration.v1alpha1.json
+   │     │  │  │  ├─ vmwareengine.v1.json
+   │     │  │  │  ├─ vpcaccess.v1.json
+   │     │  │  │  ├─ vpcaccess.v1beta1.json
+   │     │  │  │  ├─ walletobjects.v1.json
+   │     │  │  │  ├─ webfonts.v1.json
+   │     │  │  │  ├─ webmasters.v3.json
+   │     │  │  │  ├─ webrisk.v1.json
+   │     │  │  │  ├─ websecurityscanner.v1.json
+   │     │  │  │  ├─ websecurityscanner.v1alpha.json
+   │     │  │  │  ├─ websecurityscanner.v1beta.json
+   │     │  │  │  ├─ workflowexecutions.v1.json
+   │     │  │  │  ├─ workflowexecutions.v1beta.json
+   │     │  │  │  ├─ workflows.v1.json
+   │     │  │  │  ├─ workflows.v1beta.json
+   │     │  │  │  ├─ workloadmanager.v1.json
+   │     │  │  │  ├─ workspaceevents.v1.json
+   │     │  │  │  ├─ workstations.v1.json
+   │     │  │  │  ├─ workstations.v1beta.json
+   │     │  │  │  ├─ youtube.v3.json
+   │     │  │  │  ├─ youtubeAnalytics.v1.json
+   │     │  │  │  ├─ youtubeAnalytics.v2.json
+   │     │  │  │  └─ youtubereporting.v1.json
+   │     │  │  ├─ file_cache.py
+   │     │  │  ├─ __init__.py
+   │     │  │  └─ __pycache__
+   │     │  │     ├─ appengine_memcache.cpython-313.pyc
+   │     │  │     ├─ base.cpython-313.pyc
+   │     │  │     ├─ file_cache.cpython-313.pyc
+   │     │  │     └─ __init__.cpython-313.pyc
+   │     │  ├─ errors.py
+   │     │  ├─ http.py
+   │     │  ├─ mimeparse.py
+   │     │  ├─ model.py
+   │     │  ├─ sample_tools.py
+   │     │  ├─ schema.py
+   │     │  ├─ version.py
+   │     │  ├─ _auth.py
+   │     │  ├─ _helpers.py
+   │     │  ├─ __init__.py
+   │     │  └─ __pycache__
+   │     │     ├─ channel.cpython-313.pyc
+   │     │     ├─ discovery.cpython-313.pyc
+   │     │     ├─ errors.cpython-313.pyc
+   │     │     ├─ http.cpython-313.pyc
+   │     │     ├─ mimeparse.cpython-313.pyc
+   │     │     ├─ model.cpython-313.pyc
+   │     │     ├─ sample_tools.cpython-313.pyc
+   │     │     ├─ schema.cpython-313.pyc
+   │     │     ├─ version.cpython-313.pyc
+   │     │     ├─ _auth.cpython-313.pyc
+   │     │     ├─ _helpers.cpython-313.pyc
+   │     │     └─ __init__.cpython-313.pyc
    │     ├─ googleapis_common_protos-1.72.0.dist-info
    │     │  ├─ INSTALLER
    │     │  ├─ licenses
@@ -3040,12 +3782,65 @@ second brain OS
    │     │  ├─ RECORD
    │     │  ├─ top_level.txt
    │     │  └─ WHEEL
-   │     ├─ google_auth-2.43.0.dist-info
+   │     ├─ google_api_core-2.28.1.dist-info
    │     │  ├─ INSTALLER
    │     │  ├─ licenses
    │     │  │  └─ LICENSE
    │     │  ├─ METADATA
    │     │  ├─ RECORD
+   │     │  ├─ top_level.txt
+   │     │  └─ WHEEL
+   │     ├─ google_api_python_client-2.187.0.dist-info
+   │     │  ├─ INSTALLER
+   │     │  ├─ licenses
+   │     │  │  └─ LICENSE
+   │     │  ├─ METADATA
+   │     │  ├─ RECORD
+   │     │  ├─ REQUESTED
+   │     │  ├─ top_level.txt
+   │     │  └─ WHEEL
+   │     ├─ google_auth-2.41.1.dist-info
+   │     │  ├─ INSTALLER
+   │     │  ├─ licenses
+   │     │  │  └─ LICENSE
+   │     │  ├─ METADATA
+   │     │  ├─ RECORD
+   │     │  ├─ top_level.txt
+   │     │  └─ WHEEL
+   │     ├─ google_auth_httplib2-0.3.0.dist-info
+   │     │  ├─ INSTALLER
+   │     │  ├─ licenses
+   │     │  │  └─ LICENSE
+   │     │  ├─ METADATA
+   │     │  ├─ RECORD
+   │     │  ├─ REQUESTED
+   │     │  ├─ top_level.txt
+   │     │  └─ WHEEL
+   │     ├─ google_auth_httplib2.py
+   │     ├─ google_auth_oauthlib
+   │     │  ├─ flow.py
+   │     │  ├─ helpers.py
+   │     │  ├─ interactive.py
+   │     │  ├─ tool
+   │     │  │  ├─ __init__.py
+   │     │  │  ├─ __main__.py
+   │     │  │  └─ __pycache__
+   │     │  │     ├─ __init__.cpython-313.pyc
+   │     │  │     └─ __main__.cpython-313.pyc
+   │     │  ├─ __init__.py
+   │     │  └─ __pycache__
+   │     │     ├─ flow.cpython-313.pyc
+   │     │     ├─ helpers.cpython-313.pyc
+   │     │     ├─ interactive.cpython-313.pyc
+   │     │     └─ __init__.cpython-313.pyc
+   │     ├─ google_auth_oauthlib-1.2.3.dist-info
+   │     │  ├─ entry_points.txt
+   │     │  ├─ INSTALLER
+   │     │  ├─ licenses
+   │     │  │  └─ LICENSE
+   │     │  ├─ METADATA
+   │     │  ├─ RECORD
+   │     │  ├─ REQUESTED
    │     │  ├─ top_level.txt
    │     │  └─ WHEEL
    │     ├─ greenlet
@@ -3447,6 +4242,27 @@ second brain OS
    │     │  ├─ METADATA
    │     │  ├─ RECORD
    │     │  └─ WHEEL
+   │     ├─ httplib2
+   │     │  ├─ auth.py
+   │     │  ├─ cacerts.txt
+   │     │  ├─ certs.py
+   │     │  ├─ error.py
+   │     │  ├─ iri2uri.py
+   │     │  ├─ __init__.py
+   │     │  └─ __pycache__
+   │     │     ├─ auth.cpython-313.pyc
+   │     │     ├─ certs.cpython-313.pyc
+   │     │     ├─ error.cpython-313.pyc
+   │     │     ├─ iri2uri.cpython-313.pyc
+   │     │     └─ __init__.cpython-313.pyc
+   │     ├─ httplib2-0.31.0.dist-info
+   │     │  ├─ INSTALLER
+   │     │  ├─ licenses
+   │     │  │  └─ LICENSE
+   │     │  ├─ METADATA
+   │     │  ├─ RECORD
+   │     │  ├─ top_level.txt
+   │     │  └─ WHEEL
    │     ├─ httptools
    │     │  ├─ parser
    │     │  │  ├─ cparser.pxd
@@ -3621,7 +4437,6 @@ second brain OS
    │     │  │     └─ __init__.cpython-313.pyc
    │     │  ├─ community.py
    │     │  ├─ constants.py
-   │     │  ├─ dataclasses.py
    │     │  ├─ errors.py
    │     │  ├─ fastai_utils.py
    │     │  ├─ file_download.py
@@ -3796,7 +4611,6 @@ second brain OS
    │     │  │     ├─ _torch.cpython-313.pyc
    │     │  │     └─ __init__.cpython-313.pyc
    │     │  ├─ templates
-   │     │  │  ├─ datasetcard_template.md
    │     │  │  └─ modelcard_template.md
    │     │  ├─ utils
    │     │  │  ├─ endpoint_helpers.py
@@ -3877,7 +4691,6 @@ second brain OS
    │     │  └─ __pycache__
    │     │     ├─ community.cpython-313.pyc
    │     │     ├─ constants.cpython-313.pyc
-   │     │     ├─ dataclasses.cpython-313.pyc
    │     │     ├─ errors.cpython-313.pyc
    │     │     ├─ fastai_utils.cpython-313.pyc
    │     │     ├─ file_download.cpython-313.pyc
@@ -4525,7 +5338,6 @@ second brain OS
    │     │  │  ├─ capture.py
    │     │  │  ├─ coloransi.py
    │     │  │  ├─ contexts.py
-   │     │  │  ├─ data.py
    │     │  │  ├─ decorators.py
    │     │  │  ├─ dir2.py
    │     │  │  ├─ docs.py
@@ -4566,7 +5378,6 @@ second brain OS
    │     │  │     ├─ capture.cpython-313.pyc
    │     │  │     ├─ coloransi.cpython-313.pyc
    │     │  │     ├─ contexts.cpython-313.pyc
-   │     │  │     ├─ data.cpython-313.pyc
    │     │  │     ├─ decorators.cpython-313.pyc
    │     │  │     ├─ dir2.cpython-313.pyc
    │     │  │     ├─ docs.cpython-313.pyc
@@ -5034,7 +5845,6 @@ second brain OS
    │     │  │  │  │  │  │  └─ __init__.pyi
    │     │  │  │  │  │  ├─ checks
    │     │  │  │  │  │  │  ├─ caches.pyi
-   │     │  │  │  │  │  │  ├─ database.pyi
    │     │  │  │  │  │  │  ├─ messages.pyi
    │     │  │  │  │  │  │  ├─ model_checks.pyi
    │     │  │  │  │  │  │  ├─ registry.pyi
@@ -5197,7 +6007,6 @@ second brain OS
    │     │  │  │  │  │  │  ├─ sql
    │     │  │  │  │  │  │  │  ├─ compiler.pyi
    │     │  │  │  │  │  │  │  ├─ constants.pyi
-   │     │  │  │  │  │  │  │  ├─ datastructures.pyi
    │     │  │  │  │  │  │  │  ├─ query.pyi
    │     │  │  │  │  │  │  │  ├─ subqueries.pyi
    │     │  │  │  │  │  │  │  ├─ where.pyi
@@ -5296,7 +6105,6 @@ second brain OS
    │     │  │  │  │  │  ├─ baseconv.pyi
    │     │  │  │  │  │  ├─ cache.pyi
    │     │  │  │  │  │  ├─ crypto.pyi
-   │     │  │  │  │  │  ├─ datastructures.pyi
    │     │  │  │  │  │  ├─ dateformat.pyi
    │     │  │  │  │  │  ├─ dateparse.pyi
    │     │  │  │  │  │  ├─ dates.pyi
@@ -6077,7 +6885,6 @@ second brain OS
    │     │  │     │  │  └─ _winapi.pyi
    │     │  │     │  ├─ 3.7
    │     │  │     │  │  ├─ contextvars.pyi
-   │     │  │     │  │  ├─ dataclasses.pyi
    │     │  │     │  │  └─ _py_abc.pyi
    │     │  │     │  └─ 3.9
    │     │  │     │     ├─ graphlib.pyi
@@ -6369,7 +7176,6 @@ second brain OS
    │     │  │        │  │  ├─ wrappers.pyi
    │     │  │        │  │  └─ __init__.pyi
    │     │  │        │  ├─ geoip2
-   │     │  │        │  │  ├─ database.pyi
    │     │  │        │  │  ├─ errors.pyi
    │     │  │        │  │  ├─ mixins.pyi
    │     │  │        │  │  ├─ models.pyi
@@ -6671,7 +7477,6 @@ second brain OS
    │     │  │        │  │  │  ├─ testtools.pyi
    │     │  │        │  │  │  ├─ wrappers.pyi
    │     │  │        │  │  │  └─ __init__.pyi
-   │     │  │        │  │  ├─ datastructures.pyi
    │     │  │        │  │  ├─ debug
    │     │  │        │  │  │  ├─ console.pyi
    │     │  │        │  │  │  ├─ repr.pyi
@@ -6734,7 +7539,6 @@ second brain OS
    │     │  │           │  │  └─ __init__.pyi
    │     │  │           │  └─ __init__.pyi
    │     │  │           ├─ contextvars.pyi
-   │     │  │           ├─ dataclasses.pyi
    │     │  │           ├─ docutils
    │     │  │           │  ├─ examples.pyi
    │     │  │           │  ├─ nodes.pyi
@@ -7005,77 +7809,6 @@ second brain OS
    │     │  ├─ pool.py
    │     │  ├─ test
    │     │  │  ├─ common.py
-   │     │  │  ├─ data
-   │     │  │  │  ├─ create_numpy_pickle.py
-   │     │  │  │  ├─ joblib_0.10.0_compressed_pickle_py27_np16.gz
-   │     │  │  │  ├─ joblib_0.10.0_compressed_pickle_py27_np17.gz
-   │     │  │  │  ├─ joblib_0.10.0_compressed_pickle_py33_np18.gz
-   │     │  │  │  ├─ joblib_0.10.0_compressed_pickle_py34_np19.gz
-   │     │  │  │  ├─ joblib_0.10.0_compressed_pickle_py35_np19.gz
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py27_np17.pkl
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py27_np17.pkl.bz2
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py27_np17.pkl.gzip
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py27_np17.pkl.lzma
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py27_np17.pkl.xz
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py33_np18.pkl
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py33_np18.pkl.bz2
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py33_np18.pkl.gzip
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py33_np18.pkl.lzma
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py33_np18.pkl.xz
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py34_np19.pkl
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py34_np19.pkl.bz2
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py34_np19.pkl.gzip
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py34_np19.pkl.lzma
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py34_np19.pkl.xz
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py35_np19.pkl
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py35_np19.pkl.bz2
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py35_np19.pkl.gzip
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py35_np19.pkl.lzma
-   │     │  │  │  ├─ joblib_0.10.0_pickle_py35_np19.pkl.xz
-   │     │  │  │  ├─ joblib_0.11.0_compressed_pickle_py36_np111.gz
-   │     │  │  │  ├─ joblib_0.11.0_pickle_py36_np111.pkl
-   │     │  │  │  ├─ joblib_0.11.0_pickle_py36_np111.pkl.bz2
-   │     │  │  │  ├─ joblib_0.11.0_pickle_py36_np111.pkl.gzip
-   │     │  │  │  ├─ joblib_0.11.0_pickle_py36_np111.pkl.lzma
-   │     │  │  │  ├─ joblib_0.11.0_pickle_py36_np111.pkl.xz
-   │     │  │  │  ├─ joblib_0.8.4_compressed_pickle_py27_np17.gz
-   │     │  │  │  ├─ joblib_0.9.2_compressed_pickle_py27_np16.gz
-   │     │  │  │  ├─ joblib_0.9.2_compressed_pickle_py27_np17.gz
-   │     │  │  │  ├─ joblib_0.9.2_compressed_pickle_py34_np19.gz
-   │     │  │  │  ├─ joblib_0.9.2_compressed_pickle_py35_np19.gz
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py27_np16.pkl
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py27_np16.pkl_01.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py27_np16.pkl_02.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py27_np16.pkl_03.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py27_np16.pkl_04.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py27_np17.pkl
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py27_np17.pkl_01.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py27_np17.pkl_02.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py27_np17.pkl_03.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py27_np17.pkl_04.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py33_np18.pkl
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py33_np18.pkl_01.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py33_np18.pkl_02.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py33_np18.pkl_03.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py33_np18.pkl_04.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py34_np19.pkl
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py34_np19.pkl_01.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py34_np19.pkl_02.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py34_np19.pkl_03.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py34_np19.pkl_04.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py35_np19.pkl
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py35_np19.pkl_01.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py35_np19.pkl_02.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py35_np19.pkl_03.npy
-   │     │  │  │  ├─ joblib_0.9.2_pickle_py35_np19.pkl_04.npy
-   │     │  │  │  ├─ joblib_0.9.4.dev0_compressed_cache_size_pickle_py35_np19.gz
-   │     │  │  │  ├─ joblib_0.9.4.dev0_compressed_cache_size_pickle_py35_np19.gz_01.npy.z
-   │     │  │  │  ├─ joblib_0.9.4.dev0_compressed_cache_size_pickle_py35_np19.gz_02.npy.z
-   │     │  │  │  ├─ joblib_0.9.4.dev0_compressed_cache_size_pickle_py35_np19.gz_03.npy.z
-   │     │  │  │  ├─ __init__.py
-   │     │  │  │  └─ __pycache__
-   │     │  │  │     ├─ create_numpy_pickle.cpython-313.pyc
-   │     │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  ├─ testutils.py
    │     │  │  ├─ test_backports.py
    │     │  │  ├─ test_cloudpickle_wrapper.py
@@ -10091,7 +10824,6 @@ second brain OS
    │     │  │  ├─ base.py
    │     │  │  ├─ bedrock.py
    │     │  │  ├─ cohere.py
-   │     │  │  ├─ databricks.py
    │     │  │  ├─ ernie.py
    │     │  │  ├─ everlyai.py
    │     │  │  ├─ fake.py
@@ -10127,7 +10859,6 @@ second brain OS
    │     │  │     ├─ base.cpython-313.pyc
    │     │  │     ├─ bedrock.cpython-313.pyc
    │     │  │     ├─ cohere.cpython-313.pyc
-   │     │  │     ├─ databricks.cpython-313.pyc
    │     │  │     ├─ ernie.cpython-313.pyc
    │     │  │     ├─ everlyai.cpython-313.pyc
    │     │  │     ├─ fake.cpython-313.pyc
@@ -10211,8 +10942,6 @@ second brain OS
    │     │  │  ├─ couchbase.py
    │     │  │  ├─ csv_loader.py
    │     │  │  ├─ cube_semantic.py
-   │     │  │  ├─ datadog_logs.py
-   │     │  │  ├─ dataframe.py
    │     │  │  ├─ diffbot.py
    │     │  │  ├─ directory.py
    │     │  │  ├─ discord.py
@@ -10397,8 +11126,6 @@ second brain OS
    │     │  │     ├─ couchbase.cpython-313.pyc
    │     │  │     ├─ csv_loader.cpython-313.pyc
    │     │  │     ├─ cube_semantic.cpython-313.pyc
-   │     │  │     ├─ datadog_logs.cpython-313.pyc
-   │     │  │     ├─ dataframe.cpython-313.pyc
    │     │  │     ├─ diffbot.cpython-313.pyc
    │     │  │     ├─ directory.cpython-313.pyc
    │     │  │     ├─ discord.cpython-313.pyc
@@ -10548,7 +11275,6 @@ second brain OS
    │     │  │  ├─ cloudflare_workersai.py
    │     │  │  ├─ cohere.py
    │     │  │  ├─ dashscope.py
-   │     │  │  ├─ databricks.py
    │     │  │  ├─ deepinfra.py
    │     │  │  ├─ edenai.py
    │     │  │  ├─ elasticsearch.py
@@ -10600,7 +11326,6 @@ second brain OS
    │     │  │     ├─ cloudflare_workersai.cpython-313.pyc
    │     │  │     ├─ cohere.cpython-313.pyc
    │     │  │     ├─ dashscope.cpython-313.pyc
-   │     │  │     ├─ databricks.cpython-313.pyc
    │     │  │     ├─ deepinfra.cpython-313.pyc
    │     │  │     ├─ edenai.cpython-313.pyc
    │     │  │     ├─ elasticsearch.cpython-313.pyc
@@ -10804,7 +11529,6 @@ second brain OS
    │     │  │  ├─ cohere.py
    │     │  │  ├─ ctransformers.py
    │     │  │  ├─ ctranslate2.py
-   │     │  │  ├─ databricks.py
    │     │  │  ├─ deepinfra.py
    │     │  │  ├─ deepsparse.py
    │     │  │  ├─ edenai.py
@@ -10891,7 +11615,6 @@ second brain OS
    │     │  │     ├─ cohere.cpython-313.pyc
    │     │  │     ├─ ctransformers.cpython-313.pyc
    │     │  │     ├─ ctranslate2.cpython-313.pyc
-   │     │  │     ├─ databricks.cpython-313.pyc
    │     │  │     ├─ deepinfra.cpython-313.pyc
    │     │  │     ├─ deepsparse.cpython-313.pyc
    │     │  │     ├─ edenai.cpython-313.pyc
@@ -11134,7 +11857,6 @@ second brain OS
    │     │  │  ├─ chatgpt_plugin_retriever.py
    │     │  │  ├─ cohere_rag_retriever.py
    │     │  │  ├─ contextual_compression.py
-   │     │  │  ├─ databerry.py
    │     │  │  ├─ docarray.py
    │     │  │  ├─ document_compressors
    │     │  │  │  ├─ base.py
@@ -11188,7 +11910,6 @@ second brain OS
    │     │  │  │  ├─ base.py
    │     │  │  │  ├─ chroma.py
    │     │  │  │  ├─ dashvector.py
-   │     │  │  │  ├─ databricks_vector_search.py
    │     │  │  │  ├─ deeplake.py
    │     │  │  │  ├─ dingo.py
    │     │  │  │  ├─ elasticsearch.py
@@ -11211,7 +11932,6 @@ second brain OS
    │     │  │  │     ├─ base.cpython-313.pyc
    │     │  │  │     ├─ chroma.cpython-313.pyc
    │     │  │  │     ├─ dashvector.cpython-313.pyc
-   │     │  │  │     ├─ databricks_vector_search.cpython-313.pyc
    │     │  │  │     ├─ deeplake.cpython-313.pyc
    │     │  │  │     ├─ dingo.cpython-313.pyc
    │     │  │  │     ├─ elasticsearch.cpython-313.pyc
@@ -11251,7 +11971,6 @@ second brain OS
    │     │  │     ├─ chatgpt_plugin_retriever.cpython-313.pyc
    │     │  │     ├─ cohere_rag_retriever.cpython-313.pyc
    │     │  │     ├─ contextual_compression.cpython-313.pyc
-   │     │  │     ├─ databerry.cpython-313.pyc
    │     │  │     ├─ docarray.cpython-313.pyc
    │     │  │     ├─ elastic_search_bm25.cpython-313.pyc
    │     │  │     ├─ embedchain.cpython-313.pyc
@@ -11500,12 +12219,6 @@ second brain OS
    │     │  │  │     ├─ tool.cpython-313.pyc
    │     │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  ├─ convert_to_openai.py
-   │     │  │  ├─ dataforseo_api_search
-   │     │  │  │  ├─ tool.py
-   │     │  │  │  ├─ __init__.py
-   │     │  │  │  └─ __pycache__
-   │     │  │  │     ├─ tool.cpython-313.pyc
-   │     │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  ├─ ddg_search
    │     │  │  │  ├─ tool.py
    │     │  │  │  ├─ __init__.py
@@ -11944,7 +12657,6 @@ second brain OS
    │     │  │  ├─ brave_search.py
    │     │  │  ├─ clickup.py
    │     │  │  ├─ dalle_image_generator.py
-   │     │  │  ├─ dataforseo_api_search.py
    │     │  │  ├─ duckduckgo_search.py
    │     │  │  ├─ github.py
    │     │  │  ├─ gitlab.py
@@ -12003,7 +12715,6 @@ second brain OS
    │     │  │     ├─ brave_search.cpython-313.pyc
    │     │  │     ├─ clickup.cpython-313.pyc
    │     │  │     ├─ dalle_image_generator.cpython-313.pyc
-   │     │  │     ├─ dataforseo_api_search.cpython-313.pyc
    │     │  │     ├─ duckduckgo_search.cpython-313.pyc
    │     │  │     ├─ github.cpython-313.pyc
    │     │  │     ├─ gitlab.cpython-313.pyc
@@ -12098,7 +12809,6 @@ second brain OS
    │     │  │  ├─ clarifai.py
    │     │  │  ├─ clickhouse.py
    │     │  │  ├─ dashvector.py
-   │     │  │  ├─ databricks_vector_search.py
    │     │  │  ├─ deeplake.py
    │     │  │  ├─ dingo.py
    │     │  │  ├─ docarray
@@ -12187,7 +12897,6 @@ second brain OS
    │     │  │     ├─ clarifai.cpython-313.pyc
    │     │  │     ├─ clickhouse.cpython-313.pyc
    │     │  │     ├─ dashvector.cpython-313.pyc
-   │     │  │     ├─ databricks_vector_search.cpython-313.pyc
    │     │  │     ├─ deeplake.cpython-313.pyc
    │     │  │     ├─ dingo.cpython-313.pyc
    │     │  │     ├─ elasticsearch.cpython-313.pyc
@@ -12736,7 +13445,6 @@ second brain OS
    │     │  │  ├─ cohere.py
    │     │  │  ├─ coze.py
    │     │  │  ├─ dappier.py
-   │     │  │  ├─ databricks.py
    │     │  │  ├─ deepinfra.py
    │     │  │  ├─ edenai.py
    │     │  │  ├─ ernie.py
@@ -12803,7 +13511,6 @@ second brain OS
    │     │  │     ├─ cohere.cpython-313.pyc
    │     │  │     ├─ coze.cpython-313.pyc
    │     │  │     ├─ dappier.cpython-313.pyc
-   │     │  │     ├─ databricks.cpython-313.pyc
    │     │  │     ├─ deepinfra.cpython-313.pyc
    │     │  │     ├─ edenai.cpython-313.pyc
    │     │  │     ├─ ernie.cpython-313.pyc
@@ -12955,8 +13662,6 @@ second brain OS
    │     │  │  ├─ couchbase.py
    │     │  │  ├─ csv_loader.py
    │     │  │  ├─ cube_semantic.py
-   │     │  │  ├─ datadog_logs.py
-   │     │  │  ├─ dataframe.py
    │     │  │  ├─ dedoc.py
    │     │  │  ├─ diffbot.py
    │     │  │  ├─ directory.py
@@ -13206,8 +13911,6 @@ second brain OS
    │     │  │     ├─ couchbase.cpython-313.pyc
    │     │  │     ├─ csv_loader.cpython-313.pyc
    │     │  │     ├─ cube_semantic.cpython-313.pyc
-   │     │  │     ├─ datadog_logs.cpython-313.pyc
-   │     │  │     ├─ dataframe.cpython-313.pyc
    │     │  │     ├─ dedoc.cpython-313.pyc
    │     │  │     ├─ diffbot.cpython-313.pyc
    │     │  │     ├─ directory.cpython-313.pyc
@@ -13381,7 +14084,6 @@ second brain OS
    │     │  │  ├─ clova.py
    │     │  │  ├─ cohere.py
    │     │  │  ├─ dashscope.py
-   │     │  │  ├─ databricks.py
    │     │  │  ├─ deepinfra.py
    │     │  │  ├─ edenai.py
    │     │  │  ├─ elasticsearch.py
@@ -13460,7 +14162,6 @@ second brain OS
    │     │  │     ├─ clova.cpython-313.pyc
    │     │  │     ├─ cohere.cpython-313.pyc
    │     │  │     ├─ dashscope.cpython-313.pyc
-   │     │  │     ├─ databricks.cpython-313.pyc
    │     │  │     ├─ deepinfra.cpython-313.pyc
    │     │  │     ├─ edenai.cpython-313.pyc
    │     │  │     ├─ elasticsearch.cpython-313.pyc
@@ -13640,7 +14341,6 @@ second brain OS
    │     │  │  ├─ cohere.py
    │     │  │  ├─ ctransformers.py
    │     │  │  ├─ ctranslate2.py
-   │     │  │  ├─ databricks.py
    │     │  │  ├─ deepinfra.py
    │     │  │  ├─ deepsparse.py
    │     │  │  ├─ edenai.py
@@ -13747,7 +14447,6 @@ second brain OS
    │     │  │     ├─ cohere.cpython-313.pyc
    │     │  │     ├─ ctransformers.cpython-313.pyc
    │     │  │     ├─ ctranslate2.cpython-313.pyc
-   │     │  │     ├─ databricks.cpython-313.pyc
    │     │  │     ├─ deepinfra.cpython-313.pyc
    │     │  │     ├─ deepsparse.cpython-313.pyc
    │     │  │     ├─ edenai.cpython-313.pyc
@@ -13850,7 +14549,6 @@ second brain OS
    │     │  │  ├─ astradb.py
    │     │  │  ├─ chroma.py
    │     │  │  ├─ dashvector.py
-   │     │  │  ├─ databricks_vector_search.py
    │     │  │  ├─ deeplake.py
    │     │  │  ├─ dingo.py
    │     │  │  ├─ elasticsearch.py
@@ -13874,7 +14572,6 @@ second brain OS
    │     │  │     ├─ astradb.cpython-313.pyc
    │     │  │     ├─ chroma.cpython-313.pyc
    │     │  │     ├─ dashvector.cpython-313.pyc
-   │     │  │     ├─ databricks_vector_search.cpython-313.pyc
    │     │  │     ├─ deeplake.cpython-313.pyc
    │     │  │     ├─ dingo.cpython-313.pyc
    │     │  │     ├─ elasticsearch.cpython-313.pyc
@@ -13905,7 +14602,6 @@ second brain OS
    │     │  │  ├─ chaindesk.py
    │     │  │  ├─ chatgpt_plugin_retriever.py
    │     │  │  ├─ cohere_rag_retriever.py
-   │     │  │  ├─ databerry.py
    │     │  │  ├─ docarray.py
    │     │  │  ├─ dria_index.py
    │     │  │  ├─ elastic_search_bm25.py
@@ -13951,7 +14647,6 @@ second brain OS
    │     │  │     ├─ chaindesk.cpython-313.pyc
    │     │  │     ├─ chatgpt_plugin_retriever.cpython-313.pyc
    │     │  │     ├─ cohere_rag_retriever.cpython-313.pyc
-   │     │  │     ├─ databerry.cpython-313.pyc
    │     │  │     ├─ docarray.cpython-313.pyc
    │     │  │     ├─ dria_index.cpython-313.pyc
    │     │  │     ├─ elastic_search_bm25.cpython-313.pyc
@@ -14136,26 +14831,6 @@ second brain OS
    │     │  │  │     ├─ tool.cpython-313.pyc
    │     │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  ├─ convert_to_openai.py
-   │     │  │  ├─ databricks
-   │     │  │  │  ├─ tool.py
-   │     │  │  │  ├─ _execution.py
-   │     │  │  │  ├─ __init__.py
-   │     │  │  │  └─ __pycache__
-   │     │  │  │     ├─ tool.cpython-313.pyc
-   │     │  │  │     ├─ _execution.cpython-313.pyc
-   │     │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  ├─ dataforseo_api_search
-   │     │  │  │  ├─ tool.py
-   │     │  │  │  ├─ __init__.py
-   │     │  │  │  └─ __pycache__
-   │     │  │  │     ├─ tool.cpython-313.pyc
-   │     │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  ├─ dataherald
-   │     │  │  │  ├─ tool.py
-   │     │  │  │  ├─ __init__.py
-   │     │  │  │  └─ __pycache__
-   │     │  │  │     ├─ tool.cpython-313.pyc
-   │     │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  ├─ ddg_search
    │     │  │  │  ├─ tool.py
    │     │  │  │  ├─ __init__.py
@@ -14702,8 +15377,6 @@ second brain OS
    │     │  │  ├─ cassandra_database.py
    │     │  │  ├─ clickup.py
    │     │  │  ├─ dalle_image_generator.py
-   │     │  │  ├─ dataforseo_api_search.py
-   │     │  │  ├─ dataherald.py
    │     │  │  ├─ dria_index.py
    │     │  │  ├─ duckduckgo_search.py
    │     │  │  ├─ financial_datasets.py
@@ -14780,8 +15453,6 @@ second brain OS
    │     │  │     ├─ cassandra_database.cpython-313.pyc
    │     │  │     ├─ clickup.cpython-313.pyc
    │     │  │     ├─ dalle_image_generator.cpython-313.pyc
-   │     │  │     ├─ dataforseo_api_search.cpython-313.pyc
-   │     │  │     ├─ dataherald.cpython-313.pyc
    │     │  │     ├─ dria_index.cpython-313.pyc
    │     │  │     ├─ duckduckgo_search.cpython-313.pyc
    │     │  │     ├─ financial_datasets.cpython-313.pyc
@@ -14882,7 +15553,6 @@ second brain OS
    │     │  │  ├─ clickhouse.py
    │     │  │  ├─ couchbase.py
    │     │  │  ├─ dashvector.py
-   │     │  │  ├─ databricks_vector_search.py
    │     │  │  ├─ deeplake.py
    │     │  │  ├─ dingo.py
    │     │  │  ├─ docarray
@@ -15005,7 +15675,6 @@ second brain OS
    │     │  │     ├─ clickhouse.cpython-313.pyc
    │     │  │     ├─ couchbase.cpython-313.pyc
    │     │  │     ├─ dashvector.cpython-313.pyc
-   │     │  │     ├─ databricks_vector_search.cpython-313.pyc
    │     │  │     ├─ deeplake.cpython-313.pyc
    │     │  │     ├─ dingo.cpython-313.pyc
    │     │  │     ├─ documentdb.cpython-313.pyc
@@ -15514,13 +16183,6 @@ second brain OS
    │     │  │     ├─ base.cpython-313.pyc
    │     │  │     ├─ _client_utils.cpython-313.pyc
    │     │  │     ├─ _compat.cpython-313.pyc
-   │     │  │     └─ __init__.cpython-313.pyc
-   │     │  ├─ data
-   │     │  │  ├─ profile_augmentations.toml
-   │     │  │  ├─ _profiles.py
-   │     │  │  ├─ __init__.py
-   │     │  │  └─ __pycache__
-   │     │  │     ├─ _profiles.cpython-313.pyc
    │     │  │     └─ __init__.cpython-313.pyc
    │     │  ├─ embeddings
    │     │  │  ├─ azure.py
@@ -18164,10 +18826,6 @@ second brain OS
    │     │  │  │  │  ├─ crackfortran
    │     │  │  │  │  │  ├─ accesstype.f90
    │     │  │  │  │  │  ├─ common_with_division.f
-   │     │  │  │  │  │  ├─ data_common.f
-   │     │  │  │  │  │  ├─ data_multiplier.f
-   │     │  │  │  │  │  ├─ data_stmts.f90
-   │     │  │  │  │  │  ├─ data_with_comments.f
    │     │  │  │  │  │  ├─ foo_deps.f90
    │     │  │  │  │  │  ├─ gh15035.f
    │     │  │  │  │  │  ├─ gh17859.f
@@ -18196,7 +18854,6 @@ second brain OS
    │     │  │  │  │  │  └─ foo_free.f90
    │     │  │  │  │  ├─ modules
    │     │  │  │  │  │  ├─ gh25337
-   │     │  │  │  │  │  │  ├─ data.f90
    │     │  │  │  │  │  │  └─ use_data.f90
    │     │  │  │  │  │  ├─ gh26920
    │     │  │  │  │  │  │  ├─ two_mods_with_no_public_entities.f90
@@ -18413,14 +19070,6 @@ second brain OS
    │     │  │  ├─ stride_tricks.py
    │     │  │  ├─ stride_tricks.pyi
    │     │  │  ├─ tests
-   │     │  │  │  ├─ data
-   │     │  │  │  │  ├─ py2-np0-objarr.npy
-   │     │  │  │  │  ├─ py2-objarr.npy
-   │     │  │  │  │  ├─ py2-objarr.npz
-   │     │  │  │  │  ├─ py3-objarr.npy
-   │     │  │  │  │  ├─ py3-objarr.npz
-   │     │  │  │  │  ├─ python3.npy
-   │     │  │  │  │  └─ win64python2.npy
    │     │  │  │  ├─ test_arraypad.py
    │     │  │  │  ├─ test_arraysetops.py
    │     │  │  │  ├─ test_arrayterator.py
@@ -18717,23 +19366,6 @@ second brain OS
    │     │  │  ├─ mtrand.cp313-win_amd64.pyd
    │     │  │  ├─ mtrand.pyi
    │     │  │  ├─ tests
-   │     │  │  │  ├─ data
-   │     │  │  │  │  ├─ generator_pcg64_np121.pkl.gz
-   │     │  │  │  │  ├─ generator_pcg64_np126.pkl.gz
-   │     │  │  │  │  ├─ mt19937-testset-1.csv
-   │     │  │  │  │  ├─ mt19937-testset-2.csv
-   │     │  │  │  │  ├─ pcg64-testset-1.csv
-   │     │  │  │  │  ├─ pcg64-testset-2.csv
-   │     │  │  │  │  ├─ pcg64dxsm-testset-1.csv
-   │     │  │  │  │  ├─ pcg64dxsm-testset-2.csv
-   │     │  │  │  │  ├─ philox-testset-1.csv
-   │     │  │  │  │  ├─ philox-testset-2.csv
-   │     │  │  │  │  ├─ sfc64-testset-1.csv
-   │     │  │  │  │  ├─ sfc64-testset-2.csv
-   │     │  │  │  │  ├─ sfc64_np126.pkl.gz
-   │     │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  └─ __pycache__
-   │     │  │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  │  ├─ test_direct.py
    │     │  │  │  ├─ test_extending.py
    │     │  │  │  ├─ test_generator_mt19937.py
@@ -18872,194 +19504,6 @@ second brain OS
    │     │  ├─ typing
    │     │  │  ├─ mypy_plugin.py
    │     │  │  ├─ tests
-   │     │  │  │  ├─ data
-   │     │  │  │  │  ├─ fail
-   │     │  │  │  │  │  ├─ arithmetic.pyi
-   │     │  │  │  │  │  ├─ arrayprint.pyi
-   │     │  │  │  │  │  ├─ arrayterator.pyi
-   │     │  │  │  │  │  ├─ array_constructors.pyi
-   │     │  │  │  │  │  ├─ array_like.pyi
-   │     │  │  │  │  │  ├─ array_pad.pyi
-   │     │  │  │  │  │  ├─ bitwise_ops.pyi
-   │     │  │  │  │  │  ├─ char.pyi
-   │     │  │  │  │  │  ├─ chararray.pyi
-   │     │  │  │  │  │  ├─ comparisons.pyi
-   │     │  │  │  │  │  ├─ constants.pyi
-   │     │  │  │  │  │  ├─ datasource.pyi
-   │     │  │  │  │  │  ├─ dtype.pyi
-   │     │  │  │  │  │  ├─ einsumfunc.pyi
-   │     │  │  │  │  │  ├─ flatiter.pyi
-   │     │  │  │  │  │  ├─ fromnumeric.pyi
-   │     │  │  │  │  │  ├─ histograms.pyi
-   │     │  │  │  │  │  ├─ index_tricks.pyi
-   │     │  │  │  │  │  ├─ lib_function_base.pyi
-   │     │  │  │  │  │  ├─ lib_polynomial.pyi
-   │     │  │  │  │  │  ├─ lib_utils.pyi
-   │     │  │  │  │  │  ├─ lib_version.pyi
-   │     │  │  │  │  │  ├─ linalg.pyi
-   │     │  │  │  │  │  ├─ ma.pyi
-   │     │  │  │  │  │  ├─ memmap.pyi
-   │     │  │  │  │  │  ├─ modules.pyi
-   │     │  │  │  │  │  ├─ multiarray.pyi
-   │     │  │  │  │  │  ├─ ndarray.pyi
-   │     │  │  │  │  │  ├─ ndarray_misc.pyi
-   │     │  │  │  │  │  ├─ nditer.pyi
-   │     │  │  │  │  │  ├─ nested_sequence.pyi
-   │     │  │  │  │  │  ├─ npyio.pyi
-   │     │  │  │  │  │  ├─ numerictypes.pyi
-   │     │  │  │  │  │  ├─ random.pyi
-   │     │  │  │  │  │  ├─ rec.pyi
-   │     │  │  │  │  │  ├─ scalars.pyi
-   │     │  │  │  │  │  ├─ shape.pyi
-   │     │  │  │  │  │  ├─ shape_base.pyi
-   │     │  │  │  │  │  ├─ stride_tricks.pyi
-   │     │  │  │  │  │  ├─ strings.pyi
-   │     │  │  │  │  │  ├─ testing.pyi
-   │     │  │  │  │  │  ├─ twodim_base.pyi
-   │     │  │  │  │  │  ├─ type_check.pyi
-   │     │  │  │  │  │  ├─ ufunclike.pyi
-   │     │  │  │  │  │  ├─ ufuncs.pyi
-   │     │  │  │  │  │  ├─ ufunc_config.pyi
-   │     │  │  │  │  │  └─ warnings_and_errors.pyi
-   │     │  │  │  │  ├─ misc
-   │     │  │  │  │  │  └─ extended_precision.pyi
-   │     │  │  │  │  ├─ mypy.ini
-   │     │  │  │  │  ├─ pass
-   │     │  │  │  │  │  ├─ arithmetic.py
-   │     │  │  │  │  │  ├─ arrayprint.py
-   │     │  │  │  │  │  ├─ arrayterator.py
-   │     │  │  │  │  │  ├─ array_constructors.py
-   │     │  │  │  │  │  ├─ array_like.py
-   │     │  │  │  │  │  ├─ bitwise_ops.py
-   │     │  │  │  │  │  ├─ comparisons.py
-   │     │  │  │  │  │  ├─ dtype.py
-   │     │  │  │  │  │  ├─ einsumfunc.py
-   │     │  │  │  │  │  ├─ flatiter.py
-   │     │  │  │  │  │  ├─ fromnumeric.py
-   │     │  │  │  │  │  ├─ index_tricks.py
-   │     │  │  │  │  │  ├─ lib_user_array.py
-   │     │  │  │  │  │  ├─ lib_utils.py
-   │     │  │  │  │  │  ├─ lib_version.py
-   │     │  │  │  │  │  ├─ literal.py
-   │     │  │  │  │  │  ├─ ma.py
-   │     │  │  │  │  │  ├─ mod.py
-   │     │  │  │  │  │  ├─ modules.py
-   │     │  │  │  │  │  ├─ multiarray.py
-   │     │  │  │  │  │  ├─ ndarray_conversion.py
-   │     │  │  │  │  │  ├─ ndarray_misc.py
-   │     │  │  │  │  │  ├─ ndarray_shape_manipulation.py
-   │     │  │  │  │  │  ├─ nditer.py
-   │     │  │  │  │  │  ├─ numeric.py
-   │     │  │  │  │  │  ├─ numerictypes.py
-   │     │  │  │  │  │  ├─ random.py
-   │     │  │  │  │  │  ├─ recfunctions.py
-   │     │  │  │  │  │  ├─ scalars.py
-   │     │  │  │  │  │  ├─ shape.py
-   │     │  │  │  │  │  ├─ simple.py
-   │     │  │  │  │  │  ├─ simple_py3.py
-   │     │  │  │  │  │  ├─ ufunclike.py
-   │     │  │  │  │  │  ├─ ufuncs.py
-   │     │  │  │  │  │  ├─ ufunc_config.py
-   │     │  │  │  │  │  ├─ warnings_and_errors.py
-   │     │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │     ├─ arithmetic.cpython-313.pyc
-   │     │  │  │  │  │     ├─ arrayprint.cpython-313.pyc
-   │     │  │  │  │  │     ├─ arrayterator.cpython-313.pyc
-   │     │  │  │  │  │     ├─ array_constructors.cpython-313.pyc
-   │     │  │  │  │  │     ├─ array_like.cpython-313.pyc
-   │     │  │  │  │  │     ├─ bitwise_ops.cpython-313.pyc
-   │     │  │  │  │  │     ├─ comparisons.cpython-313.pyc
-   │     │  │  │  │  │     ├─ dtype.cpython-313.pyc
-   │     │  │  │  │  │     ├─ einsumfunc.cpython-313.pyc
-   │     │  │  │  │  │     ├─ flatiter.cpython-313.pyc
-   │     │  │  │  │  │     ├─ fromnumeric.cpython-313.pyc
-   │     │  │  │  │  │     ├─ index_tricks.cpython-313.pyc
-   │     │  │  │  │  │     ├─ lib_user_array.cpython-313.pyc
-   │     │  │  │  │  │     ├─ lib_utils.cpython-313.pyc
-   │     │  │  │  │  │     ├─ lib_version.cpython-313.pyc
-   │     │  │  │  │  │     ├─ literal.cpython-313.pyc
-   │     │  │  │  │  │     ├─ ma.cpython-313.pyc
-   │     │  │  │  │  │     ├─ mod.cpython-313.pyc
-   │     │  │  │  │  │     ├─ modules.cpython-313.pyc
-   │     │  │  │  │  │     ├─ multiarray.cpython-313.pyc
-   │     │  │  │  │  │     ├─ ndarray_conversion.cpython-313.pyc
-   │     │  │  │  │  │     ├─ ndarray_misc.cpython-313.pyc
-   │     │  │  │  │  │     ├─ ndarray_shape_manipulation.cpython-313.pyc
-   │     │  │  │  │  │     ├─ nditer.cpython-313.pyc
-   │     │  │  │  │  │     ├─ numeric.cpython-313.pyc
-   │     │  │  │  │  │     ├─ numerictypes.cpython-313.pyc
-   │     │  │  │  │  │     ├─ random.cpython-313.pyc
-   │     │  │  │  │  │     ├─ recfunctions.cpython-313.pyc
-   │     │  │  │  │  │     ├─ scalars.cpython-313.pyc
-   │     │  │  │  │  │     ├─ shape.cpython-313.pyc
-   │     │  │  │  │  │     ├─ simple.cpython-313.pyc
-   │     │  │  │  │  │     ├─ simple_py3.cpython-313.pyc
-   │     │  │  │  │  │     ├─ ufunclike.cpython-313.pyc
-   │     │  │  │  │  │     ├─ ufuncs.cpython-313.pyc
-   │     │  │  │  │  │     ├─ ufunc_config.cpython-313.pyc
-   │     │  │  │  │  │     └─ warnings_and_errors.cpython-313.pyc
-   │     │  │  │  │  └─ reveal
-   │     │  │  │  │     ├─ arithmetic.pyi
-   │     │  │  │  │     ├─ arraypad.pyi
-   │     │  │  │  │     ├─ arrayprint.pyi
-   │     │  │  │  │     ├─ arraysetops.pyi
-   │     │  │  │  │     ├─ arrayterator.pyi
-   │     │  │  │  │     ├─ array_api_info.pyi
-   │     │  │  │  │     ├─ array_constructors.pyi
-   │     │  │  │  │     ├─ bitwise_ops.pyi
-   │     │  │  │  │     ├─ char.pyi
-   │     │  │  │  │     ├─ chararray.pyi
-   │     │  │  │  │     ├─ comparisons.pyi
-   │     │  │  │  │     ├─ constants.pyi
-   │     │  │  │  │     ├─ ctypeslib.pyi
-   │     │  │  │  │     ├─ datasource.pyi
-   │     │  │  │  │     ├─ dtype.pyi
-   │     │  │  │  │     ├─ einsumfunc.pyi
-   │     │  │  │  │     ├─ emath.pyi
-   │     │  │  │  │     ├─ fft.pyi
-   │     │  │  │  │     ├─ flatiter.pyi
-   │     │  │  │  │     ├─ fromnumeric.pyi
-   │     │  │  │  │     ├─ getlimits.pyi
-   │     │  │  │  │     ├─ histograms.pyi
-   │     │  │  │  │     ├─ index_tricks.pyi
-   │     │  │  │  │     ├─ lib_function_base.pyi
-   │     │  │  │  │     ├─ lib_polynomial.pyi
-   │     │  │  │  │     ├─ lib_utils.pyi
-   │     │  │  │  │     ├─ lib_version.pyi
-   │     │  │  │  │     ├─ linalg.pyi
-   │     │  │  │  │     ├─ ma.pyi
-   │     │  │  │  │     ├─ matrix.pyi
-   │     │  │  │  │     ├─ memmap.pyi
-   │     │  │  │  │     ├─ mod.pyi
-   │     │  │  │  │     ├─ modules.pyi
-   │     │  │  │  │     ├─ multiarray.pyi
-   │     │  │  │  │     ├─ nbit_base_example.pyi
-   │     │  │  │  │     ├─ ndarray_assignability.pyi
-   │     │  │  │  │     ├─ ndarray_conversion.pyi
-   │     │  │  │  │     ├─ ndarray_misc.pyi
-   │     │  │  │  │     ├─ ndarray_shape_manipulation.pyi
-   │     │  │  │  │     ├─ nditer.pyi
-   │     │  │  │  │     ├─ nested_sequence.pyi
-   │     │  │  │  │     ├─ npyio.pyi
-   │     │  │  │  │     ├─ numeric.pyi
-   │     │  │  │  │     ├─ numerictypes.pyi
-   │     │  │  │  │     ├─ polynomial_polybase.pyi
-   │     │  │  │  │     ├─ polynomial_polyutils.pyi
-   │     │  │  │  │     ├─ polynomial_series.pyi
-   │     │  │  │  │     ├─ random.pyi
-   │     │  │  │  │     ├─ rec.pyi
-   │     │  │  │  │     ├─ scalars.pyi
-   │     │  │  │  │     ├─ shape.pyi
-   │     │  │  │  │     ├─ shape_base.pyi
-   │     │  │  │  │     ├─ stride_tricks.pyi
-   │     │  │  │  │     ├─ strings.pyi
-   │     │  │  │  │     ├─ testing.pyi
-   │     │  │  │  │     ├─ twodim_base.pyi
-   │     │  │  │  │     ├─ type_check.pyi
-   │     │  │  │  │     ├─ ufunclike.pyi
-   │     │  │  │  │     ├─ ufuncs.pyi
-   │     │  │  │  │     ├─ ufunc_config.pyi
-   │     │  │  │  │     └─ warnings_and_errors.pyi
    │     │  │  │  ├─ test_isfile.py
    │     │  │  │  ├─ test_runtime.py
    │     │  │  │  ├─ test_typing.py
@@ -19151,31 +19595,6 @@ second brain OS
    │     │  │  ├─ strings.py
    │     │  │  ├─ strings.pyi
    │     │  │  ├─ tests
-   │     │  │  │  ├─ data
-   │     │  │  │  │  ├─ astype_copy.pkl
-   │     │  │  │  │  ├─ generate_umath_validation_data.cpp
-   │     │  │  │  │  ├─ recarray_from_file.fits
-   │     │  │  │  │  ├─ umath-validation-set-arccos.csv
-   │     │  │  │  │  ├─ umath-validation-set-arccosh.csv
-   │     │  │  │  │  ├─ umath-validation-set-arcsin.csv
-   │     │  │  │  │  ├─ umath-validation-set-arcsinh.csv
-   │     │  │  │  │  ├─ umath-validation-set-arctan.csv
-   │     │  │  │  │  ├─ umath-validation-set-arctanh.csv
-   │     │  │  │  │  ├─ umath-validation-set-cbrt.csv
-   │     │  │  │  │  ├─ umath-validation-set-cos.csv
-   │     │  │  │  │  ├─ umath-validation-set-cosh.csv
-   │     │  │  │  │  ├─ umath-validation-set-exp.csv
-   │     │  │  │  │  ├─ umath-validation-set-exp2.csv
-   │     │  │  │  │  ├─ umath-validation-set-expm1.csv
-   │     │  │  │  │  ├─ umath-validation-set-log.csv
-   │     │  │  │  │  ├─ umath-validation-set-log10.csv
-   │     │  │  │  │  ├─ umath-validation-set-log1p.csv
-   │     │  │  │  │  ├─ umath-validation-set-log2.csv
-   │     │  │  │  │  ├─ umath-validation-set-README.txt
-   │     │  │  │  │  ├─ umath-validation-set-sin.csv
-   │     │  │  │  │  ├─ umath-validation-set-sinh.csv
-   │     │  │  │  │  ├─ umath-validation-set-tan.csv
-   │     │  │  │  │  └─ umath-validation-set-tanh.csv
    │     │  │  │  ├─ examples
    │     │  │  │  │  ├─ cython
    │     │  │  │  │  │  ├─ checks.pyx
@@ -19740,13 +20159,6 @@ second brain OS
    │     │  │     ├─ version_info.cpython-313.pyc
    │     │  │     ├─ _ld_preload.cpython-313.pyc
    │     │  │     ├─ _pybind_state.cpython-313.pyc
-   │     │  │     └─ __init__.cpython-313.pyc
-   │     │  ├─ datasets
-   │     │  │  ├─ logreg_iris.onnx
-   │     │  │  ├─ mul_1.onnx
-   │     │  │  ├─ sigmoid.onnx
-   │     │  │  ├─ __init__.py
-   │     │  │  └─ __pycache__
    │     │  │     └─ __init__.cpython-313.pyc
    │     │  ├─ LICENSE
    │     │  ├─ Privacy.md
@@ -24657,24 +25069,6 @@ second brain OS
    │     │  ├─ api_tests.txt
    │     │  ├─ py.typed
    │     │  ├─ tests
-   │     │  │  ├─ data
-   │     │  │  │  ├─ my-test-package-source
-   │     │  │  │  │  ├─ setup.cfg
-   │     │  │  │  │  ├─ setup.py
-   │     │  │  │  │  └─ __pycache__
-   │     │  │  │  │     └─ setup.cpython-313.pyc
-   │     │  │  │  ├─ my-test-package-zip
-   │     │  │  │  │  └─ my-test-package.zip
-   │     │  │  │  ├─ my-test-package_unpacked-egg
-   │     │  │  │  │  └─ my_test_package-1.0-py3.7.egg
-   │     │  │  │  │     └─ EGG-INFO
-   │     │  │  │  │        ├─ dependency_links.txt
-   │     │  │  │  │        ├─ PKG-INFO
-   │     │  │  │  │        ├─ SOURCES.txt
-   │     │  │  │  │        ├─ top_level.txt
-   │     │  │  │  │        └─ zip-safe
-   │     │  │  │  └─ my-test-package_zipped-egg
-   │     │  │  │     └─ my_test_package-1.0-py3.7.egg
    │     │  │  ├─ test_find_distributions.py
    │     │  │  ├─ test_integration_zope_interface.py
    │     │  │  ├─ test_markers.py
@@ -24868,8 +25262,6 @@ second brain OS
    │     │  │  ├─ axis.py
    │     │  │  ├─ category.py
    │     │  │  ├─ chart.py
-   │     │  │  ├─ data.py
-   │     │  │  ├─ datalabel.py
    │     │  │  ├─ legend.py
    │     │  │  ├─ marker.py
    │     │  │  ├─ plot.py
@@ -24882,8 +25274,6 @@ second brain OS
    │     │  │     ├─ axis.cpython-313.pyc
    │     │  │     ├─ category.cpython-313.pyc
    │     │  │     ├─ chart.cpython-313.pyc
-   │     │  │     ├─ data.cpython-313.pyc
-   │     │  │     ├─ datalabel.cpython-313.pyc
    │     │  │     ├─ legend.cpython-313.pyc
    │     │  │     ├─ marker.cpython-313.pyc
    │     │  │     ├─ plot.cpython-313.pyc
@@ -24949,7 +25339,6 @@ second brain OS
    │     │  │  ├─ chart
    │     │  │  │  ├─ axis.py
    │     │  │  │  ├─ chart.py
-   │     │  │  │  ├─ datalabel.py
    │     │  │  │  ├─ legend.py
    │     │  │  │  ├─ marker.py
    │     │  │  │  ├─ plot.py
@@ -24959,7 +25348,6 @@ second brain OS
    │     │  │  │  └─ __pycache__
    │     │  │  │     ├─ axis.cpython-313.pyc
    │     │  │  │     ├─ chart.cpython-313.pyc
-   │     │  │  │     ├─ datalabel.cpython-313.pyc
    │     │  │  │     ├─ legend.cpython-313.pyc
    │     │  │  │     ├─ marker.cpython-313.pyc
    │     │  │  │     ├─ plot.cpython-313.pyc
@@ -25180,7 +25568,6 @@ second brain OS
    │     │  │  └─ __pycache__
    │     │  │     └─ __init__.cpython-313.pyc
    │     │  ├─ cursor_shapes.py
-   │     │  ├─ data_structures.py
    │     │  ├─ document.py
    │     │  ├─ enums.py
    │     │  ├─ eventloop
@@ -25416,7 +25803,6 @@ second brain OS
    │     │     ├─ buffer.cpython-313.pyc
    │     │     ├─ cache.cpython-313.pyc
    │     │     ├─ cursor_shapes.cpython-313.pyc
-   │     │     ├─ data_structures.cpython-313.pyc
    │     │     ├─ document.cpython-313.pyc
    │     │     ├─ enums.cpython-313.pyc
    │     │     ├─ history.cpython-313.pyc
@@ -25463,11 +25849,79 @@ second brain OS
    │     │  ├─ RECORD
    │     │  ├─ top_level.txt
    │     │  └─ WHEEL
+   │     ├─ proto
+   │     │  ├─ datetime_helpers.py
+   │     │  ├─ enums.py
+   │     │  ├─ fields.py
+   │     │  ├─ marshal
+   │     │  │  ├─ collections
+   │     │  │  │  ├─ maps.py
+   │     │  │  │  ├─ repeated.py
+   │     │  │  │  ├─ __init__.py
+   │     │  │  │  └─ __pycache__
+   │     │  │  │     ├─ maps.cpython-313.pyc
+   │     │  │  │     ├─ repeated.cpython-313.pyc
+   │     │  │  │     └─ __init__.cpython-313.pyc
+   │     │  │  ├─ compat.py
+   │     │  │  ├─ marshal.py
+   │     │  │  ├─ rules
+   │     │  │  │  ├─ bytes.py
+   │     │  │  │  ├─ dates.py
+   │     │  │  │  ├─ enums.py
+   │     │  │  │  ├─ field_mask.py
+   │     │  │  │  ├─ message.py
+   │     │  │  │  ├─ stringy_numbers.py
+   │     │  │  │  ├─ struct.py
+   │     │  │  │  ├─ wrappers.py
+   │     │  │  │  ├─ __init__.py
+   │     │  │  │  └─ __pycache__
+   │     │  │  │     ├─ bytes.cpython-313.pyc
+   │     │  │  │     ├─ dates.cpython-313.pyc
+   │     │  │  │     ├─ enums.cpython-313.pyc
+   │     │  │  │     ├─ field_mask.cpython-313.pyc
+   │     │  │  │     ├─ message.cpython-313.pyc
+   │     │  │  │     ├─ stringy_numbers.cpython-313.pyc
+   │     │  │  │     ├─ struct.cpython-313.pyc
+   │     │  │  │     ├─ wrappers.cpython-313.pyc
+   │     │  │  │     └─ __init__.cpython-313.pyc
+   │     │  │  ├─ __init__.py
+   │     │  │  └─ __pycache__
+   │     │  │     ├─ compat.cpython-313.pyc
+   │     │  │     ├─ marshal.cpython-313.pyc
+   │     │  │     └─ __init__.cpython-313.pyc
+   │     │  ├─ message.py
+   │     │  ├─ modules.py
+   │     │  ├─ primitives.py
+   │     │  ├─ utils.py
+   │     │  ├─ version.py
+   │     │  ├─ _file_info.py
+   │     │  ├─ _package_info.py
+   │     │  ├─ __init__.py
+   │     │  └─ __pycache__
+   │     │     ├─ datetime_helpers.cpython-313.pyc
+   │     │     ├─ enums.cpython-313.pyc
+   │     │     ├─ fields.cpython-313.pyc
+   │     │     ├─ message.cpython-313.pyc
+   │     │     ├─ modules.cpython-313.pyc
+   │     │     ├─ primitives.cpython-313.pyc
+   │     │     ├─ utils.cpython-313.pyc
+   │     │     ├─ version.cpython-313.pyc
+   │     │     ├─ _file_info.cpython-313.pyc
+   │     │     ├─ _package_info.cpython-313.pyc
+   │     │     └─ __init__.cpython-313.pyc
    │     ├─ protobuf-6.33.1.dist-info
    │     │  ├─ INSTALLER
    │     │  ├─ LICENSE
    │     │  ├─ METADATA
    │     │  ├─ RECORD
+   │     │  └─ WHEEL
+   │     ├─ proto_plus-1.27.0.dist-info
+   │     │  ├─ INSTALLER
+   │     │  ├─ licenses
+   │     │  │  └─ LICENSE
+   │     │  ├─ METADATA
+   │     │  ├─ RECORD
+   │     │  ├─ top_level.txt
    │     │  └─ WHEEL
    │     ├─ psutil
    │     │  ├─ tests
@@ -25957,7 +26411,6 @@ second brain OS
    │     │  ├─ class_validators.py
    │     │  ├─ color.py
    │     │  ├─ config.py
-   │     │  ├─ dataclasses.py
    │     │  ├─ datetime_parse.py
    │     │  ├─ decorator.py
    │     │  ├─ deprecated
@@ -26022,7 +26475,6 @@ second brain OS
    │     │  │  ├─ class_validators.py
    │     │  │  ├─ color.py
    │     │  │  ├─ config.py
-   │     │  │  ├─ dataclasses.py
    │     │  │  ├─ datetime_parse.py
    │     │  │  ├─ decorator.py
    │     │  │  ├─ env_settings.py
@@ -26050,7 +26502,6 @@ second brain OS
    │     │  │     ├─ class_validators.cpython-313.pyc
    │     │  │     ├─ color.cpython-313.pyc
    │     │  │     ├─ config.cpython-313.pyc
-   │     │  │     ├─ dataclasses.cpython-313.pyc
    │     │  │     ├─ datetime_parse.cpython-313.pyc
    │     │  │     ├─ decorator.cpython-313.pyc
    │     │  │     ├─ env_settings.cpython-313.pyc
@@ -26145,7 +26596,6 @@ second brain OS
    │     │     ├─ class_validators.cpython-313.pyc
    │     │     ├─ color.cpython-313.pyc
    │     │     ├─ config.cpython-313.pyc
-   │     │     ├─ dataclasses.cpython-313.pyc
    │     │     ├─ datetime_parse.cpython-313.pyc
    │     │     ├─ decorator.cpython-313.pyc
    │     │     ├─ env_settings.cpython-313.pyc
@@ -26339,7 +26789,6 @@ second brain OS
    │     │  │  ├─ c_like.py
    │     │  │  ├─ d.py
    │     │  │  ├─ dalvik.py
-   │     │  │  ├─ data.py
    │     │  │  ├─ dax.py
    │     │  │  ├─ devicetree.py
    │     │  │  ├─ diff.py
@@ -26599,7 +27048,6 @@ second brain OS
    │     │  │     ├─ c_like.cpython-313.pyc
    │     │  │     ├─ d.cpython-313.pyc
    │     │  │     ├─ dalvik.cpython-313.pyc
-   │     │  │     ├─ data.cpython-313.pyc
    │     │  │     ├─ dax.cpython-313.pyc
    │     │  │     ├─ devicetree.cpython-313.pyc
    │     │  │     ├─ diff.cpython-313.pyc
@@ -27080,6 +27528,46 @@ second brain OS
    │     │  ├─ README.md
    │     │  ├─ RECORD
    │     │  ├─ REQUESTED
+   │     │  └─ WHEEL
+   │     ├─ pyparsing
+   │     │  ├─ actions.py
+   │     │  ├─ common.py
+   │     │  ├─ core.py
+   │     │  ├─ diagram
+   │     │  │  ├─ __init__.py
+   │     │  │  └─ __pycache__
+   │     │  │     └─ __init__.cpython-313.pyc
+   │     │  ├─ exceptions.py
+   │     │  ├─ helpers.py
+   │     │  ├─ py.typed
+   │     │  ├─ results.py
+   │     │  ├─ testing.py
+   │     │  ├─ tools
+   │     │  │  ├─ cvt_pyparsing_pep8_names.py
+   │     │  │  ├─ __init__.py
+   │     │  │  └─ __pycache__
+   │     │  │     ├─ cvt_pyparsing_pep8_names.cpython-313.pyc
+   │     │  │     └─ __init__.cpython-313.pyc
+   │     │  ├─ unicode.py
+   │     │  ├─ util.py
+   │     │  ├─ __init__.py
+   │     │  └─ __pycache__
+   │     │     ├─ actions.cpython-313.pyc
+   │     │     ├─ common.cpython-313.pyc
+   │     │     ├─ core.cpython-313.pyc
+   │     │     ├─ exceptions.cpython-313.pyc
+   │     │     ├─ helpers.cpython-313.pyc
+   │     │     ├─ results.cpython-313.pyc
+   │     │     ├─ testing.cpython-313.pyc
+   │     │     ├─ unicode.cpython-313.pyc
+   │     │     ├─ util.cpython-313.pyc
+   │     │     └─ __init__.cpython-313.pyc
+   │     ├─ pyparsing-3.2.5.dist-info
+   │     │  ├─ INSTALLER
+   │     │  ├─ licenses
+   │     │  │  └─ LICENSE
+   │     │  ├─ METADATA
+   │     │  ├─ RECORD
    │     │  └─ WHEEL
    │     ├─ pypdf
    │     │  ├─ annotations
@@ -28103,24 +28591,6 @@ second brain OS
    │     │  │     ├─ _codata.cpython-313.pyc
    │     │  │     ├─ _constants.cpython-313.pyc
    │     │  │     └─ __init__.cpython-313.pyc
-   │     │  ├─ datasets
-   │     │  │  ├─ tests
-   │     │  │  │  ├─ test_data.py
-   │     │  │  │  ├─ __init__.py
-   │     │  │  │  └─ __pycache__
-   │     │  │  │     ├─ test_data.cpython-313.pyc
-   │     │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  ├─ _download_all.py
-   │     │  │  ├─ _fetchers.py
-   │     │  │  ├─ _registry.py
-   │     │  │  ├─ _utils.py
-   │     │  │  ├─ __init__.py
-   │     │  │  └─ __pycache__
-   │     │  │     ├─ _download_all.cpython-313.pyc
-   │     │  │     ├─ _fetchers.cpython-313.pyc
-   │     │  │     ├─ _registry.cpython-313.pyc
-   │     │  │     ├─ _utils.cpython-313.pyc
-   │     │  │     └─ __init__.cpython-313.pyc
    │     │  ├─ differentiate
    │     │  │  ├─ tests
    │     │  │  │  ├─ test_differentiate.py
@@ -28352,10 +28822,6 @@ second brain OS
    │     │  │  ├─ polyint.py
    │     │  │  ├─ rbf.py
    │     │  │  ├─ tests
-   │     │  │  │  ├─ data
-   │     │  │  │  │  ├─ bug-1310.npz
-   │     │  │  │  │  ├─ estimate_gradients_hang.npy
-   │     │  │  │  │  └─ gcvspl.npz
    │     │  │  │  ├─ test_bary_rational.py
    │     │  │  │  ├─ test_bsplines.py
    │     │  │  │  ├─ test_fitpack.py
@@ -28444,23 +28910,6 @@ second brain OS
    │     │  │  ├─ arff
    │     │  │  │  ├─ arffread.py
    │     │  │  │  ├─ tests
-   │     │  │  │  │  ├─ data
-   │     │  │  │  │  │  ├─ iris.arff
-   │     │  │  │  │  │  ├─ missing.arff
-   │     │  │  │  │  │  ├─ nodata.arff
-   │     │  │  │  │  │  ├─ quoted_nominal.arff
-   │     │  │  │  │  │  ├─ quoted_nominal_spaces.arff
-   │     │  │  │  │  │  ├─ test1.arff
-   │     │  │  │  │  │  ├─ test10.arff
-   │     │  │  │  │  │  ├─ test11.arff
-   │     │  │  │  │  │  ├─ test2.arff
-   │     │  │  │  │  │  ├─ test3.arff
-   │     │  │  │  │  │  ├─ test4.arff
-   │     │  │  │  │  │  ├─ test5.arff
-   │     │  │  │  │  │  ├─ test6.arff
-   │     │  │  │  │  │  ├─ test7.arff
-   │     │  │  │  │  │  ├─ test8.arff
-   │     │  │  │  │  │  └─ test9.arff
    │     │  │  │  │  ├─ test_arffread.py
    │     │  │  │  │  ├─ __init__.py
    │     │  │  │  │  └─ __pycache__
@@ -28485,118 +28934,6 @@ second brain OS
    │     │  │  │  ├─ mio_utils.py
    │     │  │  │  ├─ streams.py
    │     │  │  │  ├─ tests
-   │     │  │  │  │  ├─ data
-   │     │  │  │  │  │  ├─ bad_miuint32.mat
-   │     │  │  │  │  │  ├─ bad_miutf8_array_name.mat
-   │     │  │  │  │  │  ├─ big_endian.mat
-   │     │  │  │  │  │  ├─ broken_utf8.mat
-   │     │  │  │  │  │  ├─ corrupted_zlib_checksum.mat
-   │     │  │  │  │  │  ├─ corrupted_zlib_data.mat
-   │     │  │  │  │  │  ├─ debigged_m4.mat
-   │     │  │  │  │  │  ├─ japanese_utf8.txt
-   │     │  │  │  │  │  ├─ little_endian.mat
-   │     │  │  │  │  │  ├─ logical_sparse.mat
-   │     │  │  │  │  │  ├─ malformed1.mat
-   │     │  │  │  │  │  ├─ miuint32_for_miint32.mat
-   │     │  │  │  │  │  ├─ miutf8_array_name.mat
-   │     │  │  │  │  │  ├─ nasty_duplicate_fieldnames.mat
-   │     │  │  │  │  │  ├─ one_by_zero_char.mat
-   │     │  │  │  │  │  ├─ parabola.mat
-   │     │  │  │  │  │  ├─ single_empty_string.mat
-   │     │  │  │  │  │  ├─ some_functions.mat
-   │     │  │  │  │  │  ├─ sqr.mat
-   │     │  │  │  │  │  ├─ test3dmatrix_6.1_SOL2.mat
-   │     │  │  │  │  │  ├─ test3dmatrix_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ test3dmatrix_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ test3dmatrix_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testbool_8_WIN64.mat
-   │     │  │  │  │  │  ├─ testcellnest_6.1_SOL2.mat
-   │     │  │  │  │  │  ├─ testcellnest_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testcellnest_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testcellnest_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testcell_6.1_SOL2.mat
-   │     │  │  │  │  │  ├─ testcell_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testcell_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testcell_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testcomplex_4.2c_SOL2.mat
-   │     │  │  │  │  │  ├─ testcomplex_6.1_SOL2.mat
-   │     │  │  │  │  │  ├─ testcomplex_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testcomplex_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testcomplex_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testdouble_4.2c_SOL2.mat
-   │     │  │  │  │  │  ├─ testdouble_6.1_SOL2.mat
-   │     │  │  │  │  │  ├─ testdouble_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testdouble_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testdouble_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testemptycell_5.3_SOL2.mat
-   │     │  │  │  │  │  ├─ testemptycell_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testemptycell_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testemptycell_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testfunc_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testhdf5_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testmatrix_4.2c_SOL2.mat
-   │     │  │  │  │  │  ├─ testmatrix_6.1_SOL2.mat
-   │     │  │  │  │  │  ├─ testmatrix_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testmatrix_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testmatrix_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testminus_4.2c_SOL2.mat
-   │     │  │  │  │  │  ├─ testminus_6.1_SOL2.mat
-   │     │  │  │  │  │  ├─ testminus_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testminus_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testminus_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testmulti_4.2c_SOL2.mat
-   │     │  │  │  │  │  ├─ testmulti_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testmulti_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testobject_6.1_SOL2.mat
-   │     │  │  │  │  │  ├─ testobject_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testobject_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testobject_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testonechar_4.2c_SOL2.mat
-   │     │  │  │  │  │  ├─ testonechar_6.1_SOL2.mat
-   │     │  │  │  │  │  ├─ testonechar_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testonechar_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testonechar_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testscalarcell_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testsimplecell.mat
-   │     │  │  │  │  │  ├─ testsparsecomplex_4.2c_SOL2.mat
-   │     │  │  │  │  │  ├─ testsparsecomplex_6.1_SOL2.mat
-   │     │  │  │  │  │  ├─ testsparsecomplex_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testsparsecomplex_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testsparsecomplex_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testsparsefloat_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testsparse_4.2c_SOL2.mat
-   │     │  │  │  │  │  ├─ testsparse_6.1_SOL2.mat
-   │     │  │  │  │  │  ├─ testsparse_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testsparse_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testsparse_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ teststringarray_4.2c_SOL2.mat
-   │     │  │  │  │  │  ├─ teststringarray_6.1_SOL2.mat
-   │     │  │  │  │  │  ├─ teststringarray_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ teststringarray_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ teststringarray_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ teststring_4.2c_SOL2.mat
-   │     │  │  │  │  │  ├─ teststring_6.1_SOL2.mat
-   │     │  │  │  │  │  ├─ teststring_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ teststring_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ teststring_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ teststructarr_6.1_SOL2.mat
-   │     │  │  │  │  │  ├─ teststructarr_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ teststructarr_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ teststructarr_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ teststructnest_6.1_SOL2.mat
-   │     │  │  │  │  │  ├─ teststructnest_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ teststructnest_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ teststructnest_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ teststruct_6.1_SOL2.mat
-   │     │  │  │  │  │  ├─ teststruct_6.5.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ teststruct_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ teststruct_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testunicode_7.1_GLNX86.mat
-   │     │  │  │  │  │  ├─ testunicode_7.4_GLNX86.mat
-   │     │  │  │  │  │  ├─ testvec_4_GLNX86.mat
-   │     │  │  │  │  │  ├─ test_empty_struct.mat
-   │     │  │  │  │  │  ├─ test_mat4_le_floats.mat
-   │     │  │  │  │  │  └─ test_skip_variable.mat
    │     │  │  │  │  ├─ test_byteordercodes.py
    │     │  │  │  │  ├─ test_mio.py
    │     │  │  │  │  ├─ test_mio5_utils.py
@@ -28649,94 +28986,6 @@ second brain OS
    │     │  │  ├─ mmio.py
    │     │  │  ├─ netcdf.py
    │     │  │  ├─ tests
-   │     │  │  │  ├─ data
-   │     │  │  │  │  ├─ array_float32_1d.sav
-   │     │  │  │  │  ├─ array_float32_2d.sav
-   │     │  │  │  │  ├─ array_float32_3d.sav
-   │     │  │  │  │  ├─ array_float32_4d.sav
-   │     │  │  │  │  ├─ array_float32_5d.sav
-   │     │  │  │  │  ├─ array_float32_6d.sav
-   │     │  │  │  │  ├─ array_float32_7d.sav
-   │     │  │  │  │  ├─ array_float32_8d.sav
-   │     │  │  │  │  ├─ array_float32_pointer_1d.sav
-   │     │  │  │  │  ├─ array_float32_pointer_2d.sav
-   │     │  │  │  │  ├─ array_float32_pointer_3d.sav
-   │     │  │  │  │  ├─ array_float32_pointer_4d.sav
-   │     │  │  │  │  ├─ array_float32_pointer_5d.sav
-   │     │  │  │  │  ├─ array_float32_pointer_6d.sav
-   │     │  │  │  │  ├─ array_float32_pointer_7d.sav
-   │     │  │  │  │  ├─ array_float32_pointer_8d.sav
-   │     │  │  │  │  ├─ example_1.nc
-   │     │  │  │  │  ├─ example_2.nc
-   │     │  │  │  │  ├─ example_3_maskedvals.nc
-   │     │  │  │  │  ├─ fortran-3x3d-2i.dat
-   │     │  │  │  │  ├─ fortran-mixed.dat
-   │     │  │  │  │  ├─ fortran-sf8-11x1x10.dat
-   │     │  │  │  │  ├─ fortran-sf8-15x10x22.dat
-   │     │  │  │  │  ├─ fortran-sf8-1x1x1.dat
-   │     │  │  │  │  ├─ fortran-sf8-1x1x5.dat
-   │     │  │  │  │  ├─ fortran-sf8-1x1x7.dat
-   │     │  │  │  │  ├─ fortran-sf8-1x3x5.dat
-   │     │  │  │  │  ├─ fortran-si4-11x1x10.dat
-   │     │  │  │  │  ├─ fortran-si4-15x10x22.dat
-   │     │  │  │  │  ├─ fortran-si4-1x1x1.dat
-   │     │  │  │  │  ├─ fortran-si4-1x1x5.dat
-   │     │  │  │  │  ├─ fortran-si4-1x1x7.dat
-   │     │  │  │  │  ├─ fortran-si4-1x3x5.dat
-   │     │  │  │  │  ├─ invalid_pointer.sav
-   │     │  │  │  │  ├─ null_pointer.sav
-   │     │  │  │  │  ├─ scalar_byte.sav
-   │     │  │  │  │  ├─ scalar_byte_descr.sav
-   │     │  │  │  │  ├─ scalar_complex32.sav
-   │     │  │  │  │  ├─ scalar_complex64.sav
-   │     │  │  │  │  ├─ scalar_float32.sav
-   │     │  │  │  │  ├─ scalar_float64.sav
-   │     │  │  │  │  ├─ scalar_heap_pointer.sav
-   │     │  │  │  │  ├─ scalar_int16.sav
-   │     │  │  │  │  ├─ scalar_int32.sav
-   │     │  │  │  │  ├─ scalar_int64.sav
-   │     │  │  │  │  ├─ scalar_string.sav
-   │     │  │  │  │  ├─ scalar_uint16.sav
-   │     │  │  │  │  ├─ scalar_uint32.sav
-   │     │  │  │  │  ├─ scalar_uint64.sav
-   │     │  │  │  │  ├─ struct_arrays.sav
-   │     │  │  │  │  ├─ struct_arrays_byte_idl80.sav
-   │     │  │  │  │  ├─ struct_arrays_replicated.sav
-   │     │  │  │  │  ├─ struct_arrays_replicated_3d.sav
-   │     │  │  │  │  ├─ struct_inherit.sav
-   │     │  │  │  │  ├─ struct_pointers.sav
-   │     │  │  │  │  ├─ struct_pointers_replicated.sav
-   │     │  │  │  │  ├─ struct_pointers_replicated_3d.sav
-   │     │  │  │  │  ├─ struct_pointer_arrays.sav
-   │     │  │  │  │  ├─ struct_pointer_arrays_replicated.sav
-   │     │  │  │  │  ├─ struct_pointer_arrays_replicated_3d.sav
-   │     │  │  │  │  ├─ struct_scalars.sav
-   │     │  │  │  │  ├─ struct_scalars_replicated.sav
-   │     │  │  │  │  ├─ struct_scalars_replicated_3d.sav
-   │     │  │  │  │  ├─ test-1234Hz-le-1ch-10S-20bit-extra.wav
-   │     │  │  │  │  ├─ test-44100Hz-2ch-32bit-float-be.wav
-   │     │  │  │  │  ├─ test-44100Hz-2ch-32bit-float-le.wav
-   │     │  │  │  │  ├─ test-44100Hz-be-1ch-4bytes.wav
-   │     │  │  │  │  ├─ test-44100Hz-le-1ch-4bytes-early-eof-no-data.wav
-   │     │  │  │  │  ├─ test-44100Hz-le-1ch-4bytes-early-eof.wav
-   │     │  │  │  │  ├─ test-44100Hz-le-1ch-4bytes-incomplete-chunk.wav
-   │     │  │  │  │  ├─ test-44100Hz-le-1ch-4bytes-rf64.wav
-   │     │  │  │  │  ├─ test-44100Hz-le-1ch-4bytes.wav
-   │     │  │  │  │  ├─ test-48000Hz-2ch-64bit-float-le-wavex.wav
-   │     │  │  │  │  ├─ test-8000Hz-be-3ch-5S-24bit.wav
-   │     │  │  │  │  ├─ test-8000Hz-le-1ch-1byte-ulaw.wav
-   │     │  │  │  │  ├─ test-8000Hz-le-2ch-1byteu.wav
-   │     │  │  │  │  ├─ test-8000Hz-le-3ch-5S-24bit-inconsistent.wav
-   │     │  │  │  │  ├─ test-8000Hz-le-3ch-5S-24bit-rf64.wav
-   │     │  │  │  │  ├─ test-8000Hz-le-3ch-5S-24bit.wav
-   │     │  │  │  │  ├─ test-8000Hz-le-3ch-5S-36bit.wav
-   │     │  │  │  │  ├─ test-8000Hz-le-3ch-5S-45bit.wav
-   │     │  │  │  │  ├─ test-8000Hz-le-3ch-5S-53bit.wav
-   │     │  │  │  │  ├─ test-8000Hz-le-3ch-5S-64bit.wav
-   │     │  │  │  │  ├─ test-8000Hz-le-4ch-9S-12bit.wav
-   │     │  │  │  │  ├─ test-8000Hz-le-5ch-9S-5bit.wav
-   │     │  │  │  │  ├─ Transparent Busy.ani
-   │     │  │  │  │  └─ various_compressed.sav
    │     │  │  │  ├─ test_fortran.py
    │     │  │  │  ├─ test_idl.py
    │     │  │  │  ├─ test_mmio.py
@@ -28816,13 +29065,6 @@ second brain OS
    │     │  │  ├─ misc.py
    │     │  │  ├─ special_matrices.py
    │     │  │  ├─ tests
-   │     │  │  │  ├─ data
-   │     │  │  │  │  ├─ carex_15_data.npz
-   │     │  │  │  │  ├─ carex_18_data.npz
-   │     │  │  │  │  ├─ carex_19_data.npz
-   │     │  │  │  │  ├─ carex_20_data.npz
-   │     │  │  │  │  ├─ carex_6_data.npz
-   │     │  │  │  │  └─ gendare_20170120_data.npz
    │     │  │  │  ├─ test_basic.py
    │     │  │  │  ├─ test_batch.py
    │     │  │  │  ├─ test_blas.py
@@ -28979,10 +29221,6 @@ second brain OS
    │     │  │  ├─ measurements.py
    │     │  │  ├─ morphology.py
    │     │  │  ├─ tests
-   │     │  │  │  ├─ data
-   │     │  │  │  │  ├─ label_inputs.txt
-   │     │  │  │  │  ├─ label_results.txt
-   │     │  │  │  │  └─ label_strels.txt
    │     │  │  │  ├─ dots.png
    │     │  │  │  ├─ test_c_api.py
    │     │  │  │  ├─ test_datatypes.py
@@ -29569,7 +29807,6 @@ second brain OS
    │     │  │  │     ├─ _validation.cpython-313.pyc
    │     │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  ├─ csr.py
-   │     │  │  ├─ data.py
    │     │  │  ├─ dia.py
    │     │  │  ├─ dok.py
    │     │  │  ├─ extract.py
@@ -29731,9 +29968,6 @@ second brain OS
    │     │  │  ├─ spfuncs.py
    │     │  │  ├─ sputils.py
    │     │  │  ├─ tests
-   │     │  │  │  ├─ data
-   │     │  │  │  │  ├─ csc_py2.npz
-   │     │  │  │  │  └─ csc_py3.npz
    │     │  │  │  ├─ test_arithmetic1d.py
    │     │  │  │  ├─ test_array_api.py
    │     │  │  │  ├─ test_base.py
@@ -29799,7 +30033,6 @@ second brain OS
    │     │  │     ├─ coo.cpython-313.pyc
    │     │  │     ├─ csc.cpython-313.pyc
    │     │  │     ├─ csr.cpython-313.pyc
-   │     │  │     ├─ data.cpython-313.pyc
    │     │  │     ├─ dia.cpython-313.pyc
    │     │  │     ├─ dok.cpython-313.pyc
    │     │  │     ├─ extract.cpython-313.pyc
@@ -29834,38 +30067,6 @@ second brain OS
    │     │  │  ├─ qhull_src
    │     │  │  │  └─ COPYING_QHULL.txt
    │     │  │  ├─ tests
-   │     │  │  │  ├─ data
-   │     │  │  │  │  ├─ cdist-X1.txt
-   │     │  │  │  │  ├─ cdist-X2.txt
-   │     │  │  │  │  ├─ degenerate_pointset.npz
-   │     │  │  │  │  ├─ iris.txt
-   │     │  │  │  │  ├─ pdist-boolean-inp.txt
-   │     │  │  │  │  ├─ pdist-chebyshev-ml-iris.txt
-   │     │  │  │  │  ├─ pdist-chebyshev-ml.txt
-   │     │  │  │  │  ├─ pdist-cityblock-ml-iris.txt
-   │     │  │  │  │  ├─ pdist-cityblock-ml.txt
-   │     │  │  │  │  ├─ pdist-correlation-ml-iris.txt
-   │     │  │  │  │  ├─ pdist-correlation-ml.txt
-   │     │  │  │  │  ├─ pdist-cosine-ml-iris.txt
-   │     │  │  │  │  ├─ pdist-cosine-ml.txt
-   │     │  │  │  │  ├─ pdist-double-inp.txt
-   │     │  │  │  │  ├─ pdist-euclidean-ml-iris.txt
-   │     │  │  │  │  ├─ pdist-euclidean-ml.txt
-   │     │  │  │  │  ├─ pdist-hamming-ml.txt
-   │     │  │  │  │  ├─ pdist-jaccard-ml.txt
-   │     │  │  │  │  ├─ pdist-jensenshannon-ml-iris.txt
-   │     │  │  │  │  ├─ pdist-jensenshannon-ml.txt
-   │     │  │  │  │  ├─ pdist-minkowski-3.2-ml-iris.txt
-   │     │  │  │  │  ├─ pdist-minkowski-3.2-ml.txt
-   │     │  │  │  │  ├─ pdist-minkowski-5.8-ml-iris.txt
-   │     │  │  │  │  ├─ pdist-seuclidean-ml-iris.txt
-   │     │  │  │  │  ├─ pdist-seuclidean-ml.txt
-   │     │  │  │  │  ├─ pdist-spearman-ml.txt
-   │     │  │  │  │  ├─ random-bool-data.txt
-   │     │  │  │  │  ├─ random-double-data.txt
-   │     │  │  │  │  ├─ random-int-data.txt
-   │     │  │  │  │  ├─ random-uint-data.txt
-   │     │  │  │  │  └─ selfdual-4d-polytope.txt
    │     │  │  │  ├─ test_distance.py
    │     │  │  │  ├─ test_hausdorff.py
    │     │  │  │  ├─ test_kdtree.py
@@ -29954,13 +30155,6 @@ second brain OS
    │     │  │  ├─ specfun.py
    │     │  │  ├─ spfun_stats.py
    │     │  │  ├─ tests
-   │     │  │  │  ├─ data
-   │     │  │  │  │  ├─ boost.npz
-   │     │  │  │  │  ├─ gsl.npz
-   │     │  │  │  │  ├─ local.npz
-   │     │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  └─ __pycache__
-   │     │  │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  │  ├─ test_basic.py
    │     │  │  │  ├─ test_bdtr.py
    │     │  │  │  ├─ test_boost_ufuncs.py
@@ -30186,33 +30380,6 @@ second brain OS
    │     │  │  ├─ stats.py
    │     │  │  ├─ tests
    │     │  │  │  ├─ common_tests.py
-   │     │  │  │  ├─ data
-   │     │  │  │  │  ├─ fisher_exact_results_from_r.py
-   │     │  │  │  │  ├─ jf_skew_t_gamlss_pdf_data.npy
-   │     │  │  │  │  ├─ levy_stable
-   │     │  │  │  │  │  ├─ stable-loc-scale-sample-data.npy
-   │     │  │  │  │  │  ├─ stable-Z1-cdf-sample-data.npy
-   │     │  │  │  │  │  └─ stable-Z1-pdf-sample-data.npy
-   │     │  │  │  │  ├─ nist_anova
-   │     │  │  │  │  │  ├─ AtmWtAg.dat
-   │     │  │  │  │  │  ├─ SiRstv.dat
-   │     │  │  │  │  │  ├─ SmLs01.dat
-   │     │  │  │  │  │  ├─ SmLs02.dat
-   │     │  │  │  │  │  ├─ SmLs03.dat
-   │     │  │  │  │  │  ├─ SmLs04.dat
-   │     │  │  │  │  │  ├─ SmLs05.dat
-   │     │  │  │  │  │  ├─ SmLs06.dat
-   │     │  │  │  │  │  ├─ SmLs07.dat
-   │     │  │  │  │  │  ├─ SmLs08.dat
-   │     │  │  │  │  │  └─ SmLs09.dat
-   │     │  │  │  │  ├─ nist_linregress
-   │     │  │  │  │  │  └─ Norris.dat
-   │     │  │  │  │  ├─ rel_breitwigner_pdf_sample_data_ROOT.npy
-   │     │  │  │  │  ├─ studentized_range_mpmath_ref.json
-   │     │  │  │  │  ├─ _mvt.py
-   │     │  │  │  │  └─ __pycache__
-   │     │  │  │  │     ├─ fisher_exact_results_from_r.cpython-313.pyc
-   │     │  │  │  │     └─ _mvt.cpython-313.pyc
    │     │  │  │  ├─ test_axis_nan_policy.py
    │     │  │  │  ├─ test_binned_statistic.py
    │     │  │  │  ├─ test_censored_data.py
@@ -30778,7 +30945,6 @@ second brain OS
    │     │  │     └─ __init__.cpython-313.pyc
    │     │  ├─ cross_encoder
    │     │  │  ├─ CrossEncoder.py
-   │     │  │  ├─ data_collator.py
    │     │  │  ├─ evaluation
    │     │  │  │  ├─ classification.py
    │     │  │  │  ├─ correlation.py
@@ -30828,28 +30994,12 @@ second brain OS
    │     │  │  ├─ __init__.py
    │     │  │  └─ __pycache__
    │     │  │     ├─ CrossEncoder.cpython-313.pyc
-   │     │  │     ├─ data_collator.cpython-313.pyc
    │     │  │     ├─ fit_mixin.cpython-313.pyc
    │     │  │     ├─ model_card.cpython-313.pyc
    │     │  │     ├─ trainer.cpython-313.pyc
    │     │  │     ├─ training_args.cpython-313.pyc
    │     │  │     ├─ util.cpython-313.pyc
    │     │  │     └─ __init__.cpython-313.pyc
-   │     │  ├─ datasets
-   │     │  │  ├─ DenoisingAutoEncoderDataset.py
-   │     │  │  ├─ NoDuplicatesDataLoader.py
-   │     │  │  ├─ ParallelSentencesDataset.py
-   │     │  │  ├─ SentenceLabelDataset.py
-   │     │  │  ├─ SentencesDataset.py
-   │     │  │  ├─ __init__.py
-   │     │  │  └─ __pycache__
-   │     │  │     ├─ DenoisingAutoEncoderDataset.cpython-313.pyc
-   │     │  │     ├─ NoDuplicatesDataLoader.cpython-313.pyc
-   │     │  │     ├─ ParallelSentencesDataset.cpython-313.pyc
-   │     │  │     ├─ SentenceLabelDataset.cpython-313.pyc
-   │     │  │     ├─ SentencesDataset.cpython-313.pyc
-   │     │  │     └─ __init__.cpython-313.pyc
-   │     │  ├─ data_collator.py
    │     │  ├─ evaluation
    │     │  │  ├─ BinaryClassificationEvaluator.py
    │     │  │  ├─ EmbeddingSimilarityEvaluator.py
@@ -31020,7 +31170,6 @@ second brain OS
    │     │  │  │  └─ __pycache__
    │     │  │  │     ├─ splade_callbacks.cpython-313.pyc
    │     │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  ├─ data_collator.py
    │     │  │  ├─ evaluation
    │     │  │  │  ├─ ReciprocalRankFusionEvaluator.py
    │     │  │  │  ├─ SparseBinaryClassificationEvaluator.py
@@ -31089,7 +31238,6 @@ second brain OS
    │     │  │  ├─ training_args.py
    │     │  │  ├─ __init__.py
    │     │  │  └─ __pycache__
-   │     │  │     ├─ data_collator.cpython-313.pyc
    │     │  │     ├─ model_card.cpython-313.pyc
    │     │  │     ├─ search_engines.cpython-313.pyc
    │     │  │     ├─ SparseEncoder.cpython-313.pyc
@@ -31122,7 +31270,6 @@ second brain OS
    │     │  │     └─ __init__.cpython-313.pyc
    │     │  ├─ __init__.py
    │     │  └─ __pycache__
-   │     │     ├─ data_collator.cpython-313.pyc
    │     │     ├─ fit_mixin.cpython-313.pyc
    │     │     ├─ LoggingHandler.cpython-313.pyc
    │     │     ├─ model_card.cpython-313.pyc
@@ -32282,258 +32429,6 @@ second brain OS
    │     │  │  ├─ __init__.py
    │     │  │  └─ __pycache__
    │     │  │     ├─ _pls.cpython-313.pyc
-   │     │  │     └─ __init__.cpython-313.pyc
-   │     │  ├─ datasets
-   │     │  │  ├─ data
-   │     │  │  │  ├─ breast_cancer.csv
-   │     │  │  │  ├─ diabetes_data_raw.csv.gz
-   │     │  │  │  ├─ diabetes_target.csv.gz
-   │     │  │  │  ├─ digits.csv.gz
-   │     │  │  │  ├─ iris.csv
-   │     │  │  │  ├─ linnerud_exercise.csv
-   │     │  │  │  ├─ linnerud_physiological.csv
-   │     │  │  │  ├─ wine_data.csv
-   │     │  │  │  ├─ __init__.py
-   │     │  │  │  └─ __pycache__
-   │     │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  ├─ descr
-   │     │  │  │  ├─ breast_cancer.rst
-   │     │  │  │  ├─ california_housing.rst
-   │     │  │  │  ├─ covtype.rst
-   │     │  │  │  ├─ diabetes.rst
-   │     │  │  │  ├─ digits.rst
-   │     │  │  │  ├─ iris.rst
-   │     │  │  │  ├─ kddcup99.rst
-   │     │  │  │  ├─ lfw.rst
-   │     │  │  │  ├─ linnerud.rst
-   │     │  │  │  ├─ olivetti_faces.rst
-   │     │  │  │  ├─ rcv1.rst
-   │     │  │  │  ├─ species_distributions.rst
-   │     │  │  │  ├─ twenty_newsgroups.rst
-   │     │  │  │  ├─ wine_data.rst
-   │     │  │  │  ├─ __init__.py
-   │     │  │  │  └─ __pycache__
-   │     │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  ├─ images
-   │     │  │  │  ├─ china.jpg
-   │     │  │  │  ├─ flower.jpg
-   │     │  │  │  ├─ README.txt
-   │     │  │  │  ├─ __init__.py
-   │     │  │  │  └─ __pycache__
-   │     │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  ├─ meson.build
-   │     │  │  ├─ tests
-   │     │  │  │  ├─ data
-   │     │  │  │  │  ├─ openml
-   │     │  │  │  │  │  ├─ id_1
-   │     │  │  │  │  │  │  ├─ api-v1-jd-1.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdf-1.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdq-1.json.gz
-   │     │  │  │  │  │  │  ├─ data-v1-dl-1.arff.gz
-   │     │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  ├─ id_1119
-   │     │  │  │  │  │  │  ├─ api-v1-jd-1119.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdf-1119.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-adult-census-l-2-dv-1.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-adult-census-l-2-s-act-.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdq-1119.json.gz
-   │     │  │  │  │  │  │  ├─ data-v1-dl-54002.arff.gz
-   │     │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  ├─ id_1590
-   │     │  │  │  │  │  │  ├─ api-v1-jd-1590.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdf-1590.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdq-1590.json.gz
-   │     │  │  │  │  │  │  ├─ data-v1-dl-1595261.arff.gz
-   │     │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  ├─ id_2
-   │     │  │  │  │  │  │  ├─ api-v1-jd-2.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdf-2.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-anneal-l-2-dv-1.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-anneal-l-2-s-act-.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdq-2.json.gz
-   │     │  │  │  │  │  │  ├─ data-v1-dl-1666876.arff.gz
-   │     │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  ├─ id_292
-   │     │  │  │  │  │  │  ├─ api-v1-jd-292.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jd-40981.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdf-292.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdf-40981.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-australian-l-2-dv-1-s-dact.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-australian-l-2-dv-1.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-australian-l-2-s-act-.json.gz
-   │     │  │  │  │  │  │  ├─ data-v1-dl-49822.arff.gz
-   │     │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  ├─ id_3
-   │     │  │  │  │  │  │  ├─ api-v1-jd-3.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdf-3.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdq-3.json.gz
-   │     │  │  │  │  │  │  ├─ data-v1-dl-3.arff.gz
-   │     │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  ├─ id_40589
-   │     │  │  │  │  │  │  ├─ api-v1-jd-40589.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdf-40589.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-emotions-l-2-dv-3.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-emotions-l-2-s-act-.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdq-40589.json.gz
-   │     │  │  │  │  │  │  ├─ data-v1-dl-4644182.arff.gz
-   │     │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  ├─ id_40675
-   │     │  │  │  │  │  │  ├─ api-v1-jd-40675.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdf-40675.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-glass2-l-2-dv-1-s-dact.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-glass2-l-2-dv-1.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-glass2-l-2-s-act-.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdq-40675.json.gz
-   │     │  │  │  │  │  │  ├─ data-v1-dl-4965250.arff.gz
-   │     │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  ├─ id_40945
-   │     │  │  │  │  │  │  ├─ api-v1-jd-40945.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdf-40945.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdq-40945.json.gz
-   │     │  │  │  │  │  │  ├─ data-v1-dl-16826755.arff.gz
-   │     │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  ├─ id_40966
-   │     │  │  │  │  │  │  ├─ api-v1-jd-40966.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdf-40966.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-miceprotein-l-2-dv-4.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-miceprotein-l-2-s-act-.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdq-40966.json.gz
-   │     │  │  │  │  │  │  ├─ data-v1-dl-17928620.arff.gz
-   │     │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  ├─ id_42074
-   │     │  │  │  │  │  │  ├─ api-v1-jd-42074.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdf-42074.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdq-42074.json.gz
-   │     │  │  │  │  │  │  ├─ data-v1-dl-21552912.arff.gz
-   │     │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  ├─ id_42585
-   │     │  │  │  │  │  │  ├─ api-v1-jd-42585.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdf-42585.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdq-42585.json.gz
-   │     │  │  │  │  │  │  ├─ data-v1-dl-21854866.arff.gz
-   │     │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  ├─ id_561
-   │     │  │  │  │  │  │  ├─ api-v1-jd-561.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdf-561.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-cpu-l-2-dv-1.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-cpu-l-2-s-act-.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdq-561.json.gz
-   │     │  │  │  │  │  │  ├─ data-v1-dl-52739.arff.gz
-   │     │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  ├─ id_61
-   │     │  │  │  │  │  │  ├─ api-v1-jd-61.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdf-61.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-iris-l-2-dv-1.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdl-dn-iris-l-2-s-act-.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdq-61.json.gz
-   │     │  │  │  │  │  │  ├─ data-v1-dl-61.arff.gz
-   │     │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  ├─ id_62
-   │     │  │  │  │  │  │  ├─ api-v1-jd-62.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdf-62.json.gz
-   │     │  │  │  │  │  │  ├─ api-v1-jdq-62.json.gz
-   │     │  │  │  │  │  │  ├─ data-v1-dl-52352.arff.gz
-   │     │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  ├─ svmlight_classification.txt
-   │     │  │  │  │  ├─ svmlight_invalid.txt
-   │     │  │  │  │  ├─ svmlight_invalid_order.txt
-   │     │  │  │  │  ├─ svmlight_multilabel.txt
-   │     │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  └─ __pycache__
-   │     │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  ├─ test_20news.py
-   │     │  │  │  ├─ test_arff_parser.py
-   │     │  │  │  ├─ test_base.py
-   │     │  │  │  ├─ test_california_housing.py
-   │     │  │  │  ├─ test_common.py
-   │     │  │  │  ├─ test_covtype.py
-   │     │  │  │  ├─ test_kddcup99.py
-   │     │  │  │  ├─ test_lfw.py
-   │     │  │  │  ├─ test_olivetti_faces.py
-   │     │  │  │  ├─ test_openml.py
-   │     │  │  │  ├─ test_rcv1.py
-   │     │  │  │  ├─ test_samples_generator.py
-   │     │  │  │  ├─ test_svmlight_format.py
-   │     │  │  │  ├─ __init__.py
-   │     │  │  │  └─ __pycache__
-   │     │  │  │     ├─ test_20news.cpython-313.pyc
-   │     │  │  │     ├─ test_arff_parser.cpython-313.pyc
-   │     │  │  │     ├─ test_base.cpython-313.pyc
-   │     │  │  │     ├─ test_california_housing.cpython-313.pyc
-   │     │  │  │     ├─ test_common.cpython-313.pyc
-   │     │  │  │     ├─ test_covtype.cpython-313.pyc
-   │     │  │  │     ├─ test_kddcup99.cpython-313.pyc
-   │     │  │  │     ├─ test_lfw.cpython-313.pyc
-   │     │  │  │     ├─ test_olivetti_faces.cpython-313.pyc
-   │     │  │  │     ├─ test_openml.cpython-313.pyc
-   │     │  │  │     ├─ test_rcv1.cpython-313.pyc
-   │     │  │  │     ├─ test_samples_generator.cpython-313.pyc
-   │     │  │  │     ├─ test_svmlight_format.cpython-313.pyc
-   │     │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  ├─ _arff_parser.py
-   │     │  │  ├─ _base.py
-   │     │  │  ├─ _california_housing.py
-   │     │  │  ├─ _covtype.py
-   │     │  │  ├─ _kddcup99.py
-   │     │  │  ├─ _lfw.py
-   │     │  │  ├─ _olivetti_faces.py
-   │     │  │  ├─ _openml.py
-   │     │  │  ├─ _rcv1.py
-   │     │  │  ├─ _samples_generator.py
-   │     │  │  ├─ _species_distributions.py
-   │     │  │  ├─ _svmlight_format_fast.cp313-win_amd64.lib
-   │     │  │  ├─ _svmlight_format_fast.cp313-win_amd64.pyd
-   │     │  │  ├─ _svmlight_format_fast.pyx
-   │     │  │  ├─ _svmlight_format_io.py
-   │     │  │  ├─ _twenty_newsgroups.py
-   │     │  │  ├─ __init__.py
-   │     │  │  └─ __pycache__
-   │     │  │     ├─ _arff_parser.cpython-313.pyc
-   │     │  │     ├─ _base.cpython-313.pyc
-   │     │  │     ├─ _california_housing.cpython-313.pyc
-   │     │  │     ├─ _covtype.cpython-313.pyc
-   │     │  │     ├─ _kddcup99.cpython-313.pyc
-   │     │  │     ├─ _lfw.cpython-313.pyc
-   │     │  │     ├─ _olivetti_faces.cpython-313.pyc
-   │     │  │     ├─ _openml.cpython-313.pyc
-   │     │  │     ├─ _rcv1.cpython-313.pyc
-   │     │  │     ├─ _samples_generator.cpython-313.pyc
-   │     │  │     ├─ _species_distributions.cpython-313.pyc
-   │     │  │     ├─ _svmlight_format_io.cpython-313.pyc
-   │     │  │     ├─ _twenty_newsgroups.cpython-313.pyc
    │     │  │     └─ __init__.cpython-313.pyc
    │     │  ├─ decomposition
    │     │  │  ├─ meson.build
@@ -34624,7 +34519,6 @@ second brain OS
    │     │  ├─ concurrency.py
    │     │  ├─ config.py
    │     │  ├─ convertors.py
-   │     │  ├─ datastructures.py
    │     │  ├─ endpoints.py
    │     │  ├─ exceptions.py
    │     │  ├─ formparsers.py
@@ -34673,7 +34567,6 @@ second brain OS
    │     │     ├─ concurrency.cpython-313.pyc
    │     │     ├─ config.cpython-313.pyc
    │     │     ├─ convertors.cpython-313.pyc
-   │     │     ├─ datastructures.cpython-313.pyc
    │     │     ├─ endpoints.cpython-313.pyc
    │     │     ├─ exceptions.cpython-313.pyc
    │     │     ├─ formparsers.cpython-313.pyc
@@ -37953,13 +37846,6 @@ second brain OS
    │     │  │  ├─ magic.py
    │     │  │  ├─ matchpy_connector.py
    │     │  │  ├─ mathml
-   │     │  │  │  ├─ data
-   │     │  │  │  │  ├─ mmlctop.xsl
-   │     │  │  │  │  ├─ mmltex.xsl
-   │     │  │  │  │  ├─ simple_mmlctop.xsl
-   │     │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  └─ __pycache__
-   │     │  │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  │  ├─ __init__.py
    │     │  │  │  └─ __pycache__
    │     │  │  │     └─ __init__.cpython-313.pyc
@@ -38540,34 +38426,6 @@ second brain OS
    │     │  │  │  │  │  ├─ __init__.py
    │     │  │  │  │  │  └─ __pycache__
    │     │  │  │  │  │     ├─ activation_sparsifier.cpython-313.pyc
-   │     │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  ├─ data_scheduler
-   │     │  │  │  │  │  ├─ base_data_scheduler.py
-   │     │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │     ├─ base_data_scheduler.cpython-313.pyc
-   │     │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  ├─ data_sparsifier
-   │     │  │  │  │  │  ├─ base_data_sparsifier.py
-   │     │  │  │  │  │  ├─ data_norm_sparsifier.py
-   │     │  │  │  │  │  ├─ lightning
-   │     │  │  │  │  │  │  ├─ callbacks
-   │     │  │  │  │  │  │  │  ├─ data_sparsity.py
-   │     │  │  │  │  │  │  │  ├─ _data_sparstity_utils.py
-   │     │  │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │  │     ├─ data_sparsity.cpython-313.pyc
-   │     │  │  │  │  │  │  │     ├─ _data_sparstity_utils.cpython-313.pyc
-   │     │  │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  │  ├─ quantization_utils.py
-   │     │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │     ├─ base_data_sparsifier.cpython-313.pyc
-   │     │  │  │  │  │     ├─ data_norm_sparsifier.cpython-313.pyc
-   │     │  │  │  │  │     ├─ quantization_utils.cpython-313.pyc
    │     │  │  │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  │  │  ├─ pruner
    │     │  │  │  │  │  ├─ base_structured_sparsifier.py
@@ -39233,14 +39091,6 @@ second brain OS
    │     │  │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  │  ├─ utils
    │     │  │  │  │  ├─ api.py
-   │     │  │  │  │  ├─ data
-   │     │  │  │  │  │  ├─ cycling_iterator.py
-   │     │  │  │  │  │  ├─ elastic_distributed_sampler.py
-   │     │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │     ├─ cycling_iterator.cpython-313.pyc
-   │     │  │  │  │  │     ├─ elastic_distributed_sampler.cpython-313.pyc
-   │     │  │  │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  │  │  ├─ distributed.py
    │     │  │  │  │  ├─ logging.py
    │     │  │  │  │  ├─ log_level.py
@@ -41789,10 +41639,6 @@ second brain OS
    │     │  │  │  │  ├─ cumulative_trapezoid_compositeimplicitautograd_dispatch.h
    │     │  │  │  │  ├─ cumulative_trapezoid_native.h
    │     │  │  │  │  ├─ cumulative_trapezoid_ops.h
-   │     │  │  │  │  ├─ data.h
-   │     │  │  │  │  ├─ data_compositeimplicitautograd_dispatch.h
-   │     │  │  │  │  ├─ data_native.h
-   │     │  │  │  │  ├─ data_ops.h
    │     │  │  │  │  ├─ deg2rad.h
    │     │  │  │  │  ├─ deg2rad_compositeexplicitautograd_dispatch.h
    │     │  │  │  │  ├─ deg2rad_native.h
@@ -48421,46 +48267,6 @@ second brain OS
    │     │  │  │  │  │        ├─ arg.h
    │     │  │  │  │  │        ├─ autograd.h
    │     │  │  │  │  │        ├─ cuda.h
-   │     │  │  │  │  │        ├─ data
-   │     │  │  │  │  │        │  ├─ dataloader
-   │     │  │  │  │  │        │  │  ├─ base.h
-   │     │  │  │  │  │        │  │  ├─ stateful.h
-   │     │  │  │  │  │        │  │  └─ stateless.h
-   │     │  │  │  │  │        │  ├─ dataloader.h
-   │     │  │  │  │  │        │  ├─ dataloader_options.h
-   │     │  │  │  │  │        │  ├─ datasets
-   │     │  │  │  │  │        │  │  ├─ base.h
-   │     │  │  │  │  │        │  │  ├─ chunk.h
-   │     │  │  │  │  │        │  │  ├─ map.h
-   │     │  │  │  │  │        │  │  ├─ mnist.h
-   │     │  │  │  │  │        │  │  ├─ shared.h
-   │     │  │  │  │  │        │  │  ├─ stateful.h
-   │     │  │  │  │  │        │  │  └─ tensor.h
-   │     │  │  │  │  │        │  ├─ datasets.h
-   │     │  │  │  │  │        │  ├─ detail
-   │     │  │  │  │  │        │  │  ├─ data_shuttle.h
-   │     │  │  │  │  │        │  │  ├─ queue.h
-   │     │  │  │  │  │        │  │  └─ sequencers.h
-   │     │  │  │  │  │        │  ├─ example.h
-   │     │  │  │  │  │        │  ├─ iterator.h
-   │     │  │  │  │  │        │  ├─ samplers
-   │     │  │  │  │  │        │  │  ├─ base.h
-   │     │  │  │  │  │        │  │  ├─ custom_batch_request.h
-   │     │  │  │  │  │        │  │  ├─ distributed.h
-   │     │  │  │  │  │        │  │  ├─ random.h
-   │     │  │  │  │  │        │  │  ├─ sequential.h
-   │     │  │  │  │  │        │  │  ├─ serialize.h
-   │     │  │  │  │  │        │  │  └─ stream.h
-   │     │  │  │  │  │        │  ├─ samplers.h
-   │     │  │  │  │  │        │  ├─ transforms
-   │     │  │  │  │  │        │  │  ├─ base.h
-   │     │  │  │  │  │        │  │  ├─ collate.h
-   │     │  │  │  │  │        │  │  ├─ lambda.h
-   │     │  │  │  │  │        │  │  ├─ stack.h
-   │     │  │  │  │  │        │  │  └─ tensor.h
-   │     │  │  │  │  │        │  ├─ transforms.h
-   │     │  │  │  │  │        │  └─ worker_exception.h
-   │     │  │  │  │  │        ├─ data.h
    │     │  │  │  │  │        ├─ detail
    │     │  │  │  │  │        │  ├─ static.h
    │     │  │  │  │  │        │  └─ TensorDataContainer.h
@@ -48555,7 +48361,6 @@ second brain OS
    │     │  │  │  │  │        │  │  └─ vision.h
    │     │  │  │  │  │        │  ├─ options.h
    │     │  │  │  │  │        │  ├─ parallel
-   │     │  │  │  │  │        │  │  └─ data_parallel.h
    │     │  │  │  │  │        │  ├─ pimpl-inl.h
    │     │  │  │  │  │        │  ├─ pimpl.h
    │     │  │  │  │  │        │  ├─ utils
@@ -49451,7 +49256,6 @@ second brain OS
    │     │  │  │  │  │  ├─ collection.h
    │     │  │  │  │  │  ├─ combined_traceback.h
    │     │  │  │  │  │  ├─ containers.h
-   │     │  │  │  │  │  ├─ data_flow.h
    │     │  │  │  │  │  ├─ events.h
    │     │  │  │  │  │  ├─ kineto_client_interface.h
    │     │  │  │  │  │  ├─ kineto_shim.h
@@ -49917,7 +49721,6 @@ second brain OS
    │     │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  ├─ parallel
    │     │  │  │  ├─ comm.py
-   │     │  │  │  ├─ data_parallel.py
    │     │  │  │  ├─ distributed.py
    │     │  │  │  ├─ parallel_apply.py
    │     │  │  │  ├─ replicate.py
@@ -49926,7 +49729,6 @@ second brain OS
    │     │  │  │  ├─ __init__.py
    │     │  │  │  └─ __pycache__
    │     │  │  │     ├─ comm.cpython-313.pyc
-   │     │  │  │     ├─ data_parallel.cpython-313.pyc
    │     │  │  │     ├─ distributed.cpython-313.pyc
    │     │  │  │     ├─ parallel_apply.cpython-313.pyc
    │     │  │  │     ├─ replicate.cpython-313.pyc
@@ -50572,14 +50374,6 @@ second brain OS
    │     │  │  │  ├─ composite_compliance.py
    │     │  │  │  ├─ custom_op_db.py
    │     │  │  │  ├─ custom_tensor.py
-   │     │  │  │  ├─ data
-   │     │  │  │  │  ├─ network1.py
-   │     │  │  │  │  ├─ network2.py
-   │     │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  └─ __pycache__
-   │     │  │  │  │     ├─ network1.cpython-313.pyc
-   │     │  │  │  │     ├─ network2.cpython-313.pyc
-   │     │  │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  │  ├─ distributed
    │     │  │  │  │  ├─ checkpoint_utils.py
    │     │  │  │  │  ├─ common_state_dict.py
@@ -50874,115 +50668,6 @@ second brain OS
    │     │  │  ├─ collect_env.py
    │     │  │  ├─ cpp_backtrace.py
    │     │  │  ├─ cpp_extension.py
-   │     │  │  ├─ data
-   │     │  │  │  ├─ backward_compatibility.py
-   │     │  │  │  ├─ dataloader.py
-   │     │  │  │  ├─ datapipes
-   │     │  │  │  │  ├─ dataframe
-   │     │  │  │  │  │  ├─ dataframes.py
-   │     │  │  │  │  │  ├─ dataframe_wrapper.py
-   │     │  │  │  │  │  ├─ datapipes.py
-   │     │  │  │  │  │  ├─ structures.py
-   │     │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │     ├─ dataframes.cpython-313.pyc
-   │     │  │  │  │  │     ├─ dataframe_wrapper.cpython-313.pyc
-   │     │  │  │  │  │     ├─ datapipes.cpython-313.pyc
-   │     │  │  │  │  │     ├─ structures.cpython-313.pyc
-   │     │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  ├─ datapipe.py
-   │     │  │  │  │  ├─ datapipe.pyi
-   │     │  │  │  │  ├─ gen_pyi.py
-   │     │  │  │  │  ├─ iter
-   │     │  │  │  │  │  ├─ callable.py
-   │     │  │  │  │  │  ├─ combinatorics.py
-   │     │  │  │  │  │  ├─ combining.py
-   │     │  │  │  │  │  ├─ filelister.py
-   │     │  │  │  │  │  ├─ fileopener.py
-   │     │  │  │  │  │  ├─ grouping.py
-   │     │  │  │  │  │  ├─ routeddecoder.py
-   │     │  │  │  │  │  ├─ selecting.py
-   │     │  │  │  │  │  ├─ sharding.py
-   │     │  │  │  │  │  ├─ streamreader.py
-   │     │  │  │  │  │  ├─ utils.py
-   │     │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │     ├─ callable.cpython-313.pyc
-   │     │  │  │  │  │     ├─ combinatorics.cpython-313.pyc
-   │     │  │  │  │  │     ├─ combining.cpython-313.pyc
-   │     │  │  │  │  │     ├─ filelister.cpython-313.pyc
-   │     │  │  │  │  │     ├─ fileopener.cpython-313.pyc
-   │     │  │  │  │  │     ├─ grouping.cpython-313.pyc
-   │     │  │  │  │  │     ├─ routeddecoder.cpython-313.pyc
-   │     │  │  │  │  │     ├─ selecting.cpython-313.pyc
-   │     │  │  │  │  │     ├─ sharding.cpython-313.pyc
-   │     │  │  │  │  │     ├─ streamreader.cpython-313.pyc
-   │     │  │  │  │  │     ├─ utils.cpython-313.pyc
-   │     │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  ├─ map
-   │     │  │  │  │  │  ├─ callable.py
-   │     │  │  │  │  │  ├─ combinatorics.py
-   │     │  │  │  │  │  ├─ combining.py
-   │     │  │  │  │  │  ├─ grouping.py
-   │     │  │  │  │  │  ├─ utils.py
-   │     │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │     ├─ callable.cpython-313.pyc
-   │     │  │  │  │  │     ├─ combinatorics.cpython-313.pyc
-   │     │  │  │  │  │     ├─ combining.cpython-313.pyc
-   │     │  │  │  │  │     ├─ grouping.cpython-313.pyc
-   │     │  │  │  │  │     ├─ utils.cpython-313.pyc
-   │     │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  ├─ utils
-   │     │  │  │  │  │  ├─ common.py
-   │     │  │  │  │  │  ├─ decoder.py
-   │     │  │  │  │  │  ├─ snapshot.py
-   │     │  │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  │  └─ __pycache__
-   │     │  │  │  │  │     ├─ common.cpython-313.pyc
-   │     │  │  │  │  │     ├─ decoder.cpython-313.pyc
-   │     │  │  │  │  │     ├─ snapshot.cpython-313.pyc
-   │     │  │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  │  ├─ _decorator.py
-   │     │  │  │  │  ├─ _hook_iterator.py
-   │     │  │  │  │  ├─ _typing.py
-   │     │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  └─ __pycache__
-   │     │  │  │  │     ├─ datapipe.cpython-313.pyc
-   │     │  │  │  │     ├─ gen_pyi.cpython-313.pyc
-   │     │  │  │  │     ├─ _decorator.cpython-313.pyc
-   │     │  │  │  │     ├─ _hook_iterator.cpython-313.pyc
-   │     │  │  │  │     ├─ _typing.cpython-313.pyc
-   │     │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  ├─ dataset.py
-   │     │  │  │  ├─ distributed.py
-   │     │  │  │  ├─ graph.py
-   │     │  │  │  ├─ graph_settings.py
-   │     │  │  │  ├─ sampler.py
-   │     │  │  │  ├─ _utils
-   │     │  │  │  │  ├─ collate.py
-   │     │  │  │  │  ├─ fetch.py
-   │     │  │  │  │  ├─ pin_memory.py
-   │     │  │  │  │  ├─ signal_handling.py
-   │     │  │  │  │  ├─ worker.py
-   │     │  │  │  │  ├─ __init__.py
-   │     │  │  │  │  └─ __pycache__
-   │     │  │  │  │     ├─ collate.cpython-313.pyc
-   │     │  │  │  │     ├─ fetch.cpython-313.pyc
-   │     │  │  │  │     ├─ pin_memory.cpython-313.pyc
-   │     │  │  │  │     ├─ signal_handling.cpython-313.pyc
-   │     │  │  │  │     ├─ worker.cpython-313.pyc
-   │     │  │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  │  ├─ __init__.py
-   │     │  │  │  └─ __pycache__
-   │     │  │  │     ├─ backward_compatibility.cpython-313.pyc
-   │     │  │  │     ├─ dataloader.cpython-313.pyc
-   │     │  │  │     ├─ dataset.cpython-313.pyc
-   │     │  │  │     ├─ distributed.cpython-313.pyc
-   │     │  │  │     ├─ graph.cpython-313.pyc
-   │     │  │  │     ├─ graph_settings.cpython-313.pyc
-   │     │  │  │     ├─ sampler.cpython-313.pyc
-   │     │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  ├─ deterministic.py
    │     │  │  ├─ dlpack.py
    │     │  │  ├─ file_baton.py
@@ -53179,40 +52864,6 @@ second brain OS
    │     │  ├─ convert_slow_tokenizer.py
    │     │  ├─ convert_slow_tokenizers_checkpoints_to_fast.py
    │     │  ├─ convert_tf_hub_seq_to_seq_bert_to_pytorch.py
-   │     │  ├─ data
-   │     │  │  ├─ datasets
-   │     │  │  │  ├─ glue.py
-   │     │  │  │  ├─ language_modeling.py
-   │     │  │  │  ├─ squad.py
-   │     │  │  │  ├─ __init__.py
-   │     │  │  │  └─ __pycache__
-   │     │  │  │     ├─ glue.cpython-313.pyc
-   │     │  │  │     ├─ language_modeling.cpython-313.pyc
-   │     │  │  │     ├─ squad.cpython-313.pyc
-   │     │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  ├─ data_collator.py
-   │     │  │  ├─ metrics
-   │     │  │  │  ├─ squad_metrics.py
-   │     │  │  │  ├─ __init__.py
-   │     │  │  │  └─ __pycache__
-   │     │  │  │     ├─ squad_metrics.cpython-313.pyc
-   │     │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  ├─ processors
-   │     │  │  │  ├─ glue.py
-   │     │  │  │  ├─ squad.py
-   │     │  │  │  ├─ utils.py
-   │     │  │  │  ├─ xnli.py
-   │     │  │  │  ├─ __init__.py
-   │     │  │  │  └─ __pycache__
-   │     │  │  │     ├─ glue.cpython-313.pyc
-   │     │  │  │     ├─ squad.cpython-313.pyc
-   │     │  │  │     ├─ utils.cpython-313.pyc
-   │     │  │  │     ├─ xnli.cpython-313.pyc
-   │     │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  ├─ __init__.py
-   │     │  │  └─ __pycache__
-   │     │  │     ├─ data_collator.cpython-313.pyc
-   │     │  │     └─ __init__.cpython-313.pyc
    │     │  ├─ debug_utils.py
    │     │  ├─ dependency_versions_check.py
    │     │  ├─ dependency_versions_table.py
@@ -54156,26 +53807,6 @@ second brain OS
    │     │  │  │     ├─ feature_extraction_dac.cpython-313.pyc
    │     │  │  │     ├─ modeling_dac.cpython-313.pyc
    │     │  │  │     └─ __init__.cpython-313.pyc
-   │     │  │  ├─ data2vec
-   │     │  │  │  ├─ configuration_data2vec_audio.py
-   │     │  │  │  ├─ configuration_data2vec_text.py
-   │     │  │  │  ├─ configuration_data2vec_vision.py
-   │     │  │  │  ├─ modeling_data2vec_audio.py
-   │     │  │  │  ├─ modeling_data2vec_text.py
-   │     │  │  │  ├─ modeling_data2vec_vision.py
-   │     │  │  │  ├─ modeling_tf_data2vec_vision.py
-   │     │  │  │  ├─ modular_data2vec_audio.py
-   │     │  │  │  ├─ __init__.py
-   │     │  │  │  └─ __pycache__
-   │     │  │  │     ├─ configuration_data2vec_audio.cpython-313.pyc
-   │     │  │  │     ├─ configuration_data2vec_text.cpython-313.pyc
-   │     │  │  │     ├─ configuration_data2vec_vision.cpython-313.pyc
-   │     │  │  │     ├─ modeling_data2vec_audio.cpython-313.pyc
-   │     │  │  │     ├─ modeling_data2vec_text.cpython-313.pyc
-   │     │  │  │     ├─ modeling_data2vec_vision.cpython-313.pyc
-   │     │  │  │     ├─ modeling_tf_data2vec_vision.cpython-313.pyc
-   │     │  │  │     ├─ modular_data2vec_audio.cpython-313.pyc
-   │     │  │  │     └─ __init__.cpython-313.pyc
    │     │  │  ├─ dbrx
    │     │  │  │  ├─ configuration_dbrx.py
    │     │  │  │  ├─ modeling_dbrx.py
@@ -54900,7 +54531,6 @@ second brain OS
    │     │  │  │  ├─ modeling_tf_esm.py
    │     │  │  │  ├─ openfold_utils
    │     │  │  │  │  ├─ chunk_utils.py
-   │     │  │  │  │  ├─ data_transforms.py
    │     │  │  │  │  ├─ feats.py
    │     │  │  │  │  ├─ loss.py
    │     │  │  │  │  ├─ protein.py
@@ -54910,7 +54540,6 @@ second brain OS
    │     │  │  │  │  ├─ __init__.py
    │     │  │  │  │  └─ __pycache__
    │     │  │  │  │     ├─ chunk_utils.cpython-313.pyc
-   │     │  │  │  │     ├─ data_transforms.cpython-313.pyc
    │     │  │  │  │     ├─ feats.cpython-313.pyc
    │     │  │  │  │     ├─ loss.cpython-313.pyc
    │     │  │  │  │     ├─ protein.cpython-313.pyc
@@ -58552,6 +58181,27 @@ second brain OS
    │     │  ├─ METADATA
    │     │  ├─ RECORD
    │     │  └─ WHEEL
+   │     ├─ uritemplate
+   │     │  ├─ api.py
+   │     │  ├─ orderedset.py
+   │     │  ├─ py.typed
+   │     │  ├─ template.py
+   │     │  ├─ variable.py
+   │     │  ├─ __init__.py
+   │     │  └─ __pycache__
+   │     │     ├─ api.cpython-313.pyc
+   │     │     ├─ orderedset.cpython-313.pyc
+   │     │     ├─ template.cpython-313.pyc
+   │     │     ├─ variable.cpython-313.pyc
+   │     │     └─ __init__.cpython-313.pyc
+   │     ├─ uritemplate-4.2.0.dist-info
+   │     │  ├─ INSTALLER
+   │     │  ├─ licenses
+   │     │  │  └─ LICENSE
+   │     │  ├─ METADATA
+   │     │  ├─ RECORD
+   │     │  ├─ top_level.txt
+   │     │  └─ WHEEL
    │     ├─ urllib3
    │     │  ├─ connection.py
    │     │  ├─ connectionpool.py
@@ -58823,10 +58473,6 @@ second brain OS
    │     ├─ websocket
    │     │  ├─ py.typed
    │     │  ├─ tests
-   │     │  │  ├─ data
-   │     │  │  │  ├─ header01.txt
-   │     │  │  │  ├─ header02.txt
-   │     │  │  │  └─ header03.txt
    │     │  │  ├─ echo-server.py
    │     │  │  ├─ test_abnf.py
    │     │  │  ├─ test_app.py
@@ -58914,7 +58560,6 @@ second brain OS
    │     │  ├─ cli.py
    │     │  ├─ client.py
    │     │  ├─ connection.py
-   │     │  ├─ datastructures.py
    │     │  ├─ exceptions.py
    │     │  ├─ extensions
    │     │  │  ├─ base.py
@@ -58983,7 +58628,6 @@ second brain OS
    │     │     ├─ cli.cpython-313.pyc
    │     │     ├─ client.cpython-313.pyc
    │     │     ├─ connection.cpython-313.pyc
-   │     │     ├─ datastructures.cpython-313.pyc
    │     │     ├─ exceptions.cpython-313.pyc
    │     │     ├─ frames.cpython-313.pyc
    │     │     ├─ headers.cpython-313.pyc
@@ -59588,6 +59232,7 @@ second brain OS
    │     │     └─ __init__.cpython-313.pyc
    │     └─ __pycache__
    │        ├─ decorator.cpython-313.pyc
+   │        ├─ google_auth_httplib2.cpython-313.pyc
    │        ├─ ipykernel_launcher.cpython-313.pyc
    │        ├─ ipython_pygments_lexers.cpython-313.pyc
    │        ├─ isympy.cpython-313.pyc
@@ -59617,6 +59262,7 @@ second brain OS
    │  ├─ dotenv.exe
    │  ├─ f2py.exe
    │  ├─ fastapi.exe
+   │  ├─ google-oauthlib-tool.exe
    │  ├─ hf.exe
    │  ├─ httpx.exe
    │  ├─ huggingface-cli.exe

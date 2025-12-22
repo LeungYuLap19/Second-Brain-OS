@@ -179,49 +179,47 @@ CRITICAL RULES (READ THIS LAST):
     history = list(self.app.get_state_history(config)) 
 
     memory_entries = []
-    seen_requests = set()  # Deduplicate by user_request + output presence
+    seen_requests = set()
 
     for snapshot in history:
-        if not snapshot.values:
-            continue
+      if not snapshot.values:
+        continue
 
-        entry = {}
-        user_request = snapshot.values.get("user_request")
-        if not user_request:
-            continue
+      entry = {}
+      user_request = snapshot.values.get("user_request")
+      if not user_request:
+        continue
 
-        # Only add if this request hasn't been seen yet
-        key = user_request
-        if key in seen_requests:
-            continue
+      # Only add if this request hasn't been seen yet
+      key = user_request
+      if key in seen_requests:
+        continue
 
-        entry["user_request"] = user_request
+      entry["user_request"] = user_request
 
-        # Add task outputs if completed
-        tasks_summary = []
-        tasks = snapshot.values.get("tasks", {})
-        for step, task in tasks.items():
-            if task.status == TaskStatus.COMPLETED and task.output:
-                summary = task.output[:200] + "..." if len(task.output) > 200 else task.output
-                tasks_summary.append({"agent": task.agent, "summary": summary})
+      tasks_summary = []
+      tasks = snapshot.values.get("tasks", {})
+      for step, task in tasks.items():
+        if task.status == TaskStatus.COMPLETED and task.output:
+          summary = task.output[:200] + "..." if len(task.output) > 200 else task.output
+          tasks_summary.append({"agent": task.agent, "summary": summary})
 
-        if tasks_summary:
-            entry["task_outputs"] = tasks_summary
+      if tasks_summary:
+        entry["task_outputs"] = tasks_summary
 
-        # Add results for completeness
-        results = snapshot.values.get("results", {})
-        if results:
-            entry["results"] = results
+      results = snapshot.values.get("results", {})
+      if results:
+        entry["results"] = results
 
-        if entry:
-            memory_entries.append(entry)
-            seen_requests.add(key)
+      if entry:
+        memory_entries.append(entry)
+        seen_requests.add(key)
 
-        if len(memory_entries) >= limit:
-            break
+      if len(memory_entries) >= limit:
+        break
 
     if not memory_entries:
-        return "{}"
+      return "{}"
 
     # Reverse to oldest first
     return json.dumps({"memory": list(reversed(memory_entries))}, indent=2)
