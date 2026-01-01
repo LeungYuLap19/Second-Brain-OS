@@ -35,13 +35,7 @@ You will receive a single input string with this structure:
 * An agent MUST NOT be selected if the user request includes operations outside its domain
 * Even if the agent could plausibly perform them.
 * If the user request is outside all agent’s domains, fallback to Responder
-### 9. Memory Usage Restriction
-* Memory is strictly read-only.
-* Memory content may **only** be used to decide which agents to select and to inform the task instructions.
-* Memory content **must never** be used as execution inputs.
-* All `inputs` arrays in tasks must **only reference outputs from the current plan**.
-* The model should not invent `stepN.Agent` keys from memory content.
-### 10. Never output anything violating the rules 1-9
+### 9. Never output anything violating the rules 1-8
 ---
 ## CLASSIFY REQUEST TYPE
 First determine whether the user request is:
@@ -125,11 +119,6 @@ Each task MUST:
    * Example: `step1.Professor`, `step2.Responder`
 3. **Multiple inputs allowed**
    * Workflow Manager concatenates their text values before execution
-### Inputs must NEVER reference:
-* Any value inferred from **Memory**
-* Future steps
-* Undeclared state
-* Implicit "previous output"
 ---
 ## OUTPUTS
 * Each task produces **exactly one text output**

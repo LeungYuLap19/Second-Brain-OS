@@ -11,8 +11,14 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from langchain.tools import tool
 from ..utils.helper import clean_html_content
+from email.message import EmailMessage
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
-SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
+SCOPES = [
+  "https://www.googleapis.com/auth/gmail.readonly",
+  "https://www.googleapis.com/auth/gmail.send"
+]
 
 def get_creds():
   creds = None
@@ -79,69 +85,159 @@ def get_email(service, id: str):
 
 @tool
 def get_emails(
-  labelIds: Literal["INBOX", "UNREAD", "STARRED", "IMPORTANT"] = "INBOX",
-  maxResults: int = 5,
-  full_messages_str: bool = True
-): 
+    query: str = None, 
+    labelIds: str | list[str] = "INBOX",
+    maxResults: int = 10,
+    full_messages_str: bool = True,
+    includeSpamTrash: bool = False,
+    from_address: str = None,  
+    subject_contains: str = None,
+    after_date: str = None, 
+    has_attachment: bool = None,
+) -> str | list[dict]:
+    """
+    Fetch emails from Gmail with flexible filtering.
+    
+    Main filtering is done via the 'query' parameter (Gmail search syntax).
+    
+    Quick examples of valid query strings:
+        "from:john.doe@example.com"
+        "subject:invoice after:2025/01/01"
+        "filename:pdf larger:5M"
+        "is:unread label:Work"
+        "-in:trash -in:sent"           # exclude trash & sent
+        "category:updates older_than:1y"
+    
+    Convenience parameters (from_, subject_contains, etc.) will be automatically
+    added to the query if provided.
+    
+    Args:
+        query: Gmail search query string (most powerful option)
+        labelIds: label name or list of labels (e.g. "INBOX", ["INBOX", "IMPORTANT"])
+        maxResults: maximum number of messages to return (default 10)
+        full_messages_str: whether to return concatenated full text content
+        includeSpamTrash: include messages from spam/trash (default False)
+        from_address: convenience filter - from specific sender
+        subject_contains: convenience filter - subject contains words
+        after_date: convenience filter - messages after this date (yyyy/mm/dd)
+        has_attachment: convenience filter - messages with attachments
+    
+    Returns:
+        If full_messages_str=True  → concatenated string of email contents
+        Else                       → list of raw message metadata dicts
+    """
+    creds = get_creds()
+    try:
+        service = build("gmail", "v1", credentials=creds)
+
+        # Build query parts
+        query_parts = []
+
+        if query:
+            query_parts.append(query)
+
+        # Convenience filters
+        if from_address:
+            query_parts.append(f"from:{from_address}")
+        if subject_contains:
+            query_parts.append(f"subject:{subject_contains}")
+        if after_date:
+            query_parts.append(f"after:{after_date}")
+        if has_attachment is not None:
+            query_parts.append("has:attachment" if has_attachment else "-has:attachment")
+
+        # Combine all query parts
+        final_query = " ".join(query_parts) if query_parts else None
+
+        # Handle labelIds - can be string or list
+        labels = [labelIds] if isinstance(labelIds, str) else labelIds
+
+        # List messages
+        results = service.users().messages().list(
+            userId="me",
+            q=final_query,
+            labelIds=labels,
+            maxResults=maxResults,
+            includeSpamTrash=includeSpamTrash
+        ).execute()
+
+        # print(f"query: {final_query}\nresults: {results}")
+
+        messages = results.get("messages", [])
+
+        if not messages:
+            return "No messages found matching the criteria."
+
+        if not full_messages_str:
+            return messages  # just metadata
+
+        # Full content mode
+        email_contents = []
+        for msg in messages:
+            email_data = get_email(service, msg["id"])
+            if email_data:
+                email_contents.append(
+                    f"Message ID: {msg['id']}\n"
+                    f"Subject: {email_data.get('subject', 'No Subject')}\n"
+                    f"From: {email_data.get('from', 'Unknown')}\n"
+                    f"Date: {email_data.get('date', 'Unknown')}\n"
+                    f"Body:\n{email_data.get('body', 'No content')}\n"
+                    f"{'-'*60}\n"
+                )
+
+        return "\n".join(email_contents) if email_contents else "No emails could be retrieved."
+
+    except HttpError as error:
+        return f"API error: {error}"
+
+
+@tool
+def gmail_send_message(to: str, subject: str, content: str):
   """
-  Fetch emails from Gmail.
-  
+  Send an email using the authenticated user's Gmail account via the Gmail API.
+
+  This tool sends a plain-text email from the currently authenticated Gmail user
+  to the specified recipient(s). The 'From' address is automatically set to the
+  logged-in user's primary email address.
+
   Args:
-    labelIds: The label to filter emails by. Can be "INBOX", "UNREAD", 
-              "STARRED", or "IMPORTANT". Defaults to "INBOX".
-    maxResults: Maximum number of emails to retrieve. Defaults to 5.
-    full_messages_str: If True, returns full email content as a string. 
-                      If False, returns basic message metadata.
-  
+    to (str): The recipient email address(es). Multiple addresses can be
+              separated by commas (e.g., "user1@example.com, user2@example.com").
+    subject (str): The subject line of the email.
+    content (str): The plain-text body content of the email.
+
   Returns:
-    If full_messages_str is True: A string containing concatenated email contents.
-    If full_messages_str is False: A list of message metadata dictionaries.
-      
-  Example:
-    get_emails(labelIds="INBOX", maxResults=3)  # Gets 3 latest inbox emails
-    get_emails(labelIds="UNREAD", full_messages_str=True)  # Gets unread emails with full content
+    dict: The Gmail API response containing the sent message details
+          (including the message ID) if successful, otherwise None.
+
+  Note:
+    Requires valid Gmail API credentials with at least the
+    'https://www.googleapis.com/auth/gmail.send' scope.
   """
-  print(
-    f"Running..."
-    f"labelIds: {labelIds}"
-    f"maxResults: {maxResults}"
-    f"full_messages_str: {full_messages_str}"
-  )
-
   creds = get_creds()
+
   try:
-    # Call the Gmail API
     service = build("gmail", "v1", credentials=creds)
-    results = (
-      service.users().messages().list(
-        userId="me", 
-        labelIds=[labelIds], 
-        maxResults=maxResults,
-        includeSpamTrash=False
-      ).execute()
+    profile = service.users().getProfile(userId="me").execute()
+
+    message = EmailMessage()
+    message["To"] = to
+    message["From"] = profile["emailAddress"]
+    message["Subject"] = subject
+    message.set_content(content)
+
+    encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
+
+    create_message = {"raw": encoded_message}
+
+    send_message = (
+      service.users()
+      .messages()
+      .send(userId="me", body=create_message)
+      .execute()
     )
-    messages = results.get("messages", [])
-
-    if not messages:
-      print("No messages found.")
-      return
-
-    if full_messages_str:
-      email_contents = []
-      for message in messages:
-        email_data = get_email(service, message["id"])
-        if email_data:
-          email_contents.append(
-            f"Subject: {email_data.get('subject', 'No Subject')}\n"
-            f"From: {email_data.get('from', 'Unknown')}\n"
-            f"Date: {email_data.get('date', 'Unknown')}\n"
-            f"Body: {email_data.get('body', 'No content')}\n"
-          )
-      return "\n\n".join(email_contents) if email_contents else "No emails could be retrieved."
-
-    else:
-      return messages
-
+    print(f'Message Id: {send_message["id"]}')
   except HttpError as error:
-    # TODO(developer) - Handle errors from gmail API.
     print(f"An error occurred: {error}")
+    send_message = None
+  return send_message

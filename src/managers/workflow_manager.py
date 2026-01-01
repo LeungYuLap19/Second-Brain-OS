@@ -41,21 +41,32 @@ class WorkflowManager:
       f"User request:\n{user_request}\n\n"
       f"Memory (JSON, read-only, do NOT use as execution inputs):\n{memory_context}"
       f"""
-CRITICAL RULES (READ THIS LAST):
-- Each plan is executed in a FRESH state. Step numbers restart from 1 every turn.
-- NEVER reference output keys like "step1.Researcher" from previous memory
+### CRITICAL RULES (READ THIS LAST):
+* Memory is strictly read-only.
+* Memory content may **only** be used to decide which agents to select and to inform the task instructions.
+* Memory content **must never** be used as execution inputs.
+* All `inputs` arrays in tasks must **only reference outputs from the current plan**.
+* The model should not invent `stepN.Agent` keys from memory content.
+* Each plan is executed in a FRESH state. Step numbers restart from 1 every turn.
+* NEVER reference output keys like "step1.Researcher" from previous memory
+
+### Inputs must NEVER reference:
+* Any value inferred from **Memory**
+* Future steps
+* Undeclared state
+* Implicit "previous output"
       """
     )
 
     raw_plan = orchestrator.run(orchestrator_input)
     plan = OrchestratorPlan.model_validate(raw_plan)
 
-    print(
-      f"--- ORCHESTRATOR PLAN ---\n"
-      f"{orchestrator_input}\n"
-      f"{plan}\n"
-      f"-------------------------"
-    )
+    # print(
+    #   f"--- ORCHESTRATOR PLAN ---\n"
+    #   f"{orchestrator_input}\n"
+    #   f"{plan}\n"
+    #   f"-------------------------"
+    # )
 
     state = TaskState()
     state.init_from_plan(plan=plan, user_request=user_request)
@@ -159,8 +170,8 @@ CRITICAL RULES (READ THIS LAST):
         resolved.append(state.user_request)
       elif key in state.results:
         resolved.append(state.results[key])
-      else:
-        raise ValueError(f"Missing input: {key}")
+      # else:
+        # raise ValueError(f"Missing input: {key}")
 
     context = "\n\n".join(resolved)
     memory_context = self._get_state_memory()
