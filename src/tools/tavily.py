@@ -10,8 +10,29 @@ tavily_client = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
 @tool
 def tavily_search_api(query: str, max_results: int = 3) -> str:
   """
-  Perform a web search using Tavily and return structured results.
-  Returns a string or JSON-serializable dict with title + snippet.
+  Perform a web search using the Tavily Search API and return structured results.
+
+  This tool is useful when you need up-to-date information from the web, 
+  such as current events, facts, statistics, or answers to factual questions 
+  that may not be available in the model's training data.
+
+  Args:
+    query (str): The search query to send to Tavily. Should be clear and specific.
+    max_results (int, optional): Maximum number of search results to return. 
+                                Defaults to 3 to keep responses concise.
+
+  Returns:
+    str: A JSON-serializable object (list of dicts or dict) containing the search results.
+          Typically a list where each result includes:
+          - "title": Page title
+          - "url": Source URL
+          - "content": A short snippet or summary of the page
+          If an error occurs, returns a dict with an "error" key.
+
+  Note:
+    The tool uses Tavily's "basic" search depth for faster results.
+    In case of API errors, the exception traceback is printed to console 
+    for debugging, and an error dictionary is returned.
   """
   try:
     response = tavily_client.search(
@@ -28,13 +49,33 @@ def tavily_search_api(query: str, max_results: int = 3) -> str:
     print("\n🔥 TASK FAILED TRACEBACK 🔥")
     print(tb)
     print("🔥 END TRACEBACK 🔥\n")
-    return {"error": str(e)}
+    return f"tavily_search_api error: {e}"
   
 @tool
 def tavily_extract_content(urls: list[str], include_images: bool = False) -> str:
   """
-  Use Tavily Extract API to fetch content from the given URLs.
-  Returns extracted text content.
+  Extract raw text content from one or more webpages using Tavily's Extract API.
+
+  This tool is helpful when you have specific URLs from a prior search 
+  (or elsewhere) and need the full cleaned text content rather than just snippets.
+  It removes boilerplate (navigation, ads, etc.) and returns readable article text.
+
+  Args:
+    urls (list[str]): A list of URLs to extract content from. 
+                      Must be valid, publicly accessible web pages.
+    include_images (bool, optional): Whether to include image metadata 
+                                      (URLs, alt text) in the extraction. 
+                                      Defaults to False for cleaner text output.
+
+  Returns:
+    str: A JSON-serializable object containing the extraction results.
+        Typically a list of dicts with keys like "url" and "raw_content".
+        If an error occurs, returns a dict with an "error" key.
+
+  Note:
+    Uses Tavily's "advanced" extraction depth for high-quality cleaned content.
+    Errors are caught, logged with full traceback to console, 
+    and returned as an error dictionary.
   """
   try:
     response = tavily_client.extract(
@@ -50,4 +91,4 @@ def tavily_extract_content(urls: list[str], include_images: bool = False) -> str
     print("\n🔥 TASK FAILED TRACEBACK 🔥")
     print(tb)
     print("🔥 END TRACEBACK 🔥\n")
-    return {"error": str(e)}
+    return f"tavily_extract_content error: {e}"

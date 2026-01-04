@@ -14,24 +14,24 @@ AGENT_MODELS:
     model: "qwen2.5:7b"
     temperature: 0.0
     system_prompt_file: "configs/system_prompts/orchestrator_prompt.txt"
-    num_ctx: 32768          # Small but safe — prevents rule truncation, keeps planning fast
-    num_predict: 512       # JSON plans are short; tight cap ensures speed & no bloat
+    num_ctx: 65536          
+    num_predict: 4096       
     format: "json"
 
   Synthesizer:
     model: "qwen2.5:7b"
     temperature: 0.5
     system_prompt_file: "configs/system_prompts/synthesizer_prompt.txt"
-    num_ctx: 32768         # Often combines many prior outputs → needs large context
-    num_predict: 4096      # Final responses can be long/rich (recommended increase)
+    num_ctx: 65536         
+    num_predict: 4096      
     format: ""
 
   Professor:
     model: "qwen2.5:7b"
     temperature: 0.1
     system_prompt_file: "configs/system_prompts/professor_prompt.txt"
-    num_ctx: 32768         # Handles full documents/PDFs — maximize context
-    num_predict: 4096      # Detailed summaries or answers can be lengthy
+    num_ctx: 65536         
+    num_predict: 4096      
     format: ""
     tools: [search_documents]
 
@@ -39,8 +39,8 @@ AGENT_MODELS:
     model: "qwen2.5:7b"
     temperature: 0.3
     system_prompt_file: "configs/system_prompts/researcher_prompt.txt"
-    num_ctx: 32768         # Long search results + snippets
-    num_predict: 2048      # Structured research summaries — generous but controlled
+    num_ctx: 65536         
+    num_predict: 4096      
     format: ""
     tools: [tavily_search_api, tavily_extract_content]
 
@@ -48,8 +48,8 @@ AGENT_MODELS:
     model: "qwen2.5:7b"
     temperature: 0.2
     system_prompt_file: "configs/system_prompts/communicator_prompt.txt"
-    num_ctx: 32768         # Email threads can be very long
-    num_predict: 2048      # Summaries + drafted replies
+    num_ctx: 65536         
+    num_predict: 4096      
     format: ""
     tools: [get_emails, gmail_send_message]
 
@@ -57,8 +57,8 @@ AGENT_MODELS:
     model: "qwen2.5:7b"
     temperature: 0.1
     system_prompt_file: "configs/system_prompts/secretary_prompt.txt"
-    num_ctx: 16384         # Calendar data over months + some context — 16384 is plenty
-    num_predict: 512       # Confirmations and event lists are concise
+    num_ctx: 65536         
+    num_predict: 4096      
     format: ""
     tools: []
 
@@ -66,15 +66,23 @@ AGENT_MODELS:
     model: "qwen2.5:7b"
     temperature: 0.05
     system_prompt_file: "configs/system_prompts/accountant_prompt.txt"
-    num_ctx: 8192          # Expense lists are usually short-medium length
-    num_predict: 512       # Reports/summaries are structured and concise
+    num_ctx: 65536          
+    num_predict: 4096       
     format: ""
-    tools: []
+    tools: [create_category, execute_sql_write, sql_list_tables, sql_get_schema, sql_query, sql_query_checker]
 
   Responder:
     model: "qwen2.5:7b"
     temperature: 0.6
     system_prompt_file: "configs/system_prompts/responder_prompt.txt"
-    num_ctx: 32768         # Heavy synthesis: combines Professor + Researcher + others
-    num_predict: 3072      # Creative output (notes, plans, code, explanations) — generous
+    num_ctx: 65536         
+    num_predict: 4096      
+    format: ""
+
+  Distiller:
+    model: "qwen2.5:7b"
+    temperature: 0.2
+    system_prompt_file: "configs/system_prompts/distiller_prompt.txt"
+    num_ctx: 8192         
+    num_predict: 128      
     format: ""

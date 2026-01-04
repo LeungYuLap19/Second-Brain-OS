@@ -1,23 +1,11 @@
 from src.managers.workflow_manager import WorkflowManager
-from src.agents.professor import ProfessorAgent
-from src.agents.responder import ResponderAgent
-from src.agents.researcher import ResearcherAgent
-from src.agents.communicator import CommunicatorAgent
-from src.utils.helper import ingest_documents
-
-AGENT_REGISTRY = {
-  "Professor": ProfessorAgent(),
-  "Researcher": ResearcherAgent(),
-  "Responder": ResponderAgent(),
-  "Communicator": CommunicatorAgent()
-}
+from src.agents.registry import AGENT_REGISTRY
+# from src.utils.helper import ingest_documents
 
 def hybrid_agent_runner(agent_name: str, input_text: str) -> str:
   agent = AGENT_REGISTRY.get(agent_name)
 
   print(f"\n--- RUN: {agent_name} ---")
-  # print(input_text)
-  # print("-------------------------")
 
   if agent:
     return agent.run(input_text)
@@ -31,7 +19,7 @@ if __name__ == "__main__":
   manager = WorkflowManager(agent_runner=hybrid_agent_runner)
   print("Second Brain OS 🧠 (type 'exit' to quit)")
   while True:
-    user_request = input("User 🤡 > ").strip()
+    user_request = input("\nUser 🤡 > ").strip()
     if user_request.lower() == "exit":
       print("Exiting Second Brain OS. Goodbye!")
       break

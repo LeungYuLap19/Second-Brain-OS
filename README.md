@@ -15,10 +15,6 @@ second brain OS
 │  │  └─ synthesizer_prompt.txt
 │  └─ __pycache__
 │     └─ settings_loader.cpython-313.pyc
-├─ gmail.py
-├─ playground
-│  ├─ cover_letter_gen.ipynb
-│  └─ Leung_Yu_Lap_Resume.pdf
 ├─ src
 │  ├─ agents
 │  │  ├─ accountant.py
@@ -33,6 +29,7 @@ second brain OS
 │  │  ├─ __init__.py
 │  │  └─ __pycache__
 │  │     ├─ base_agent.cpython-313.pyc
+│  │     ├─ communicator.cpython-313.pyc
 │  │     ├─ note_taker.cpython-313.pyc
 │  │     ├─ orchestrator.cpython-313.pyc
 │  │     ├─ plan_reviewer.cpython-313.pyc
@@ -62,12 +59,19 @@ second brain OS
 │  │  └─ __pycache__
 │  │     ├─ doc_ingest.cpython-313.pyc
 │  │     ├─ doc_tools.cpython-313.pyc
+│  │     ├─ gmail.cpython-313.pyc
 │  │     ├─ registry.cpython-313.pyc
 │  │     ├─ tavily.cpython-313.pyc
 │  │     └─ __init__.cpython-313.pyc
-│  └─ utils
-│     ├─ helper.py
-│     └─ __init__.py
+│  ├─ utils
+│  │  ├─ helper.py
+│  │  ├─ __init__.py
+│  │  └─ __pycache__
+│  │     ├─ helper.cpython-313.pyc
+│  │     └─ __init__.cpython-313.pyc
+│  ├─ __init__.py
+│  └─ __pycache__
+│     └─ __init__.cpython-313.pyc
 ├─ test_workflow.py
 └─ venv
    ├─ Include

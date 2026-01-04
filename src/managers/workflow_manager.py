@@ -5,6 +5,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 from src.schemas.task_state import TaskState, TaskStatus
 from src.schemas.data_models import OrchestratorPlan
 from src.agents.orchestrator import OrchestratorAgent
+from src.agents.distiller import DistillerAgent
 import traceback
 import json
 
@@ -60,13 +61,6 @@ class WorkflowManager:
 
     raw_plan = orchestrator.run(orchestrator_input)
     plan = OrchestratorPlan.model_validate(raw_plan)
-
-    # print(
-    #   f"--- ORCHESTRATOR PLAN ---\n"
-    #   f"{orchestrator_input}\n"
-    #   f"{plan}\n"
-    #   f"-------------------------"
-    # )
 
     state = TaskState()
     state.init_from_plan(plan=plan, user_request=user_request)
@@ -136,7 +130,7 @@ class WorkflowManager:
       try:
         # run current task
         state.mark_running(step)
-        input_text = self._resolve_inputs(state, task.inputs, task.instruction)
+        input_text = self._resolve_inputs(task.instruction)
         output = self.agent_runner(task.agent, input_text)
 
         # mark current task complete
@@ -158,31 +152,13 @@ class WorkflowManager:
   # -------------------------
   # Input resolution
   # -------------------------
-  def _resolve_inputs(self, state: TaskState, input_keys: list[str], instruction: str) -> str:
-    """
-    input_keys: state key indicates which existing value to use
-    merge context and instruction to final text input
-    """
-    resolved = []
-
-    for key in input_keys:
-      if key == "user_request":
-        resolved.append(state.user_request)
-      elif key in state.results:
-        resolved.append(state.results[key])
-      # else:
-        # raise ValueError(f"Missing input: {key}")
-
-    context = "\n\n".join(resolved)
+  def _resolve_inputs(self, instruction: str) -> str:
     memory_context = self._get_state_memory()
 
     return (
       f"Instruction: \n{instruction}\n\n"
       f"Memory (JSON, read-only):\n{memory_context}\n\n"
-      f"Context:\n{context}"
     )
-  
-  import json
 
   def _get_state_memory(self, limit: int = 5) -> str:
     if not self.app: return 

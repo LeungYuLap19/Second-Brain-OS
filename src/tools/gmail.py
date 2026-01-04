@@ -1,9 +1,9 @@
 import os.path
 import base64
 import re
+import traceback
 from email import policy
 from email.parser import BytesParser
-from typing import Literal
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -79,120 +79,130 @@ def get_email(service, id: str):
       "body": clean_html_content(body)[:1000] if body else ""
     }
   
-  except HttpError as error:
-    # TODO(developer) - Handle errors from gmail API.
-    print(f"An error occurred: {error}")
+  except HttpError as e:
+    tb = traceback.format_exc()
+    print("\n🔥 TASK FAILED TRACEBACK 🔥")
+    print(tb)
+    print("🔥 END TRACEBACK 🔥\n")
+    return f"get_email error: {str(e)}"
 
 @tool
 def get_emails(
-    query: str = None, 
-    labelIds: str | list[str] = "INBOX",
-    maxResults: int = 10,
-    full_messages_str: bool = True,
-    includeSpamTrash: bool = False,
-    from_address: str = None,  
-    subject_contains: str = None,
-    after_date: str = None, 
-    has_attachment: bool = None,
-) -> str | list[dict]:
-    """
-    Fetch emails from Gmail with flexible filtering.
-    
-    Main filtering is done via the 'query' parameter (Gmail search syntax).
-    
-    Quick examples of valid query strings:
-        "from:john.doe@example.com"
-        "subject:invoice after:2025/01/01"
-        "filename:pdf larger:5M"
-        "is:unread label:Work"
-        "-in:trash -in:sent"           # exclude trash & sent
-        "category:updates older_than:1y"
-    
-    Convenience parameters (from_, subject_contains, etc.) will be automatically
-    added to the query if provided.
-    
-    Args:
-        query: Gmail search query string (most powerful option)
-        labelIds: label name or list of labels (e.g. "INBOX", ["INBOX", "IMPORTANT"])
-        maxResults: maximum number of messages to return (default 10)
-        full_messages_str: whether to return concatenated full text content
-        includeSpamTrash: include messages from spam/trash (default False)
-        from_address: convenience filter - from specific sender
-        subject_contains: convenience filter - subject contains words
-        after_date: convenience filter - messages after this date (yyyy/mm/dd)
-        has_attachment: convenience filter - messages with attachments
-    
-    Returns:
-        If full_messages_str=True  → concatenated string of email contents
-        Else                       → list of raw message metadata dicts
-    """
-    creds = get_creds()
-    try:
-        service = build("gmail", "v1", credentials=creds)
+  query: str = None, 
+  labelIds: str | list[str] = "INBOX",
+  maxResults: int = 10,
+  full_messages_str: bool = True,
+  includeSpamTrash: bool = False,
+  from_address: str = None,  
+  subject_contains: str = None,
+  after_date: str = None, 
+  has_attachment: bool = None,
+) -> str:
+  """
+  Fetch emails from Gmail with flexible filtering.
+  
+  Main filtering is done via the 'query' parameter (Gmail search syntax).
+  
+  Quick examples of valid query strings:
+    "from:john.doe@example.com"
+    "subject:invoice after:2025/01/01"
+    "filename:pdf larger:5M"
+    "is:unread label:Work"
+    "-in:trash -in:sent"           # exclude trash & sent
+    "category:updates older_than:1y"
+  
+  Convenience parameters (from_, subject_contains, etc.) will be automatically
+  added to the query if provided.
+  
+  Args:
+    query: Gmail search query string (most powerful option)
+    labelIds: label name or list of labels (e.g. "INBOX", ["INBOX", "IMPORTANT"])
+    maxResults: maximum number of messages to return (default 10)
+    full_messages_str: whether to return concatenated full text content
+    includeSpamTrash: include messages from spam/trash (default False)
+    from_address: convenience filter - from specific sender
+    subject_contains: convenience filter - subject contains words
+    after_date: convenience filter - messages after this date (yyyy/mm/dd)
+    has_attachment: convenience filter - messages with attachments
+  
+  Returns:
+    If full_messages_str=True  → concatenated string of email contents
+    Else                       → list of raw message metadata dicts
+  """
+  creds = get_creds()
+  try:
+    service = build("gmail", "v1", credentials=creds)
 
-        # Build query parts
-        query_parts = []
+    # Build query parts
+    query_parts = []
 
-        if query:
-            query_parts.append(query)
+    if query:
+      query_parts.append(query)
 
-        # Convenience filters
-        if from_address:
-            query_parts.append(f"from:{from_address}")
-        if subject_contains:
-            query_parts.append(f"subject:{subject_contains}")
-        if after_date:
-            query_parts.append(f"after:{after_date}")
-        if has_attachment is not None:
-            query_parts.append("has:attachment" if has_attachment else "-has:attachment")
+    # Convenience filters
+    if from_address:
+      query_parts.append(f"from:{from_address}")
+    if subject_contains:
+      query_parts.append(f"subject:{subject_contains}")
+    if after_date:
+      query_parts.append(f"after:{after_date}")
+    if has_attachment is not None:
+      query_parts.append("has:attachment" if has_attachment else "-has:attachment")
 
-        # Combine all query parts
-        final_query = " ".join(query_parts) if query_parts else None
+    # Combine all query parts
+    final_query = " ".join(query_parts) if query_parts else None
 
-        # Handle labelIds - can be string or list
-        labels = [labelIds] if isinstance(labelIds, str) else labelIds
+    # Handle labelIds - can be string or list
+    labels = [labelIds] if isinstance(labelIds, str) else labelIds
 
-        # List messages
-        results = service.users().messages().list(
-            userId="me",
-            q=final_query,
-            labelIds=labels,
-            maxResults=maxResults,
-            includeSpamTrash=includeSpamTrash
-        ).execute()
+    # List messages
+    results = service.users().messages().list(
+      userId="me",
+      q=final_query,
+      labelIds=labels,
+      maxResults=maxResults,
+      includeSpamTrash=includeSpamTrash
+    ).execute()
 
-        # print(f"query: {final_query}\nresults: {results}")
+    # print(f"query: {final_query}\nresults: {results}")
 
-        messages = results.get("messages", [])
+    messages = results.get("messages", [])
 
-        if not messages:
-            return "No messages found matching the criteria."
+    if not messages:
+      return "No messages found matching the criteria."
 
-        if not full_messages_str:
-            return messages  # just metadata
+    if not full_messages_str:
+      return messages
 
-        # Full content mode
-        email_contents = []
-        for msg in messages:
-            email_data = get_email(service, msg["id"])
-            if email_data:
-                email_contents.append(
-                    f"Message ID: {msg['id']}\n"
-                    f"Subject: {email_data.get('subject', 'No Subject')}\n"
-                    f"From: {email_data.get('from', 'Unknown')}\n"
-                    f"Date: {email_data.get('date', 'Unknown')}\n"
-                    f"Body:\n{email_data.get('body', 'No content')}\n"
-                    f"{'-'*60}\n"
-                )
+    # print(messages)
 
-        return "\n".join(email_contents) if email_contents else "No emails could be retrieved."
+    # Full content mode
+    email_contents = []
+    for msg in messages:
+      email_data = get_email(service, msg["id"])
+      # print(email_data)
+      if email_data:
+        email_contents.append(
+          f"Message ID: {msg['id']}\n"
+          f"Subject: {email_data.get('subject', 'No Subject')}\n"
+          f"From: {email_data.get('from', 'Unknown')}\n"
+          f"Date: {email_data.get('date', 'Unknown')}\n"
+          f"Body:\n{email_data.get('body', 'No content')}\n"
+          f"{'-'*60}\n"
+        )
 
-    except HttpError as error:
-        return f"API error: {error}"
+    return "\n".join(email_contents) if email_contents else "No emails could be retrieved."
+
+  except HttpError as e:
+    tb = traceback.format_exc()
+    print("\n🔥 TASK FAILED TRACEBACK 🔥")
+    print(tb)
+    print("🔥 END TRACEBACK 🔥\n")
+    return f"get_emails error: {str(e)}"
 
 
 @tool
-def gmail_send_message(to: str, subject: str, content: str):
+def gmail_send_message(to: str, subject: str, content: str) -> str:
   """
   Send an email using the authenticated user's Gmail account via the Gmail API.
 
@@ -236,8 +246,10 @@ def gmail_send_message(to: str, subject: str, content: str):
       .send(userId="me", body=create_message)
       .execute()
     )
-    print(f'Message Id: {send_message["id"]}')
-  except HttpError as error:
-    print(f"An error occurred: {error}")
-    send_message = None
-  return send_message
+    return f"email sent: {send_message}"
+  except HttpError as e:
+    tb = traceback.format_exc()
+    print("\n🔥 TASK FAILED TRACEBACK 🔥")
+    print(tb)
+    print("🔥 END TRACEBACK 🔥\n")
+    return f"gmail_send_message error: {str(e)}"

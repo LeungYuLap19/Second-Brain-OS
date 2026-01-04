@@ -25,12 +25,13 @@ def search_documents(query: str, k: int = 5) -> str:
         embeddings,
         allow_dangerous_deserialization=True
       )
+      
     except Exception as e:
       tb = traceback.format_exc()
       print("\n🔥 TASK FAILED TRACEBACK 🔥")
       print(tb)
       print("🔥 END TRACEBACK 🔥\n")
-      return f"Error loading document database: {str(e)}. Make sure documents have been ingested."
+      return f"search_documents error: {str(e)}"
 
     retriever = vectorstore.as_retriever(search_kwargs={"k": k})
     docs = retriever.invoke(query)

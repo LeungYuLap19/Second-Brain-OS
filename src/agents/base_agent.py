@@ -1,10 +1,8 @@
 # from configs.settings_loader import settings
 from configs.settings_loader import settings
 from langchain_ollama import ChatOllama
-from langchain_core.prompts import ChatPromptTemplate
 from ..tools.registry import TOOL_REGISTRY
 from langchain.agents import create_agent
-from langgraph.checkpoint.memory import InMemorySaver
 
 class BaseAgent:
   def __init__(self, name: str):
