@@ -44,18 +44,9 @@ class WorkflowManager:
       f"""
 ### CRITICAL RULES (READ THIS LAST):
 * Memory is strictly read-only.
-* Memory content may **only** be used to decide which agents to select and to inform the task instructions.
-* Memory content **must never** be used as execution inputs.
-* All `inputs` arrays in tasks must **only reference outputs from the current plan**.
-* The model should not invent `stepN.Agent` keys from memory content.
-* Each plan is executed in a FRESH state. Step numbers restart from 1 every turn.
-* NEVER reference output keys like "step1.Researcher" from previous memory
-
-### Inputs must NEVER reference:
-* Any value inferred from **Memory**
-* Future steps
-* Undeclared state
-* Implicit "previous output"
+* Memory may only inform agent selection and instructions.
+* Each plan executes in a fresh state.
+* Step numbering restarts from 1 every turn.
       """
     )
 
@@ -133,9 +124,12 @@ class WorkflowManager:
         input_text = self._resolve_inputs(task.instruction)
         output = self.agent_runner(task.agent, input_text)
 
+        # generate summary
+        distiller = DistillerAgent()
+        summary = distiller.run(output)
+
         # mark current task complete
-        output_key = f"step{step}.{task.agent}"
-        state.mark_completed(step, output_key, output)
+        state.mark_completed(step, summary, output)
 
       except Exception as e:
         tb = traceback.format_exc()
@@ -157,13 +151,15 @@ class WorkflowManager:
 
     return (
       f"Instruction: \n{instruction}\n\n"
-      f"Memory (JSON, read-only):\n{memory_context}\n\n"
+      f"Memory (JSON, read-only):\n{memory_context}"
     )
 
   def _get_state_memory(self, limit: int = 5) -> str:
-    if not self.app: return 
+    if not self.app:
+      return "{}"
+
     config = {"configurable": {"thread_id": self.thread_id}}
-    history = list(self.app.get_state_history(config)) 
+    history = list(self.app.get_state_history(config))
 
     memory_entries = []
     seen_requests = set()
@@ -172,35 +168,26 @@ class WorkflowManager:
       if not snapshot.values:
         continue
 
-      entry = {}
       user_request = snapshot.values.get("user_request")
-      if not user_request:
+      if not user_request or user_request in seen_requests:
         continue
 
-      # Only add if this request hasn't been seen yet
-      key = user_request
-      if key in seen_requests:
-        continue
-
-      entry["user_request"] = user_request
+      entry = {"user_request": user_request}
 
       tasks_summary = []
       tasks = snapshot.values.get("tasks", {})
-      for step, task in tasks.items():
+      for task in tasks.values():
         if task.status == TaskStatus.COMPLETED and task.output:
-          summary = task.output[:200] + "..." if len(task.output) > 200 else task.output
-          tasks_summary.append({"agent": task.agent, "summary": summary})
+          tasks_summary.append({
+            "agent": task.agent,
+            "summary": task.summary
+          })
 
       if tasks_summary:
         entry["task_outputs"] = tasks_summary
 
-      results = snapshot.values.get("results", {})
-      if results:
-        entry["results"] = results
-
-      if entry:
-        memory_entries.append(entry)
-        seen_requests.add(key)
+      memory_entries.append(entry)
+      seen_requests.add(user_request)
 
       if len(memory_entries) >= limit:
         break
@@ -208,8 +195,10 @@ class WorkflowManager:
     if not memory_entries:
       return "{}"
 
-    # Reverse to oldest first
-    return json.dumps({"memory": list(reversed(memory_entries))}, indent=2)
+    return json.dumps(
+      {"memory": list(reversed(memory_entries))},
+      indent=2
+    )
 
   @staticmethod
   def _task_node_name(step: int, agent_name: str) -> str:

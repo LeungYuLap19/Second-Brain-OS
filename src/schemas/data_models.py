@@ -28,8 +28,6 @@ class TaskSpec(BaseModel):
   step: int = Field(..., ge=1)
   agent: AgentName
   instruction: str = Field(..., min_length=1)
-  inputs: List[str] = Field(default_factory=list)
-  output: str = Field(..., min_length=1)
   can_run_in_parallel: bool = False
 
 class OrchestratorPlan(BaseModel):

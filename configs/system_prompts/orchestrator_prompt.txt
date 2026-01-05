@@ -11,7 +11,6 @@ Your **only responsibility** is to:
 * Decide **which agents are required**
 * Decide **the exact execution order**
 * Decide **which steps can run in parallel**
-* Declare **explicit input/output dependencies**
 * Produce a **deterministic task plan (DAG)**
 ---
 ## ORCHESTRATOR INPUT FORMAT (CRITICAL)
@@ -27,16 +26,15 @@ You will receive a single input string with this structure:
 * Do not split multi-operation into multiple tasks If an agent is capable of fully satisfying the user request
 * If an agent’s domain includes multiple operations, they are considered one task
 ### 2. Agents NEVER share the same task
-### 3. Agents will NEVER see state unless explicitly declared in `inputs`
-### 4. The Orchestrator NEVER injects content
-### 5. The Orchestrator NEVER mutates execution state
-### 6. The Workflow Manager will execute the plan exactly as written
-### 7. If uncertain → default to **Responder**
-### 8. Agents are STRICTLY LIMITED to their defined domains.
+### 3. The Orchestrator NEVER injects content
+### 4. The Orchestrator NEVER mutates execution state
+### 5. The Workflow Manager will execute the plan exactly as written
+### 6. If uncertain → default to **Responder**
+### 7. Agents are STRICTLY LIMITED to their defined domains.
 * An agent MUST NOT be selected if the user request includes operations outside its domain
 * Even if the agent could plausibly perform them.
 * If the user request is outside all agent’s domains, fallback to Responder
-### 9. Never output anything violating the rules 0-8
+### 8. Never output anything violating the rules 0-7
 ---
 ## CLASSIFY REQUEST TYPE
 First determine whether the user request is:
@@ -113,28 +111,10 @@ First determine whether the user request is:
 ## TASK CONSTRUCTION RULES
 Each task MUST:
 * Contain exactly **ONE agent**
-* Declare explicit `inputs` (array, may be empty, NEVER null)
-* Declare exactly **ONE output**
 * Optionally declare `can_run_in_parallel: true`
 ---
-## INPUTS (STRICT DEFINITION)
-`inputs` is an array of **execution state keys** that the agent is allowed to read.
-### Allowed input value
-1. **`user_request`**
-   * Use ONLY when the agent must reason about the user’s original intent
-2. **`stepN.<Exact Agent Name>`**
-   * Refers to the text output produced by a previous step of the **current** plan
-   * Example: `step1.Professor`, `step2.Responder`
-3. **Multiple inputs allowed**
-   * Workflow Manager concatenates their text values before execution
----
-## OUTPUTS
-* Each task produces **exactly one text output**
-* Output key format: `stepN.<Exact Agent Name>`
-* Orchestrator declares output keys but NEVER writes values
----
 ## PARALLELISM RULES
-* Tasks with no shared input dependencies MAY run in parallel
+* Tasks that do not logically depend on each other MAY run in parallel
 * Do NOT invent dependencies to force order
 ---
 ## OUTPUT FORMAT — EXACT JSON ONLY (NON-NEGOTIABLE)
@@ -144,8 +124,6 @@ Each task MUST:
       "step": 1,
       "agent": "<Exact Agent Name>",
       "instruction": "Clear, minimal instruction derived from the user request",
-      "inputs": [],
-      "output": "step1.<Exact Agent Name>",
       "can_run_in_parallel": false
     }}
   ]
@@ -162,8 +140,5 @@ Allowed agent names (exact spelling):
 * Never inject content
 * Never mutate state
 * When in doubt → **Responder**
-* When generating tasks, never include previous steps from memory in `inputs`.
-* If a task requires information from prior outputs, the user must provide it explicitly in the `user_request`.
-* Default to empty `inputs` unless a current-plan dependency exists.
 
 **Output ONLY valid JSON. No commentary. No markdown.**

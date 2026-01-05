@@ -15,8 +15,6 @@ class OrchestratorAgent(BaseAgent):
         "step": 1,
         "agent": "<Exact Agent Name>",
         "instruction": "<string>",
-        "inputs": [],
-        "output": "step1.<Exact Agent Name>",
         "can_run_in_parallel": false
       }
     ]
@@ -51,8 +49,6 @@ class OrchestratorAgent(BaseAgent):
       '      "step": 1,\n'
       '      "agent": "",\n'
       '      "instruction": "",\n'
-      '      "inputs": [],\n'
-      '      "output": "",\n'
       '      "can_run_in_parallel": false\n'
       "    }\n"
       "  ]\n"

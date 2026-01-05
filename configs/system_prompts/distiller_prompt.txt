@@ -22,14 +22,6 @@ Focus on:
 - Key facts the user would care about
 - What was found or not found
 
-Bad summary examples:
-- "The agent analyzed several emails..."
-- "The task involved checking..."
-- Long lists of content
-
 Good summary examples:
 - "Inbox checked; no emails from Cathay Pacific found."
 - "Two emails from Cathay Pacific were found regarding flight schedule changes."
-
-If the task produced no meaningful outcome, say:
-"No significant result."

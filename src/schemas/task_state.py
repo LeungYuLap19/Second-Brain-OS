@@ -7,6 +7,9 @@ from .data_models import OrchestratorPlan
 
 class TaskStatus(str, Enum):
   """Allowed lifecycle states for a task."""
+  # INVARIANT:
+  # TaskState must never store raw agent outputs or large text.
+  # Only summaries and execution metadata are allowed.
 
   PENDING = "pending"
   RUNNING = "running"
@@ -28,34 +31,22 @@ class TaskRuntimeState(BaseModel):
   step: int
   agent: str
   instruction: str
-  inputs: List[str] = Field(default_factory=list)
 
   status: TaskStatus = TaskStatus.PENDING
   output: Optional[str] = None
+  summary: Optional[str] = None
   error: Optional[str] = None
 
 class TaskState(BaseModel):
   """
   Global workflow state shared across execution.
-
-  DESIGN GOALS:
-  - Extremely simple
-  - Easy to reason about
-  - Safe for beginners
   """
 
   model_config = ConfigDict(extra="forbid")
 
   user_request: str = ""
-
-  # Orchestrator output (validated once)
   plan: Optional[OrchestratorPlan] = None
-
-  # Runtime task tracking
   tasks: Dict[int, TaskRuntimeState] = Field(default_factory=dict)
-
-  # Collected agent outputs (ALL STRINGS)
-  results: Dict[str, str] = Field(default_factory=dict)
 
   created_at: datetime = Field(default_factory=lambda:datetime.now(timezone.utc))
   updated_at: datetime = Field(default_factory=lambda:datetime.now(timezone.utc))
@@ -72,7 +63,6 @@ class TaskState(BaseModel):
         step=task.step,
         agent=task.agent,
         instruction=task.instruction,
-        inputs=task.inputs,
       )
     self.user_request = user_request
     self.updated_at = datetime.now(timezone.utc)
@@ -81,11 +71,11 @@ class TaskState(BaseModel):
     self.tasks[step].status = TaskStatus.RUNNING
     self.updated_at = datetime.now(timezone.utc)
 
-  def mark_completed(self, step: int, output_key: str, output: str):
+  def mark_completed(self, step: int, summary: str, output: str):
     task = self.tasks[step]
     task.status = TaskStatus.COMPLETED
     task.output = output
-    self.results[output_key] = output
+    task.summary = summary
     self.updated_at = datetime.now(timezone.utc)
 
   def mark_failed(self, step: int, error: str):

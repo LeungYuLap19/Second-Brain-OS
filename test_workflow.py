@@ -25,6 +25,7 @@ if __name__ == "__main__":
       break
     if user_request:
       final_state = manager.run(user_request)
-      # print(final_state)
-      last_step_key = sorted(final_state["results"].keys())[-1]
-      print(f"Second Brain 🤖 > {final_state["results"][last_step_key]}")
+      last_step = max(final_state["tasks"].keys())
+      last_task = final_state["tasks"][last_step]
+      final_output = last_task.output
+      print(f"Second Brain 🤖 > {final_output}")
