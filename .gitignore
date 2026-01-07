@@ -2,3 +2,4 @@
 /data
 credentials.json
 token.json
+*.pyc

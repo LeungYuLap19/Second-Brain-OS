@@ -114,14 +114,6 @@ def search_memory(
     • Quote or adapt relevant sections directly to ensure consistency.
     • If no relevant memory is returned, proceed with fresh reasoning.
     """
-    print(
-       f"{query}\n"
-       f"{k}\n"
-       f"{mode}\n"
-       f"{agent_filter}\n"
-       f"{step_filter}\n"
-    )
-
     try:
         embeddings = OllamaEmbeddings(model="nomic-embed-text")
         vectorstore = FAISS.load_local(
