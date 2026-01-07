@@ -33,7 +33,7 @@ AGENT_MODELS:
     num_ctx: 65536         
     num_predict: 4096      
     format: ""
-    tools: [search_documents]
+    tools: [search_documents, search_memory]
 
   Researcher:
     model: "qwen2.5:7b"
@@ -42,7 +42,7 @@ AGENT_MODELS:
     num_ctx: 65536         
     num_predict: 4096      
     format: ""
-    tools: [tavily_search_api, tavily_extract_content]
+    tools: [tavily_search_api, tavily_extract_content, search_memory]
 
   Communicator:
     model: "qwen2.5:7b"
@@ -51,7 +51,7 @@ AGENT_MODELS:
     num_ctx: 65536         
     num_predict: 4096      
     format: ""
-    tools: [get_emails, gmail_send_message]
+    tools: [get_emails, gmail_send_message, search_memory]
 
   Secretary:
     model: "qwen2.5:7b"
@@ -60,7 +60,7 @@ AGENT_MODELS:
     num_ctx: 65536         
     num_predict: 4096      
     format: ""
-    tools: []
+    tools: [search_memory]
 
   Accountant:
     model: "qwen2.5:7b"
@@ -69,7 +69,7 @@ AGENT_MODELS:
     num_ctx: 65536          
     num_predict: 4096       
     format: ""
-    tools: [create_category, execute_sql_write, sql_list_tables, sql_get_schema, sql_query, sql_query_checker]
+    tools: [create_category, execute_sql_write, sql_list_tables, sql_get_schema, sql_query, sql_query_checker, search_memory]
 
   Responder:
     model: "qwen2.5:7b"
@@ -78,6 +78,7 @@ AGENT_MODELS:
     num_ctx: 65536         
     num_predict: 4096      
     format: ""
+    tools: [search_memory]
 
   Distiller:
     model: "qwen2.5:7b"

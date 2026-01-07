@@ -1,4 +1,5 @@
 import re
+from langchain_core.documents import Document
 from langchain_community.document_loaders import (
   PyPDFLoader, Docx2txtLoader, TextLoader,
   UnstructuredPowerPointLoader, UnstructuredFileLoader
@@ -7,6 +8,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_ollama import OllamaEmbeddings
 from langchain_community.vectorstores import FAISS
 import os
+import shutil
 
 def clean_html_content(html_text: str) -> str:
   """
@@ -85,8 +87,10 @@ def clean_html_content(html_text: str) -> str:
 
 
 DATA_FOLDER = "data/input"
-VECTORSTORE_PATH = "data/vectordb"
-INDEX_FILE = os.path.join(VECTORSTORE_PATH, "index.faiss")
+PROFESSOR_VDB_PATH = "data/vectordb/professor"
+MEMORY_VDB_PATH = "data/vectordb/memory"
+PROFESSOR_INDEX_FILE = os.path.join(PROFESSOR_VDB_PATH, "index.faiss")
+MEMORY_INDEX_FILE = os.path.join(MEMORY_VDB_PATH, "index.faiss")
 
 def get_loader(file_path: str):
   ext = os.path.splitext(file_path)[1].lower()
@@ -101,30 +105,124 @@ def get_loader(file_path: str):
   else:
     return UnstructuredFileLoader(file_path) # handles images, etc. with OCR if Tesseract installed
   
-def ingest_documents():
-  docs = []
-  for filename in os.listdir(DATA_FOLDER):
-      file_path = os.path.join(DATA_FOLDER, filename)
-      loader = get_loader(file_path)
-      docs.extend(loader.load())
+def ingest_documents_generic(
+  documents: list[Document],
+  vectorstore_path: str,
+  index_file: str,
+):
+  if not documents:
+    print("No documents to ingest.")
+    return
 
-  # splitter and embedding model
-  text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-  splits = text_splitter.split_documents(docs)
+  text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=200
+  )
+  splits = text_splitter.split_documents(documents)
+
   embeddings = OllamaEmbeddings(model="nomic-embed-text")
 
-  # Only load if the actual index file exists
-  if os.path.exists(INDEX_FILE):
-    print("Loading existing vectorstore and adding new documents...")
+  if os.path.exists(index_file):
+    print(f"Loading existing vectorstore at {vectorstore_path}...")
     vectorstore = FAISS.load_local(
-      VECTORSTORE_PATH,
+      vectorstore_path,
       embeddings,
       allow_dangerous_deserialization=True
     )
     vectorstore.add_documents(splits)
   else:
-    print("Creating new vectorstore from documents...")
+    print(f"Creating new vectorstore at {vectorstore_path}...")
     vectorstore = FAISS.from_documents(splits, embeddings)
-  
-  vectorstore.save_local(VECTORSTORE_PATH)
-  print("Ingestion complete!")
+
+  vectorstore.save_local(vectorstore_path)
+  print("Ingestion complete.")
+
+def ingest_professor_documents():
+  docs = []
+
+  for filename in os.listdir(DATA_FOLDER):
+    file_path = os.path.join(DATA_FOLDER, filename)
+    if not os.path.isfile(file_path):
+      continue
+
+    loader = get_loader(file_path)
+    docs.extend(loader.load())
+
+  ingest_documents_generic(
+    documents=docs,
+    vectorstore_path=PROFESSOR_VDB_PATH,
+    index_file=PROFESSOR_INDEX_FILE
+  )
+
+from datetime import datetime, timezone
+
+def ingest_memory_texts(
+    texts: list[str],
+    metadatas: list[dict] | None = None,
+):
+    documents = []
+
+    for i, text in enumerate(texts):
+        base_metadata = metadatas[i] if metadatas and i < len(metadatas) else {}
+        base_metadata.update({
+            "type": "memory",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "source_index": i,  # links small chunks back to their full output
+        })
+
+        # 1. Store the FULL output as one large document
+        documents.append(
+            Document(
+                page_content=text,
+                metadata={**base_metadata, "granularity": "full", "agent": base_metadata.get("agent", "unknown"), "step": base_metadata.get("step", "unknown")}
+            )
+        )
+
+        # 2. Split into small chunks for precise retrieval
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=800,      # smaller for precise recall
+            chunk_overlap=100,
+            separators=["\n\n", "\n", ". ", "? ", "! ", " "]
+        )
+        splits = text_splitter.split_text(text)
+
+        for j, split in enumerate(splits):
+            documents.append(
+                Document(
+                    page_content=split,
+                    metadata={
+                        **base_metadata,
+                        "granularity": "fine",
+                        "chunk_index": j,
+                        "agent": base_metadata.get("agent", "unknown"),
+                        "step": base_metadata.get("step", "unknown")
+                    }
+                )
+            )
+
+    ingest_documents_generic(
+        documents=documents,
+        vectorstore_path=MEMORY_VDB_PATH,
+        index_file=MEMORY_INDEX_FILE
+    )
+
+def clear_memory_vdb():
+  """
+  Completely resets the memory vector database.
+
+  Intended for:
+  - testing
+  - debugging
+  - development resets
+
+  WARNING:
+  This permanently deletes ALL stored memory embeddings.
+  """
+  if not os.path.exists(MEMORY_VDB_PATH):
+    print("Memory VDB does not exist. Nothing to clear.")
+    return
+
+  shutil.rmtree(MEMORY_VDB_PATH)
+  os.makedirs(MEMORY_VDB_PATH, exist_ok=True)
+
+  print("Memory VDB cleared.")

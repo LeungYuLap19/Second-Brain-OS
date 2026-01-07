@@ -6,6 +6,8 @@ from src.schemas.task_state import TaskState, TaskStatus
 from src.schemas.data_models import OrchestratorPlan
 from src.agents.orchestrator import OrchestratorAgent
 from src.agents.distiller import DistillerAgent
+from src.utils.helper import ingest_memory_texts
+from src.tools.doc_tools import search_memory
 import traceback
 import json
 
@@ -131,6 +133,16 @@ class WorkflowManager:
         # mark current task complete
         state.mark_completed(step, summary, output)
 
+        # ingest memory
+        ingest_memory_texts(
+          texts=[output],
+          metadatas=[{
+            "agent": task.agent,
+            "step": task.step,
+            "user_request": state.user_request,
+          }]
+        )
+
       except Exception as e:
         tb = traceback.format_exc()
         print("\n🔥 TASK FAILED TRACEBACK 🔥")
@@ -151,7 +163,7 @@ class WorkflowManager:
 
     return (
       f"Instruction: \n{instruction}\n\n"
-      f"Memory (JSON, read-only):\n{memory_context}"
+      f"State Memory (JSON, read-only):\n{memory_context}\n\n"
     )
 
   def _get_state_memory(self, limit: int = 5) -> str:

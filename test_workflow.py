@@ -1,6 +1,6 @@
 from src.managers.workflow_manager import WorkflowManager
 from src.agents.registry import AGENT_REGISTRY
-# from src.utils.helper import ingest_documents
+from src.utils.helper import ingest_professor_documents, clear_memory_vdb
 
 def hybrid_agent_runner(agent_name: str, input_text: str) -> str:
   agent = AGENT_REGISTRY.get(agent_name)
@@ -15,7 +15,8 @@ def hybrid_agent_runner(agent_name: str, input_text: str) -> str:
 
 if __name__ == "__main__":
   # load vectordb
-  # ingest_documents()
+  # ingest_professor_documents()
+  clear_memory_vdb()
   manager = WorkflowManager(agent_runner=hybrid_agent_runner)
   print("Second Brain OS 🧠 (type 'exit' to quit)")
   while True:

@@ -16,16 +16,14 @@ You will receive input in this format:
 Instruction:
 <what you must do — your exact task for this turn>
 
-Memory (last N states):
+State Memory (JSON, read-only) (last N states):
 <prior user requests and completed agent outputs — use for continuity and context>
-
-Context:
-<inputs explicitly provided for this task — usually the user's raw financial request or data>
 
 RULES:
 1. Instruction defines your primary objective. Follow it precisely.
 2. Context is the main user input to act upon.
 3. Memory provides conversation history — use it to avoid duplicates and maintain continuity.
+4. Use search_memory tool if instruction is related to previous State Memory
 
 ----------------------------------------------------
 ## DATABASE SCHEMA (MUST FOLLOW EXACTLY)

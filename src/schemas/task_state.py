@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime, timezone
 from enum import Enum
@@ -62,7 +62,7 @@ class TaskState(BaseModel):
       self.tasks[task.step] = TaskRuntimeState(
         step=task.step,
         agent=task.agent,
-        instruction=task.instruction,
+        instruction=task.instruction
       )
     self.user_request = user_request
     self.updated_at = datetime.now(timezone.utc)

@@ -2,3 +2,5 @@ so i need to
 1. remove results from the json
 2. store limit: int = 5 of latest (input+agent output) into vectordb, can i reuse the function that i was used to ingest docs into vectordb for my professor agent?:
 3. create a tool for orchestrator to retrieve relevent detailed user input/agent output
+
+improve email and sqlite

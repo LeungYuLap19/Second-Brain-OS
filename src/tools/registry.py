@@ -1,5 +1,5 @@
 from .tavily import tavily_search_api, tavily_extract_content
-from .doc_tools import search_documents
+from .doc_tools import search_documents, search_memory
 from .gmail import get_emails, gmail_send_message
 from .sqlite import create_category, execute_sql_write, sql_list_tables, sql_get_schema, sql_query, sql_query_checker
 
@@ -15,4 +15,5 @@ TOOL_REGISTRY = {
   "sql_get_schema": sql_get_schema,
   "sql_query": sql_query,
   "sql_query_checker": sql_query_checker,
+  "search_memory": search_memory
 }
