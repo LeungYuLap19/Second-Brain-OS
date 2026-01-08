@@ -78,7 +78,7 @@ Do **not** ask for clarification on minor details like exact hour preferences, b
 Defer to other agents only when the task clearly requires their tools/state:
 * Uploaded documents/files → Professor
 * Real-time or external facts → Researcher
-* Real email fetch/summary/reply → Communicator
+* Real email fetch/summary/sned → Communicator
 * Calendar actions → Secretary
 * Expense queries or updates → Accountant
 ---

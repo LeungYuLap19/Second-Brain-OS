@@ -7,9 +7,9 @@ from src.schemas.data_models import OrchestratorPlan
 from src.agents.orchestrator import OrchestratorAgent
 from src.agents.distiller import DistillerAgent
 from src.utils.helper import ingest_memory_texts
-from src.tools.doc_tools import search_memory
 import traceback
 import json
+from datetime import datetime
 
 class WorkflowManager:
   """
@@ -54,8 +54,6 @@ class WorkflowManager:
 
     raw_plan = orchestrator.run(orchestrator_input)
     plan = OrchestratorPlan.model_validate(raw_plan)
-
-    print(plan)
 
     state = TaskState()
     state.init_from_plan(plan=plan, user_request=user_request)
@@ -207,12 +205,29 @@ class WorkflowManager:
         break
 
     if not memory_entries:
-      return "{}"
+        base_context = {}
+    else:
+        base_context = {"memory": list(reversed(memory_entries))}
 
-    return json.dumps(
-      {"memory": list(reversed(memory_entries))},
-      indent=2
-    )
+    # === INJECT CURRENT CONTEXT ===
+    # You can get these from your session/user context
+    current_datetime = datetime.now().astimezone()  # or use a fixed one for consistency
+    current_location = "Hong Kong, HK"  # pull from user profile or IP
+
+    # Format cleanly for the LLM
+    context_injection = {
+      "current_datetime": current_datetime.strftime("%Y-%m-%d %H:%M:%S %Z"),
+      "current_date": current_datetime.strftime("%Y-%m-%d"),
+      "current_time": current_datetime.strftime("%H:%M:%S %Z"),
+      "current_location": current_location,
+      "current_timezone": str(current_datetime.tzinfo),
+      "note": "This is the real-time context. Use it to interpret relative dates like 'today', 'this week', 'last month', etc."
+    }
+
+    # Merge: context first, then historical memory
+    final_memory = {**context_injection, **base_context}
+
+    return json.dumps(final_memory, indent=2)
 
   @staticmethod
   def _task_node_name(step: int, agent_name: str) -> str:

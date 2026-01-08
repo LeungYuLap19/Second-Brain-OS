@@ -23,7 +23,7 @@ if __name__ == "__main__":
     user_request = input("\nUser 🤡 > ").strip()
     if user_request.lower() == "exit":
       print("Exiting Second Brain OS. Goodbye!")
-      break
+      break 
     if user_request:
       final_state = manager.run(user_request)
       last_step = max(final_state["tasks"].keys())
