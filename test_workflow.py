@@ -1,32 +1,42 @@
 from src.managers.workflow_manager import WorkflowManager
 from src.agents.registry import AGENT_REGISTRY
 from src.utils.helper import ingest_professor_documents, clear_memory_vdb
+import shutil
 
-def hybrid_agent_runner(agent_name: str, input_text: str) -> str:
+def hybrid_agent_runner(agent_name: str, input_text: str, stream: bool = False):
   agent = AGENT_REGISTRY.get(agent_name)
 
-  print(f"\n--- RUN: {agent_name} ---")
+  if not agent:
+    mock_output = f"[MOCK OUTPUT from {agent_name}]"
+    if stream:
+      for char in mock_output:
+        yield char
+    else:
+      return mock_output
 
-  if agent:
-    return agent.run(input_text)
+  result = agent.run(input_text)
 
-  # Fallback mock
-  return f"[MOCK OUTPUT from {agent_name}]"
+  if stream:
+    for chunk in result:
+      yield chunk
+  else:
+    if hasattr(result, '__iter__') and not isinstance(result, str):
+      return ''.join(result) 
+    else:
+      return result 
 
 if __name__ == "__main__":
   # load vectordb
   # ingest_professor_documents()
   clear_memory_vdb()
   manager = WorkflowManager(agent_runner=hybrid_agent_runner)
-  print("Second Brain OS 🧠 (type 'exit' to quit)")
+  print("Second Brain OS 🧠 (type 'exit' to quit)\n")
   while True:
-    user_request = input("\nUser 🤡 > ").strip()
+    print("| User 🤡 >", end=" ")
+    user_request = input().strip()
+    print("-" * shutil.get_terminal_size().columns)
     if user_request.lower() == "exit":
       print("Exiting Second Brain OS. Goodbye!")
       break 
     if user_request:
-      final_state = manager.run(user_request)
-      last_step = max(final_state["tasks"].keys())
-      last_task = final_state["tasks"][last_step]
-      final_output = last_task.output
-      print(f"Second Brain 🤖 > {final_output}")
+      manager.run(user_request)

@@ -111,7 +111,7 @@ def ingest_documents_generic(
   index_file: str,
 ):
   if not documents:
-    print("No documents to ingest.")
+    # print("No documents to ingest.")
     return
 
   text_splitter = RecursiveCharacterTextSplitter(
@@ -123,7 +123,7 @@ def ingest_documents_generic(
   embeddings = OllamaEmbeddings(model="nomic-embed-text")
 
   if os.path.exists(index_file):
-    print(f"Loading existing vectorstore at {vectorstore_path}...")
+    # print(f"Loading existing vectorstore at {vectorstore_path}...")
     vectorstore = FAISS.load_local(
       vectorstore_path,
       embeddings,
@@ -131,11 +131,11 @@ def ingest_documents_generic(
     )
     vectorstore.add_documents(splits)
   else:
-    print(f"Creating new vectorstore at {vectorstore_path}...")
+    # print(f"Creating new vectorstore at {vectorstore_path}...")
     vectorstore = FAISS.from_documents(splits, embeddings)
 
   vectorstore.save_local(vectorstore_path)
-  print("Ingestion complete.")
+  # print("Ingestion complete.")
 
 def ingest_professor_documents():
   docs = []
@@ -157,54 +157,54 @@ def ingest_professor_documents():
 from datetime import datetime, timezone
 
 def ingest_memory_texts(
-    texts: list[str],
-    metadatas: list[dict] | None = None,
+  texts: list[str],
+  metadatas: list[dict] | None = None,
 ):
-    documents = []
+  documents = []
 
-    for i, text in enumerate(texts):
-        base_metadata = metadatas[i] if metadatas and i < len(metadatas) else {}
-        base_metadata.update({
-            "type": "memory",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "source_index": i,  # links small chunks back to their full output
-        })
+  for i, text in enumerate(texts):
+    base_metadata = metadatas[i] if metadatas and i < len(metadatas) else {}
+    base_metadata.update({
+      "type": "memory",
+      "timestamp": datetime.now(timezone.utc).isoformat(),
+      "source_index": i,  # links small chunks back to their full output
+    })
 
-        # 1. Store the FULL output as one large document
-        documents.append(
-            Document(
-                page_content=text,
-                metadata={**base_metadata, "granularity": "full", "agent": base_metadata.get("agent", "unknown"), "step": base_metadata.get("step", "unknown")}
-            )
-        )
-
-        # 2. Split into small chunks for precise retrieval
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=800,      # smaller for precise recall
-            chunk_overlap=100,
-            separators=["\n\n", "\n", ". ", "? ", "! ", " "]
-        )
-        splits = text_splitter.split_text(text)
-
-        for j, split in enumerate(splits):
-            documents.append(
-                Document(
-                    page_content=split,
-                    metadata={
-                        **base_metadata,
-                        "granularity": "fine",
-                        "chunk_index": j,
-                        "agent": base_metadata.get("agent", "unknown"),
-                        "step": base_metadata.get("step", "unknown")
-                    }
-                )
-            )
-
-    ingest_documents_generic(
-        documents=documents,
-        vectorstore_path=MEMORY_VDB_PATH,
-        index_file=MEMORY_INDEX_FILE
+    # 1. Store the FULL output as one large document
+    documents.append(
+      Document(
+        page_content=text,
+        metadata={**base_metadata, "granularity": "full", "agent": base_metadata.get("agent", "unknown"), "step": base_metadata.get("step", "unknown")}
+      )
     )
+
+    # 2. Split into small chunks for precise retrieval
+    text_splitter = RecursiveCharacterTextSplitter(
+      chunk_size=800,      # smaller for precise recall
+      chunk_overlap=100,
+      separators=["\n\n", "\n", ". ", "? ", "! ", " "]
+    )
+    splits = text_splitter.split_text(text)
+
+    for j, split in enumerate(splits):
+      documents.append(
+        Document(
+          page_content=split,
+          metadata={
+            **base_metadata,
+            "granularity": "fine",
+            "chunk_index": j,
+            "agent": base_metadata.get("agent", "unknown"),
+            "step": base_metadata.get("step", "unknown")
+          }
+        )
+      )
+
+  ingest_documents_generic(
+    documents=documents,
+    vectorstore_path=MEMORY_VDB_PATH,
+    index_file=MEMORY_INDEX_FILE
+  )
 
 def clear_memory_vdb():
   """
@@ -219,10 +219,10 @@ def clear_memory_vdb():
   This permanently deletes ALL stored memory embeddings.
   """
   if not os.path.exists(MEMORY_VDB_PATH):
-    print("Memory VDB does not exist. Nothing to clear.")
+    # print("Memory VDB does not exist. Nothing to clear.")
     return
 
   shutil.rmtree(MEMORY_VDB_PATH)
   os.makedirs(MEMORY_VDB_PATH, exist_ok=True)
 
-  print("Memory VDB cleared.")
+  # print("Memory VDB cleared.")

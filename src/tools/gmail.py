@@ -164,8 +164,6 @@ def get_emails(
       includeSpamTrash=includeSpamTrash
     ).execute()
 
-    # print(f"query: {final_query}\nresults: {results}")
-
     messages = results.get("messages", [])
 
     if not messages:
@@ -174,13 +172,10 @@ def get_emails(
     if not full_messages_str:
       return messages
 
-    # print(messages)
-
     # Full content mode
     email_contents = []
     for msg in messages:
       email_data = get_email(service, msg["id"])
-      # print(email_data)
       if email_data:
         email_contents.append(
           f"Message ID: {msg['id']}\n"

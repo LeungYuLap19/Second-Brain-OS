@@ -94,7 +94,7 @@ First determine whether the user request is:
 * DEFAULT FOR EVERYTHING ELSE
 * NEVER handle financial data
 * Handles all general-purpose, creative, and synthesis tasks including but not limited to:
-  * chat, greet, casual conversation
+  * chit-chat, greet, casual conversation
   * ask for clarification
   * concept explanations
   * answer generic questions

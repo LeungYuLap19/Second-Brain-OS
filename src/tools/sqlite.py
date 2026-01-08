@@ -29,7 +29,7 @@ def add_transaction(amount: float, description: str, datetime: str = None) -> st
   Returns:
     str: Confirmation message
   """
-  print(f"Adding Transaction: amount {amount} | description {description} | datetime {datetime}")
+  # print(f"Adding Transaction: amount {amount} | description {description} | datetime {datetime}")
   conn = get_connection()
   cursor = conn.cursor()
 
@@ -64,7 +64,7 @@ def get_recent_transactions(limit: int = 10) -> str:
   Returns:
     str: Formatted list of recent transactions.
   """
-  print(f"Getting Transaction: limit {limit}")
+  # print(f"Getting Transaction: limit {limit}")
   conn = get_connection()
   cursor = conn.cursor()
   safe_limit = min(max(1, limit), 50)
@@ -101,7 +101,7 @@ def search_transactions(keyword: str = None, start_date: str = None, end_date: s
   Returns:
     str: Matching transactions.
   """
-  print(f"Searching Transaction: keyword {keyword} | start_date {start_date} | end_date {end_date} | limit {limit}")
+  # print(f"Searching Transaction: keyword {keyword} | start_date {start_date} | end_date {end_date} | limit {limit}")
   conn = get_connection()
   cursor = conn.cursor()
   
@@ -142,7 +142,7 @@ def delete_last_transaction() -> str:
   Returns:
     str: Confirmation or error.
   """
-  print(f"Deleting Last Transaction")
+  # print(f"Deleting Last Transaction")
   conn = get_connection()
   cursor = conn.cursor()
   
@@ -180,7 +180,7 @@ def summarize_month(year: int, month: int) -> str:
   Returns:
     str: Summary with totals.
   """
-  print(f"Summarizing Month Transaction: year {year} | month {month}")
+  # print(f"Summarizing Month Transaction: year {year} | month {month}")
   conn = get_connection()
   cursor = conn.cursor()
   
@@ -224,7 +224,7 @@ def execute_sql_write(query: str) -> str:
   Returns:
       str: Success or error message.
   """
-  print(f"Executing SQL Write: query {query}")
+  # print(f"Executing SQL Write: query {query}")
   conn = get_connection()
   cursor = conn.cursor()
 

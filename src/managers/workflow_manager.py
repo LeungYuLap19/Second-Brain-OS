@@ -10,6 +10,8 @@ from src.utils.helper import ingest_memory_texts
 import traceback
 import json
 from datetime import datetime
+from halo import Halo
+import shutil
 
 class WorkflowManager:
   """
@@ -20,7 +22,7 @@ class WorkflowManager:
   - Synthesizer ALWAYS runs last
   """
 
-  def __init__(self, agent_runner: Callable[[str, str], str]):
+  def __init__(self, agent_runner: Callable[[str, str, bool]]):
     """
     the function that runs an agent
     agent_runner(agent_name: str, input_text: str) -> output_text: str
@@ -37,6 +39,9 @@ class WorkflowManager:
     """
     High-level workflow execution entrypoint.
     """
+    self.spinner = Halo(text='Second Brain 🤖 > I am thinking! Patient!', spinner='dots', color=None)
+    self.spinner.start()
+
     orchestrator = OrchestratorAgent()
 
     memory_context = self._get_state_memory(limit=5)
@@ -73,34 +78,31 @@ class WorkflowManager:
   def _build_graph(self, plan: OrchestratorPlan) -> StateGraph:
     # Define global workflow state for the graph
     graph = StateGraph(TaskState)
+    num_tasks = len(plan.tasks)
 
     # Add nodes
-    for task in plan.tasks:
+    for i, task in enumerate(plan.tasks):
+      is_last = (i == num_tasks - 1)
+      node_name = self._task_node_name(task.step, task.agent)
       graph.add_node(
-        self._task_node_name(task.step, task.agent), 
-        self._make_task_node(task.step)
+        node_name,
+        self._make_task_node(task.step, is_last_task=is_last)
       )
 
     # Comment out synthesizer for now
     # graph.add_node("synthesizer", self._make_synthesizer_node())
 
     # Add edges
-    for index, task in enumerate(plan.tasks):
-      current = self._task_node_name(task.step, task.agent)
-
-      if index < len(plan.tasks) - 1:
-        next_task = plan.tasks[index + 1]
-        graph.add_edge(current, self._task_node_name(next_task.step, next_task.agent))
-      # else:
-      #     graph.add_edge(current, "synthesizer")  # disabled
+    for i in range(num_tasks - 1):
+      current = self._task_node_name(plan.tasks[i].step, plan.tasks[i].agent)
+      next_node = self._task_node_name(plan.tasks[i+1].step, plan.tasks[i+1].agent)
+      graph.add_edge(current, next_node)
 
     # Add START and END
     graph.add_edge(START, self._task_node_name(plan.tasks[0].step, plan.tasks[0].agent))
-    # graph.add_edge("synthesizer", END)  # disabled
 
     # Connect last task directly to END
-    last_task = plan.tasks[-1]
-    graph.add_edge(self._task_node_name(last_task.step, last_task.agent), END)
+    graph.add_edge(self._task_node_name(plan.tasks[-1].step, plan.tasks[-1].agent), END)
 
     return graph
   
@@ -111,7 +113,7 @@ class WorkflowManager:
   # -------------------------
   # Node factories
   # -------------------------
-  def _make_task_node(self, step: int):
+  def _make_task_node(self, step: int, is_last_task: bool = False):
     def node(state: TaskState) -> TaskState:
       # current task 
       task = state.tasks[step]
@@ -122,26 +124,44 @@ class WorkflowManager:
 
       try:
         # run current task
+        should_stream = is_last_task
         state.mark_running(step)
         input_text = self._resolve_inputs(task.instruction)
-        output = self.agent_runner(task.agent, input_text)
+        output = self.agent_runner(task.agent, input_text, should_stream)
 
+        if should_stream:
+          full_output = ""
+          for index, chunk in enumerate(output):
+            if index == 0:
+              self.spinner.stop()
+              print(f"| Second Brain 🤖 ({task.agent}) >", end=" ")
+            print(chunk, end="", flush=True)
+            full_output += chunk
+          print()
+          print("-" * shutil.get_terminal_size().columns)
+        else:
+          full_output = output
+
+        self.spinner = Halo(text='Second Brain 🤖 > I am memorizing!', spinner='dots', color=None)
+        self.spinner.start()
+        
         # generate summary
         distiller = DistillerAgent()
-        summary = distiller.run(output)
+        summary = distiller.run(full_output)
 
         # mark current task complete
-        state.mark_completed(step, summary, output)
+        state.mark_completed(step, summary, full_output)
 
         # ingest memory
         ingest_memory_texts(
-          texts=[output],
+          texts=[full_output],
           metadatas=[{
             "agent": task.agent,
             "step": task.step,
             "user_request": state.user_request,
           }]
         )
+        self.spinner.stop()
 
       except Exception as e:
         tb = traceback.format_exc()
@@ -216,6 +236,7 @@ class WorkflowManager:
 
     # Format cleanly for the LLM
     context_injection = {
+      "current user": "Jimmy",
       "current_datetime": current_datetime.strftime("%Y-%m-%d %H:%M:%S %Z"),
       "current_date": current_datetime.strftime("%Y-%m-%d"),
       "current_time": current_datetime.strftime("%H:%M:%S %Z"),

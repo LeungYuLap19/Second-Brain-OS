@@ -17,6 +17,7 @@ AGENT_MODELS:
     num_ctx: 65536          
     num_predict: 4096       
     format: "json"
+    enable_streaming: false
 
   Synthesizer:
     model: "qwen2.5:7b"
@@ -25,6 +26,7 @@ AGENT_MODELS:
     num_ctx: 65536         
     num_predict: 4096      
     format: ""
+    enable_streaming: false
 
   Professor:
     model: "qwen2.5:7b"
@@ -34,6 +36,7 @@ AGENT_MODELS:
     num_predict: 4096      
     format: ""
     tools: [search_memory, search_documents]
+    enable_streaming: true
 
   Researcher:
     model: "qwen2.5:7b"
@@ -43,6 +46,7 @@ AGENT_MODELS:
     num_predict: 4096      
     format: ""
     tools: [search_memory, tavily_search_api, tavily_extract_content]
+    enable_streaming: true
 
   Communicator:
     model: "qwen2.5:7b"
@@ -52,6 +56,7 @@ AGENT_MODELS:
     num_predict: 4096      
     format: ""
     tools: [search_memory, get_emails, gmail_send_message]
+    enable_streaming: true
 
   Secretary:
     model: "qwen2.5:7b"
@@ -61,6 +66,7 @@ AGENT_MODELS:
     num_predict: 4096      
     format: ""
     tools: [search_memory]
+    enable_streaming: true
 
   Accountant:
     model: "qwen2.5:7b"
@@ -70,6 +76,7 @@ AGENT_MODELS:
     num_predict: 4096       
     format: ""
     tools: [search_memory, add_transaction, get_recent_transactions, execute_sql_write, sql_list_tables, sql_get_schema, sql_query, sql_query_checker]
+    enable_streaming: true
 
   Responder:
     model: "qwen2.5:7b"
@@ -79,6 +86,7 @@ AGENT_MODELS:
     num_predict: 4096      
     format: ""
     tools: [search_memory]
+    enable_streaming: true
 
   Distiller:
     model: "qwen2.5:7b"
@@ -87,3 +95,4 @@ AGENT_MODELS:
     num_ctx: 8192         
     num_predict: 128      
     format: ""
+    enable_streaming: false
