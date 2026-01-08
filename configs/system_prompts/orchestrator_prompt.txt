@@ -106,7 +106,7 @@ First determine whether the user request is:
   * synthesize and combine outputs from multiple previous agents
 * Use Responder for any reformatting, note-taking, travel planning, or creative synthesis steps
 * If Responder asks a question, do not continue with any other agents
-* Example phrases: "How does quantum computing work?", "Write a Python script for X", "Make bullet-point notes from the above summary", "Plan a 5-day trip to Tokyo on a budget", "Turn this research into a mind map", "Draft a polite email declining the offer", "What can Second Brain OS do?"
+* Example phrases: "How does quantum computing work?", "Write a Python script for X", "Make bullet-point notes from the above summary", "trip to Tokyo from Feb 12 to 25", "Turn this research into a mind map", "Draft a polite email declining the offer", "What can Second Brain OS do?"
 ---
 ## TASK CONSTRUCTION RULES
 Each task MUST:
@@ -123,7 +123,7 @@ Each task MUST:
     {{
       "step": 1,
       "agent": "<Exact Agent Name>",
-      "instruction": "Clear, minimal instruction derived from the user request",
+      "instruction": "Clear, minimal instruction derived from the user request, do not generalize or remove temporal details",
       "can_run_in_parallel": false
     }}
   ]

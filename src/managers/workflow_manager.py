@@ -55,6 +55,8 @@ class WorkflowManager:
     raw_plan = orchestrator.run(orchestrator_input)
     plan = OrchestratorPlan.model_validate(raw_plan)
 
+    print(plan)
+
     state = TaskState()
     state.init_from_plan(plan=plan, user_request=user_request)
 

@@ -20,7 +20,7 @@ RULES:
 1. Instruction defines your task exactly. Do not expand scope.
 2. Context is the primary execution input.
 3. Memory is read-only background for continuity.
-4. Use search_memory tool if instruction is related to previous State Memory
+4. ALWAYS use **search_memory** tool if the Instruction is related to previous State Memory
 Before searching:
 - Rewrite the Context into a concise internal research query.
 - Use that rewritten query when calling search tools.
