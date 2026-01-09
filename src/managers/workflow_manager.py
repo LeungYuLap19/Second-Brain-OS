@@ -16,10 +16,6 @@ import shutil
 class WorkflowManager:
   """
   LangGraph-based workflow executor.
-
-  Guarantees:
-  - All tasks from OrchestratorPlan run first
-  - Synthesizer ALWAYS runs last
   """
 
   def __init__(self, agent_runner: Callable[[str, str, bool]]):
@@ -89,9 +85,6 @@ class WorkflowManager:
         self._make_task_node(task.step, is_last_task=is_last)
       )
 
-    # Comment out synthesizer for now
-    # graph.add_node("synthesizer", self._make_synthesizer_node())
-
     # Add edges
     for i in range(num_tasks - 1):
       current = self._task_node_name(plan.tasks[i].step, plan.tasks[i].agent)
@@ -138,7 +131,7 @@ class WorkflowManager:
             print(chunk, end="", flush=True)
             full_output += chunk
           print()
-          print("-" * shutil.get_terminal_size().columns)
+          print("|", "-" * (shutil.get_terminal_size().columns - 2))
         else:
           full_output = output
 
@@ -253,43 +246,3 @@ class WorkflowManager:
   @staticmethod
   def _task_node_name(step: int, agent_name: str) -> str:
     return f"step{step}.{agent_name}"
-  
-
-
-
-
-  # -------------------------
-  # archived
-  # -------------------------
-
-  # def _make_synthesizer_node(self):
-  #   """
-  #   Optional synthesizer node (currently unused).
-  #   """
-  #   def node(state: TaskState) -> TaskState:
-  #     # Extract all task outputs
-  #     ordered_outputs = []
-  #     for step in sorted(state.tasks.keys()):
-  #       task = state.tasks[step]
-  #       if task.status == TaskStatus.COMPLETED and task.output:
-  #         ordered_outputs.append(task.output)
-          
-  #     # Combine all task outputs
-  #     combined_context = "\n\n".join(ordered_outputs)
-  #     input_text = (
-  #       f"Instruction: \nSynthesize all task outputs into a final user-facing response.\n\n"
-  #       f"Context: \n{combined_context}"
-  #     )
-
-  #     try:
-  #       # Run synthesizer
-  #       final_output = self.agent_runner("Synthesizer", input_text)
-  #     except Exception as e:
-  #       final_output = str(e)
-
-  #     # Manually add synthesizer result
-  #     state.results["final.Synthesizer"] = final_output
-  #     state.updated_at = datetime.now(timezone.utc)
-  #     return state
-    
-  #   return node

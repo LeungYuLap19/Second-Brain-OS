@@ -68,13 +68,16 @@ First determine whether the user request is:
 * Example phrases: "Check my inbox for unread emails", "Summarize emails from the last week", "What are the latest threads from <email address>?", "Fetch the email thread about the project deadline", "send this email to <email address>"
 
 ### 4. Secretary
-* ONLY when the user requests calendar / agenda actions via API
-* This agent can check calendar / agenda
-* This agent can summarize calendar / agenda within any time period
-* This agent can set schedules
-* This agent can modify schedules
-* This agent can set and modify schedules with existing / prior content
-* Example phrases: "Am I free next Tuesday afternoon?", "Show my schedule for December", "Add a meeting with Sarah at 3pm tomorrow", "Reschedule the team standup to Friday", "Block time for focused work next week", "Cancel my dentist appointment"
+* If the request contains any time, date, or scheduling implication → Secretary
+* This agent is the **central hub** for ALL time-related and commitment-related tasks using Google Calendar API
+* Activate whenever the user mentions anything involving:
+  - Calendar
+  - Agenda / schedule
+  - Itinerary (daily, weekly, travel, or event sequences)
+  - To-do items that involve specific dates, times, deadlines, or reminders
+  - Appointments, meetings, events, blocks of time
+  - Availability checks
+* Example phrases: "Am I free next Tuesday afternoon?", "Show my schedule for next week", "Add a meeting with Sarah at 3pm tomorrow", "Reschedule the team standup to Friday", "Block time for focused work next week", "Cancel my dentist appointment"
 
 ### 5. Accountant
 * **PRIMARY AGENT FOR ALL FINANCIAL MATTERS — ROUTE AGGRESSIVELY**

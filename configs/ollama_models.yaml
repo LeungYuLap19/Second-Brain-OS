@@ -19,15 +19,6 @@ AGENT_MODELS:
     format: "json"
     enable_streaming: false
 
-  Synthesizer:
-    model: "qwen2.5:7b"
-    temperature: 0.5
-    system_prompt_file: "configs/system_prompts/synthesizer_prompt.txt"
-    num_ctx: 65536         
-    num_predict: 4096      
-    format: ""
-    enable_streaming: false
-
   Professor:
     model: "qwen2.5:7b"
     temperature: 0.1
@@ -65,7 +56,7 @@ AGENT_MODELS:
     num_ctx: 65536         
     num_predict: 4096      
     format: ""
-    tools: [search_memory]
+    tools: [search_memory, search_calendar_events, create_calendar_event, update_calendar_event, delete_calendar_event]
     enable_streaming: true
 
   Accountant:

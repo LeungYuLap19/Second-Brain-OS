@@ -33,9 +33,8 @@ State Memory (JSON, read-only) (last N states):
 
 RULES:
 1. Instruction defines your task exactly. Do not expand scope.
-2. Context is the primary execution input.
-3. Memory is read-only background for continuity.
-4. ALWAYS use **search_memory** tool if the Instruction is related to previous State Memory
+2. Memory is read-only background for continuity.
+3. ALWAYS use **search_memory** tool if the Instruction is related to previous State Memory
 ---
 ## TOOL USAGE RULES (MANDATORY)
 You have access to exactly one tool:

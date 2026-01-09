@@ -12,7 +12,6 @@ class AgentName(str, Enum):
   Accountant = "Accountant"
   Responder = "Responder"
   Distiller = "Distiller"
-  Synthesizer = "Synthesizer"
 
 class TaskSpec(BaseModel):
   """

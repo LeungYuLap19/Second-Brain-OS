@@ -3,6 +3,7 @@ from .responder import ResponderAgent
 from .researcher import ResearcherAgent
 from .communicator import CommunicatorAgent
 from .accountant import AccountantAgent
+from .secretary import SecretaryAgent
 
 AGENT_REGISTRY = {
   "Professor": ProfessorAgent(),
@@ -10,4 +11,5 @@ AGENT_REGISTRY = {
   "Responder": ResponderAgent(),
   "Communicator": CommunicatorAgent(),
   "Accountant": AccountantAgent(),
+  "Secretary": SecretaryAgent(),
 }

@@ -34,7 +34,7 @@ if __name__ == "__main__":
   while True:
     print("| User 🤡 >", end=" ")
     user_request = input().strip()
-    print("-" * shutil.get_terminal_size().columns)
+    print("|", "-" * (shutil.get_terminal_size().columns - 2))
     if user_request.lower() == "exit":
       print("Exiting Second Brain OS. Goodbye!")
       break 
