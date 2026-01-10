@@ -5,10 +5,6 @@ from googleapiclient.errors import HttpError
 from langchain.tools import tool
 from .gmail import get_creds
 
-SCOPES = [
-  "https://www.googleapis.com/auth/calendar"
-]
-
 from datetime import timedelta
 
 def _hkt_to_utc(dt_str: str) -> str:
@@ -63,7 +59,7 @@ def search_calendar_events(
   Returns:
     Formatted list of matching events.
   """
-  creds = get_creds(SCOPES)
+  creds = get_creds()
   try:
     service = build("calendar", "v3", credentials=creds)
 
@@ -133,7 +129,7 @@ def create_calendar_event(
   Returns:
       Success message with link and event ID.
   """
-  creds = get_creds(SCOPES)
+  creds = get_creds()
   try:
     service = build("calendar", "v3", credentials=creds)
 
@@ -186,7 +182,7 @@ def update_calendar_event(
   Returns:
       Success message or error.
   """
-  creds = get_creds(SCOPES)
+  creds = get_creds()
   try:
     service = build("calendar", "v3", credentials=creds)
     event = service.events().get(calendarId=calendar_id, eventId=event_id).execute()
@@ -231,7 +227,7 @@ def delete_calendar_event(event_id: str, calendar_id: str = "primary") -> str:
   Returns:
     Confirmation message.
   """
-  creds = get_creds(SCOPES)
+  creds = get_creds()
   try:
     service = build("calendar", "v3", credentials=creds)
     service.events().delete(calendarId=calendar_id, eventId=event_id).execute()

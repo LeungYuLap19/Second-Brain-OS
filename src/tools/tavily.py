@@ -8,7 +8,7 @@ load_dotenv()
 tavily_client = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
 
 @tool
-def tavily_search_api(query: str, max_results: int = 3) -> str:
+def tavily_search_api(query: str, max_results: int = 5) -> str:
   """
   Perform a web search using the Tavily Search API and return structured results.
 
@@ -19,7 +19,7 @@ def tavily_search_api(query: str, max_results: int = 3) -> str:
   Args:
     query (str): The search query to send to Tavily. Should be clear and specific.
     max_results (int, optional): Maximum number of search results to return. 
-                                Defaults to 3 to keep responses concise.
+                                Defaults to 5 to keep responses concise.
 
   Returns:
     str: A JSON-serializable object (list of dicts or dict) containing the search results.

@@ -74,7 +74,7 @@ AGENT_MODELS:
     temperature: 0.6
     system_prompt_file: "configs/system_prompts/responder_prompt.txt"
     num_ctx: 65536         
-    num_predict: 4096      
+    num_predict: 12288      
     format: ""
     tools: [search_memory]
     enable_streaming: true

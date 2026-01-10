@@ -17,19 +17,20 @@ from googleapiclient.errors import HttpError
 
 SCOPES = [
   "https://www.googleapis.com/auth/gmail.readonly",
-  "https://www.googleapis.com/auth/gmail.send"
+  "https://www.googleapis.com/auth/gmail.send",
+  "https://www.googleapis.com/auth/calendar"
 ]
 
-def get_creds(scope: list[str]):
+def get_creds():
   creds = None
   if os.path.exists("token.json"):
-    creds = Credentials.from_authorized_user_file("token.json", scope)
+    creds = Credentials.from_authorized_user_file("token.json", SCOPES)
   if not creds or not creds.valid:
     if creds and creds.expired and creds.refresh_token:
       creds.refresh(Request())
     else:
       flow = InstalledAppFlow.from_client_secrets_file(
-        "credentials.json", scope
+        "credentials.json", SCOPES
       )
       creds = flow.run_local_server(port=0)
     # Save the credentials for the next run
@@ -129,7 +130,7 @@ def get_emails(
     If full_messages_str=True  → concatenated string of email contents
     Else                       → list of raw message metadata dicts
   """
-  creds = get_creds(SCOPES)
+  creds = get_creds()
   try:
     service = build("gmail", "v1", credentials=creds)
 
@@ -176,6 +177,7 @@ def get_emails(
     email_contents = []
     for msg in messages:
       email_data = get_email(service, msg["id"])
+
       if email_data:
         email_contents.append(
           f"Message ID: {msg['id']}\n"
@@ -219,7 +221,7 @@ def gmail_send_message(to: str, subject: str, content: str) -> str:
     Requires valid Gmail API credentials with at least the
     'https://www.googleapis.com/auth/gmail.send' scope.
   """
-  creds = get_creds(SCOPES)
+  creds = get_creds()
 
   try:
     service = build("gmail", "v1", credentials=creds)

@@ -9,6 +9,7 @@ from langchain_ollama import OllamaEmbeddings
 from langchain_community.vectorstores import FAISS
 import os
 import shutil
+from datetime import datetime, timezone
 
 def clean_html_content(html_text: str) -> str:
   """
@@ -154,8 +155,6 @@ def ingest_professor_documents():
     index_file=PROFESSOR_INDEX_FILE
   )
 
-from datetime import datetime, timezone
-
 def ingest_memory_texts(
   texts: list[str],
   metadatas: list[dict] | None = None,
@@ -174,7 +173,12 @@ def ingest_memory_texts(
     documents.append(
       Document(
         page_content=text,
-        metadata={**base_metadata, "granularity": "full", "agent": base_metadata.get("agent", "unknown"), "step": base_metadata.get("step", "unknown")}
+        metadata={
+          **base_metadata, 
+          "granularity": "full", 
+          "agent": base_metadata.get("agent", "unknown"), 
+          "step": base_metadata.get("step", "unknown")
+        }
       )
     )
 
