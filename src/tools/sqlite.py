@@ -224,7 +224,7 @@ def execute_sql_write(query: str) -> str:
   Returns:
       str: Success or error message.
   """
-  # print(f"Executing SQL Write: query {query}")
+  print(f"Executing SQL Write: query {query}")
   conn = get_connection()
   cursor = conn.cursor()
 

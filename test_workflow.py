@@ -26,9 +26,8 @@ def hybrid_agent_runner(agent_name: str, input_text: str, stream: bool = False):
       return result 
 
 if __name__ == "__main__":
-  # load vectordb
-  # ingest_professor_documents()
   clear_memory_vdb()
+  ingest_professor_documents()
   manager = WorkflowManager(agent_runner=hybrid_agent_runner)
   print("Second Brain OS 🧠 (type 'exit' to quit)\n")
   while True:

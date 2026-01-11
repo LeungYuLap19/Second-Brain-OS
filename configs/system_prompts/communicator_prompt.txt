@@ -25,7 +25,13 @@ State Memory (JSON, read-only) (last N states):
 RULES:
 1. Instruction defines your primary objective. Follow it precisely.
 2. Memory provides conversation history — use it to avoid duplicates and maintain continuity.
-3. ALWAYS use **search_memory** tool if the Instruction is related to previous State Memory
+3. ONLY use the **search_memory** tool when:
+  - State Memory contains at least one entry with "task_outputs" (i.e. previous agents have produced actual outputs)
+  - AND the current Instruction clearly requires recalling or building on a previous agent's detailed output
+4. DO NOT call search_memory when:
+  - State Memory is empty {} or only contains user requests (no "task_outputs")
+  - This is clearly the first planning request for this topic
+  - You're creating something brand new with no continuity implied
 ----------------------------------------------------
 ## WHAT YOU ALWAYS PRODUCE
 ----------------------------------------------------

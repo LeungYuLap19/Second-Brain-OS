@@ -26,10 +26,10 @@ def _hkt_to_utc(dt_str: str) -> str:
 
 @tool
 def search_calendar_events(
+  time_min: str, 
+  time_max: str,
   query: str | None = None,
   calendar_id: str = "primary",
-  time_min: str | None = None, 
-  time_max: str | None= None,
   max_results: int = 20,
 ) -> str:
   """
@@ -44,12 +44,12 @@ def search_calendar_events(
     calendar_id (str): 
       "primary" for your main calendar, or a specific calendar ID.
 
-    time_min (str, optional): 
+    time_min (str): 
       (ISO 8601 datetime string in HKT (naive, no Z))
       Lower bound for event start time.
       Use this to filter events starting AFTER this time.
 
-    time_max (str, optional): 
+    time_max (str): 
       (ISO 8601 datetime string in HKT (naive, no Z))
       Upper bound for event end time.
       Use this to filter events ending BEFORE this time.

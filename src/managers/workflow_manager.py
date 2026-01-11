@@ -147,12 +147,12 @@ class WorkflowManager:
 
         # ingest memory
         ingest_memory_texts(
-          texts=[full_output],
-          metadatas=[{
+          text=full_output,
+          metadata={
             "agent": task.agent,
             "step": task.step,
             "user_request": state.user_request,
-          }]
+          }
         )
         self.spinner.stop()
 
@@ -220,7 +220,7 @@ class WorkflowManager:
     if not memory_entries:
         base_context = {}
     else:
-        base_context = {"memory": list(reversed(memory_entries))}
+        base_context = {"state_memory": list(reversed(memory_entries))}
 
     # === INJECT CURRENT CONTEXT ===
     # You can get these from your session/user context
@@ -230,9 +230,7 @@ class WorkflowManager:
     # Format cleanly for the LLM
     context_injection = {
       "current user": "Jimmy",
-      "current_datetime": current_datetime.strftime("%Y-%m-%d %H:%M:%S %Z"),
-      "current_date": current_datetime.strftime("%Y-%m-%d"),
-      "current_time": current_datetime.strftime("%H:%M:%S %Z"),
+      "current_datetime": current_datetime.strftime("%A %Y-%m-%d %H:%M:%S %Z"),
       "current_location": current_location,
       "current_timezone": str(current_datetime.tzinfo),
       "note": "This is the real-time context. Use it to interpret relative dates like 'today', 'this week', 'last month', etc."

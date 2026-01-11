@@ -15,7 +15,7 @@ AGENT_MODELS:
     temperature: 0.0
     system_prompt_file: "configs/system_prompts/orchestrator_prompt.txt"
     num_ctx: 65536          
-    num_predict: 4096       
+    num_predict: 8192       
     format: "json"
     enable_streaming: false
 
@@ -24,7 +24,7 @@ AGENT_MODELS:
     temperature: 0.1
     system_prompt_file: "configs/system_prompts/professor_prompt.txt"
     num_ctx: 65536         
-    num_predict: 4096      
+    num_predict: 8192      
     format: ""
     tools: [search_memory, search_documents]
     enable_streaming: true
@@ -34,7 +34,7 @@ AGENT_MODELS:
     temperature: 0.3
     system_prompt_file: "configs/system_prompts/researcher_prompt.txt"
     num_ctx: 65536         
-    num_predict: 4096      
+    num_predict: 8192      
     format: ""
     tools: [search_memory, tavily_search_api, tavily_extract_content]
     enable_streaming: true
@@ -44,7 +44,7 @@ AGENT_MODELS:
     temperature: 0.2
     system_prompt_file: "configs/system_prompts/communicator_prompt.txt"
     num_ctx: 65536         
-    num_predict: 4096      
+    num_predict: 8192      
     format: ""
     tools: [search_memory, get_emails, gmail_send_message]
     enable_streaming: true
@@ -54,7 +54,7 @@ AGENT_MODELS:
     temperature: 0.1
     system_prompt_file: "configs/system_prompts/secretary_prompt.txt"
     num_ctx: 65536         
-    num_predict: 4096      
+    num_predict: 8192      
     format: ""
     tools: [search_memory, search_calendar_events, create_calendar_event, update_calendar_event, delete_calendar_event]
     enable_streaming: true
@@ -64,7 +64,7 @@ AGENT_MODELS:
     temperature: 0.05
     system_prompt_file: "configs/system_prompts/accountant_prompt.txt"
     num_ctx: 65536          
-    num_predict: 4096       
+    num_predict: 8192       
     format: ""
     tools: [search_memory, add_transaction, get_recent_transactions, execute_sql_write, sql_list_tables, sql_get_schema, sql_query, sql_query_checker]
     enable_streaming: true
@@ -74,7 +74,7 @@ AGENT_MODELS:
     temperature: 0.6
     system_prompt_file: "configs/system_prompts/responder_prompt.txt"
     num_ctx: 65536         
-    num_predict: 12288      
+    num_predict: 8192      
     format: ""
     tools: [search_memory]
     enable_streaming: true
