@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WebSocket Test - Second Brain OS</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Roboto, "Segoe UI", Arial; margin: 24px; }
+    .container { max-width: 800px; margin: 0 auto; }
+    label { display:block; margin-top: 12px; }
+    input[type=text] { width: 100%; padding: 8px; box-sizing: border-box; }
+    button { margin-top: 8px; padding: 8px 12px; }
+    #log { margin-top: 16px; border: 1px solid #ddd; padding: 12px; height: 320px; overflow: auto; background: #f9f9f9; white-space: pre-wrap; }
+    .meta { color: #666; font-size: 13px }
+    .token { color: #0b63d5 }
+    .ack { color: #0b8a15 }
+    .end { color: #d13b3b }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>WebSocket Test for Second Brain OS 🔌</h1>
+
+    <div class="meta">Use this page to connect to <code>/ws/{client_id}</code> and test streaming responses from the LLM.</div>
+
+    <label>Server WS URL
+      <input id="serverUrl" type="text" value="ws://localhost:8000/ws/" />
+    </label>
+
+    <label>Client ID
+      <input id="clientId" type="text" placeholder="your_client_id" value="test-client" />
+    </label>
+
+    <div>
+      <button id="btnConnect">Connect</button>
+      <button id="btnDisconnect" disabled>Disconnect</button>
+    </div>
+
+    <label>Message to send
+      <input id="message" type="text" placeholder="Send a prompt like: \"Summarize my notes\"" />
+    </label>
+    <div>
+      <button id="btnSend" disabled>Send</button>
+    </div>
+
+    <div id="log"></div>
+  </div>
+
+  <script>
+    let ws = null;
+    const logEl = document.getElementById('log');
+    const serverUrlEl = document.getElementById('serverUrl');
+    const clientIdEl = document.getElementById('clientId');
+    const btnConnect = document.getElementById('btnConnect');
+    const btnDisconnect = document.getElementById('btnDisconnect');
+    const btnSend = document.getElementById('btnSend');
+    const messageEl = document.getElementById('message');
+
+    function appendLog(msg, cls) {
+      const line = document.createElement('div');
+      if (cls) line.className = cls;
+      line.textContent = new Date().toLocaleTimeString() + ' - ' + msg;
+      logEl.appendChild(line);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    btnConnect.addEventListener('click', () => {
+      const base = serverUrlEl.value.trim();
+      const clientId = clientIdEl.value.trim();
+      if (!base) return alert('Set server WS URL');
+      if (!clientId) return alert('Set client id');
+
+      const url = base.endsWith('/') ? (base + encodeURIComponent(clientId)) : (base + '/' + encodeURIComponent(clientId));
+      appendLog('Connecting to ' + url + ' ...');
+
+      try {
+        ws = new WebSocket(url);
+      } catch (err) {
+        appendLog('WebSocket constructor failed: ' + err, 'end');
+        return;
+      }
+
+      ws.onopen = () => {
+        appendLog('Connected', 'ack');
+        btnConnect.disabled = true;
+        btnDisconnect.disabled = false;
+        btnSend.disabled = false;
+      };
+
+      ws.onmessage = (evt) => {
+        const text = evt.data;
+        if (text === '<END_OF_STREAM>') {
+          appendLog('[STREAM END]', 'end');
+          return;
+        }
+
+        if (text === '<RESPONSE_START>') {
+          appendLog('--- Response start ---', 'ack');
+          return;
+        }
+
+        // try to append tokenized streams specially
+        appendLog(text, 'token');
+      };
+
+      ws.onclose = (e) => {
+        appendLog('Closed: ' + (e.reason || 'server closed'), 'end');
+        btnConnect.disabled = false;
+        btnDisconnect.disabled = true;
+        btnSend.disabled = true;
+      };
+
+      ws.onerror = (err) => {
+        appendLog('WebSocket error', 'end');
+        console.error(err);
+      };
+    });
+
+    btnDisconnect.addEventListener('click', () => {
+      if (ws) {
+        ws.close();
+        ws = null;
+      }
+    });
+
+    btnSend.addEventListener('click', () => {
+      if (!ws || ws.readyState !== WebSocket.OPEN) return alert('Not connected');
+      const msg = messageEl.value.trim();
+      if (!msg) return alert('Type a message');
+      appendLog('> ' + msg);
+      ws.send(msg);
+    });
+
+    // Convenience: send on Enter
+    messageEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') btnSend.click();
+    });
+
+    // pre-fill a sample prompt
+    messageEl.value = 'Explain the concept of retrieval-augmented generation in a short paragraph.';
+    appendLog('Ready. Fill server URL (default ws://localhost:8000/ws/) and connect.', 'meta');
+  </script>
+</body>
+</html>
