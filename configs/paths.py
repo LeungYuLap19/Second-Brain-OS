@@ -12,11 +12,12 @@ INPUT_DATA_DIR = os.path.join(DATA_DIR, "input")
 SQLITE_DIR = os.path.join(DATA_DIR, "sqlite")
 VECTOR_DB_DIR = os.path.join(DATA_DIR, "vectordb")
 
+SQLITE_DB_FILE = os.path.join(SQLITE_DIR, 'second_brain.db')
+
 RAG_VECTOR_DB_DIR = os.path.join(VECTOR_DB_DIR, "rag")
 RAG_INDEX_FILE = os.path.join(RAG_VECTOR_DB_DIR, "index.faiss")
 
 SQL_DIR = os.path.join(BASE_DIR, "sql")
-
 ENV_FILE = os.path.join(BASE_DIR, ".env")
 CREDENTIALS_FILE = os.path.join(BASE_DIR, "credentials.json")
 TOKEN_FILE = os.path.join(BASE_DIR, "token.json")

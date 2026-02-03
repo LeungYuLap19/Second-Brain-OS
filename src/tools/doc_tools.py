@@ -4,7 +4,7 @@ from typing import Literal
 from configs.paths import RAG_VECTOR_DB_DIR, RAG_INDEX_FILE
 import traceback
 import os
-from src.utils.helpers import EMBEDDINGS
+from src.services.vectordb import EMBEDDINGS
 
 @tool
 def search_documents(query: str, k: int = 5) -> str:
