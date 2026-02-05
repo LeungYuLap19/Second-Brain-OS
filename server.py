@@ -45,18 +45,28 @@ class ConnectionManager:
   def __init__(self):
     self.active_connections: Dict[str, WebSocket] = {}
     self.llm_managers: Dict[str, LLMManager] = {}
+    self.client_chatrooms: Dict[str, set] = {}  # Track which chatrooms belong to which client
 
-  async def connect(self, chatroom_id: str, websocket: WebSocket):
+  async def connect(self, chatroom_id: str, websocket: WebSocket, client_id: str = None):
     await websocket.accept()
     self.active_connections[chatroom_id] = websocket
     self.llm_managers[chatroom_id] = LLMManager(chatroom_id)
+    if client_id:
+      if client_id not in self.client_chatrooms:
+        self.client_chatrooms[client_id] = set()
+      self.client_chatrooms[client_id].add(chatroom_id)
     logger.info(f"Chatroom connected: {chatroom_id}")
 
-  def disconnect(self, chatroom_id: str):
+  def disconnect(self, chatroom_id: str, client_id: str = None):
     if chatroom_id in self.active_connections:
       del self.active_connections[chatroom_id]
     if chatroom_id in self.llm_managers:
       del self.llm_managers[chatroom_id]
+    # Remove from client_chatrooms tracking
+    if client_id and client_id in self.client_chatrooms:
+      self.client_chatrooms[client_id].discard(chatroom_id)
+      if not self.client_chatrooms[client_id]:  # Remove client if no chatrooms left
+        del self.client_chatrooms[client_id]
     logger.info(f"Chatroom disconnected: {chatroom_id}")
 
   def get_llm_manager(self, chatroom_id: str) -> LLMManager:
@@ -73,6 +83,35 @@ class ConnectionManager:
         await ws.send_text(message)
       except Exception:
         pass
+
+  async def disconnect_chatroom(self, chatroom_id: str):
+    """Disconnect a specific chatroom's websocket connection."""
+    if chatroom_id in self.active_connections:
+      websocket = self.active_connections[chatroom_id]
+      try:
+        await websocket.close(code=1000, reason="Chatroom deleted")
+      except Exception:
+        logger.exception(f"Error closing websocket for chatroom {chatroom_id}")
+      # Find client_id for this chatroom
+      client_id = None
+      for cid, chatrooms in self.client_chatrooms.items():
+        if chatroom_id in chatrooms:
+          client_id = cid
+          break
+      self.disconnect(chatroom_id, client_id)
+
+  async def disconnect_all_client_chatrooms(self, client_id: str):
+    """Disconnect all chatroom websocket connections for a specific client."""
+    if client_id in self.client_chatrooms:
+      chatroom_ids = list(self.client_chatrooms[client_id])  # Copy to avoid modification during iteration
+      for chatroom_id in chatroom_ids:
+        if chatroom_id in self.active_connections:
+          websocket = self.active_connections[chatroom_id]
+          try:
+            await websocket.close(code=1000, reason="All chatrooms deleted")
+          except Exception:
+            logger.exception(f"Error closing websocket for chatroom {chatroom_id}")
+          self.disconnect(chatroom_id, client_id)
 
 manager = ConnectionManager()
 
@@ -150,6 +189,8 @@ async def delete_chatroom_endpoint(request: DeleteChatroomRequest):
   success = delete_chatroom(chatroom_id)
 
   if success:
+    # Disconnect the websocket connection for this chatroom
+    await manager.disconnect_chatroom(chatroom_id)
     return JSONResponse({
       "success": True, 
       "message": f"Deleted chatroom: {chatroom_id}"
@@ -167,6 +208,8 @@ async def delete_all_chatrooms_endpoint(request: DeleteAllChatroomsRequest):
   success = delete_all_chatrooms(client_id)
 
   if success:
+    # Disconnect all websocket connections for this client's chatrooms
+    await manager.disconnect_all_client_chatrooms(client_id)
     return JSONResponse({
       "success": True, 
       "message": f"Deleted all chatrooms for client: {client_id}"
@@ -210,7 +253,7 @@ async def chat_history_endpoint(client_id: str):
 # --- WebSocket endpoint ---
 @app.websocket("/ws/{client_id}/{chatroom_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: str, chatroom_id: str):
-  await manager.connect(chatroom_id, websocket)
+  await manager.connect(chatroom_id, websocket, client_id)
   try:
     while True:
       data = await websocket.receive_text()
@@ -263,10 +306,10 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str, chatroom_id: 
       loop.run_in_executor(None, stream_and_send)
 
   except WebSocketDisconnect:
-    manager.disconnect(chatroom_id)
+    manager.disconnect(chatroom_id, client_id)
   except Exception as e:
     logger.exception("WebSocket error")
-    manager.disconnect(chatroom_id)
+    manager.disconnect(chatroom_id, client_id)
 
 if __name__ == "__main__":
   uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=False)

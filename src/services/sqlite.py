@@ -121,7 +121,10 @@ def get_chat_history(client_id: str) -> Optional[List[Dict[str, Any]]]:
           c.updated_at AS updated_at,
           (
             SELECT content FROM messages WHERE chatroom_id = c.id ORDER BY timestamp DESC LIMIT 1
-          ) AS last_message
+          ) AS last_message,
+          (
+            SELECT content FROM messages WHERE chatroom_id = c.id ORDER by timestamp ASC LIMIT 1
+          ) AS first_message
         FROM chatrooms c
         WHERE c.client_id = ?
         ORDER BY c.updated_at DESC
@@ -134,6 +137,7 @@ def get_chat_history(client_id: str) -> Optional[List[Dict[str, Any]]]:
       {
         "id": r["id"],
         "updated_at": r["updated_at"],
+        "first_message": r["first_message"],
         "last_message": r["last_message"],
       }
       for r in rows
